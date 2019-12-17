@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <!-- Title and description tags-->
+      <title>POS Accessibility</title>
+      <meta name="description" content="TBD"/>
+    <!-- Device META tags-->
+      <meta content="width=device-width,initial-scale=1" name="viewport"/>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+
+    <!-- Favicon Icon -->
+      <link rel="apple-touch-icon" sizes="57x57 72x72 114x114 144x144 150x150" href="static/images/favicon-mobile.png" class="wb-favicon" />
+      <link href="static/images/favicon.ico" rel="icon" type="image/x-icon" class="wb-init wb-favicon-inited"/>
+
+    <!-- Font CSS-->
+      <link rel="stylesheet" href="static/stylesheets/font.css" />
+
+    <!--External Scripts and CSS-->
+      <!-- Jquery -->
+      <script src="static/javascripts/external/jquery-3.3.1.min.js"></script>
+      <!-- WET + CDO design Kit -->
+      <!-- Web Experience Toolkit (WET) / Boîte à outils de l'expérience Web (BOEW) wet-boew.github.io/wet-boew/License-en.html / wet-boew.github.io/wet-boew/Licence-fr.html -->
+      <link rel="stylesheet" href="static/stylesheets/WET/theme.css"/>
+      <link rel="stylesheet" href="static/stylesheets/CDO-theme.css"/>
+      <!-- Selectize : drop down selects -->
+      <link rel="stylesheet" href="static/stylesheets/external/selectize.css"/>
+      <script src="static/javascripts/external/selectize.min.js"></script>
+
+    <!--Interal Scripts and CSS -->
+      <link rel="stylesheet" href="static/stylesheets/index.css" />
+
+  </head>
+  <body typeof="WebPage">
+    <ul id="wb-tphp">
+      <li class="wb-slc">
+        <a class="wb-sl" href="#wb-cont">Skip to main content</a>
+      </li>
+      <li class="wb-slc">
+        <a class="wb-sl" href="#wb-info">Skip to "About government"</a> <!-- TODO: Update to correct buttons-->
+      </li>
+    </ul>
+    <div id="main">
+      <h1 id="main-title">NILFA Hub<sup>Beta v0.1</sup></h1>
+      <div class="mrgn-tp-xl mrgn-bttm-xl container font-primary">
+        <h2 class="mrgn-tp-xl mrgn-bttm-xl">Welcome to NILFA! To access the hub and tools, please enter the username and password provided in the email.</h2>
+        <form class="mrgn-tp-xl mrgn-bttm-xl col-sm-offset-4 form-horizontal" role="form" method="post" action="">
+          <div class="form-group">
+            <label for="username" class="col-sm-2 control-label">Username</label>
+            <div class="col-sm-10">
+              <input type="username" class="form-control" name="username" id="username" placeholder="Username" value="{{
+          request.form.username }}" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="password" class="col-sm-2 control-label">Password</label>
+            <div class="col-sm-10">
+              <input type="password" class="form-control" name="password" id="password" placeholder="Password" value="{{
+          request.form.password }}"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-offset-4 col-sm-2">
+              <button id="login" type="submit" class="btn btn-default">Sign in</button>
+            </div>
+            {% if error %}
+              <div style="color: #f44336;" class="error col-sm-offset-5"><strong>Error:</strong> {{ error }}</div>
+            {% endif %}
+          </div>
+        </form>
+        </div>
+      </div>
+    </div>
+    <!-- WET JS part -->
+    <script src="static/javascripts/WET/wet-boew.js"></script>
+    <script src="static/javascripts/WET/theme.js"></script>
+    <script src="static/javascripts/CDO-theme.js"></script>
+  </body>
+</html>
