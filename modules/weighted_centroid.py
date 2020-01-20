@@ -1,7 +1,7 @@
 from osgeo import ogr
 import numpy as np
 import geopandas as gp
-from shapely.geometry import MultiLineString
+from shapely.geometry import MultiLineString, Point
 from shapely import wkt
 from random import sample
 #mport matplotlib.pyplot as plt
@@ -48,49 +48,51 @@ def rename_cols(df, new_col_names):
 
 	return df
 
-def calculate_weighted_centroid(df, region_id, local_geometry, weights):
-    '''
-    Function to calculated population weighted centroids. Takes in a dataframe and column names for the
-    grouping variable, local geometry, and population (or something else) weights. Returns a dataframe with new columns
-    Inputs: df- dataframe containing pertinent information in columns
-            region_id- column name of the ID of the larger region, used to group local geometric centroids. Weighted centroids will
-            be calculated per region
-            local_geometry- column name of geometry of the smaller, local region to be used in the calculation of weighted centroids.
-            weights- column name of the variable to be used as weights, most often population. Must be numeric type variable.
-    Returns: df- original dataframe with new variables Local_Centroid, Regional_Weighted_Centroid, Regional_Population appended
-    '''
+def calculate_centroid(boundary_sm, boundary_lg, uid, weight):
+	'''
+	Function to calculated population weighted centroids. Takes in a dataframe and column names for the
+	grouping variable, local geometry, and population (or something else) weights. Returns a dataframe with new columns
+	Inputs: boundary_sm - geodataframe of small boundary file, must have a weight column already joined to file
+		boundary_lg - geodataframe of large boundary file
+		uid - boundary_lg unique id column name
+		weight - boundary_small weight column name (e.g., population)
+	Returns: boundary_lg
+	'''
 
-    # calculates local centroid and creates separate lat/lon columns
-    df['Local_Centroid']= df[local_geometry].centroid
+	if (weight):
+	    # calculates local centroid and creates separate lat/lon columns
+		boundary_sm['centroid'] = boundary_sm['geometry'].centroid
+		boundary_sm[weight] = boundary_sm[weight].dropna().astype(int)
 
-    df['db_lon'] = df.Local_Centroid.apply(lambda p: p.x)
-    df['db_lat'] = df.Local_Centroid.apply(lambda p: p.y)
+		# TO DO: UPDATE THIS TO REFLECT OGR CENTROID, NOT GEODATAFRAME
+		boundary_sm['wtd_lng'] = boundary_sm.centroid.apply(lambda p: p.x)
+		boundary_sm['wtd_ltd'] = boundary_sm.centroid.apply(lambda p: p.y)
 
-    # define a lambda function to compute the weighted mean
-    wm = lambda x: np.ma.average(x, weights=df.loc[x.index, weights])
+		# define a lambda function to compute the weighted mean
+		wm = lambda x: np.ma.average(x, weights = boundary_sm.loc[x.index, weight])
 
-    # defining aggregate functions and applying them to each region
-    f_lon = {weights: ['sum'], 'db_lon' : wm }
+		# defining aggregate functions and applying them to each region
+		f_lng = {weight: ['sum'], 'wtd_lng': wm }
+		f_ltd = {weight: ['sum'], 'wtd_ltd': wm }
 
-    f_lat = {weights: ['sum'], 'db_lat': wm }
+		temp_lng = boundary_sm.groupby([uid]).agg(f_lng)
+		temp_ltd = boundary_sm.groupby([uid]).agg(f_ltd)
 
-    temp_lon = df.groupby([region_id]).agg(f_lon)
-    temp_lat = df.groupby([region_id]).agg(f_lat)
+		# merging lat/lon and cleanup
+		# TO DO RENAME THESE / REDUCE SCRIPTING FOR THIS
+		agg_merge = pd.merge(temp_lng, temp_ltd, left_index=True, right_index=True)
+		agg_merge = agg_merge[["wtd_lng", "wtd_ltd"]]
+		agg_merge.columns = ["wtd_lng", "wtd_ltd"]
+		agg_merge = agg_merge[['wtd_lng', 'wtd_ltd']]
+		final = pd.merge(boundary_lg, agg_merge.reset_index(), on = uid)
+		centroid_geom = [Point(xy).wkt for xy in zip (final.wtd_lng, final.wtd_ltd)]
+		final = final.drop(["wtd_lng", "wtd_ltd"], axis=1)
+		final['centroid'] = centroid_geom
+		return final
 
-    # merging lat/lon and cleanup
-    agg_merge = pd.merge(temp_lon, temp_lat, left_index=True, right_index=True)
-    agg_merge = agg_merge[["db_lon", "db_lat", weights + "_x"]]
-    agg_merge.columns = ["db_lon", "db_lat", weights]
-
-    # Creating point object of weighted centroid (mostly for mapping later)
-    # agg_merge['Regional_Weighted_Centroid'] = [Point(xy) for xy in zip(agg_merge['db_cent_lon'], agg_merge['db_cent_lat'])]
-
-    agg_merge = agg_merge[['db_lon', 'db_lat', weights]]
-    agg_merge.columns = ['da_lon_w', 'da_lat_w', 'da_population']
-
-    final = pd.merge(df, agg_merge.reset_index(), on = region_id)
-
-    return final
+	else:
+		boundary_lg['centroid'] = boundary_lg['geometry'].centroid
+		return boundary_lg
 
 def impute_missing_centroid(df, da_df, DAUID, da_geometry):
 	'''

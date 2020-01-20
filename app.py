@@ -1,8 +1,8 @@
 from base64 import b64decode
 from flask import Flask, request, render_template, jsonify, redirect, url_for, abort, make_response
-import flask_login
-from functools import wraps
-from io import BytesIO
+# import flask_login
+# from functools import wraps
+# from io import BytesIO
 from waitress import serve
 from werkzeug.security import generate_password_hash, check_password_hash
 import json
@@ -144,9 +144,11 @@ app.secret_key = APP_SECRET_KEY
 
 # route for NILFA hub / landing page
 @app.route('/')
-@flask_login.login_required
 def index():
-	return render_template('index.html')
+    poi = json.dumps(db.getPOI())
+    #demand_point = db.getDemand('point')
+    demand_boundary = json.dumps(db.getDemand('boundary'))
+    return render_template('index.html', poi=poi, demand=demand_boundary)
 
 # route for retreiving data for the calculator tool
 @app.route('/runModel',methods=['POST'])
