@@ -23,7 +23,7 @@ class InitSchema(object):
             database connection
     """
 
-    def __init__(self, demand_path_lg, poi_path, demand_path_sm=None):
+    def __init__(self, poi_path, demand_path_lg, uid, population, demand_path_sm=None, weight=None):
         """Create the PostgreSQL database tables
 
         Arguments:
@@ -38,7 +38,7 @@ class InitSchema(object):
         from db import DbConnect
         with DbConnect() as db_conn:
             self.db_conn = db_conn
-            self.create_schema(demand_path_lg, poi_path, demand_path_sm)
+            self.create_schema(weight, population, uid, demand_path_lg, poi_path, demand_path_sm)
 
     # TO DO function for dynamic reading data files and importing them into db based on values
 
@@ -53,7 +53,7 @@ class InitSchema(object):
         self.db_conn.cur.execute(query)
         self.db_conn.conn.commit()
 
-    def create_schema(self, demand_path_lg, poi_path, demand_path_sm):
+    def create_schema(self, weight, population, uid, demand_path_lg, poi_path, demand_path_sm):
         """Create each PostgreSQL database table
 
         Arguments:
@@ -64,7 +64,7 @@ class InitSchema(object):
             demand_path_sm (str):
                 path for smaller demand geodata file
         """
-        self.init_demand("demand_sm_", "demand_lg_",  "DAUID", demand_path_lg, demand_path_sm)
+        self.init_demand(weight, population, uid, demand_path_lg, demand_path_sm)
         self.init_poi(poi_path)
 		# self.initDistanceMatrix()
 
@@ -153,8 +153,7 @@ class InitSchema(object):
             self.db_conn.conn.commit()
 
         # create index for demand table
-        self.db_conn.cur.execute("CREATE INDEX idx_demand ON demand USING GIST(centroid, boundary);")
-        self.db_conn.conn.commit()
+        self.execute_query("CREATE INDEX idx_demand ON demand USING GIST(centroid, boundary);")
 
 def main():
     """Runs script as __main__. """
@@ -162,8 +161,11 @@ def main():
     demand_path_lg = "../data/demand_lg_pop_mtl.shp"
     demand_path_sm = "../data/demand_sm_pop_mtl.shp"
     poi_path = "../data/poi.csv"
+    weight = "demand_sm_"
+    population = "demand_lg_"
+    uid = "DAUID"
 
-    InitSchema(demand_path_lg, poi_path, demand_path_sm)
+    InitSchema(poi_path, demand_path_lg, uid, population, demand_path_sm, weight)
 
 if __name__ == "__main__":
     main()
