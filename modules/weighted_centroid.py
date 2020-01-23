@@ -8,21 +8,6 @@ from random import sample
 
 import sys
 import pandas as pd
-#from shapely.geometry import Point
-
-def read_files(filename, filetype, encoding = 'utf-8'):
-	'''
-	Helper function to read in files of different types
-	Inputs: filename- name of file, including path
-			filetype- string indicating type of file. Could be shape, csv
-	Returns: df
-	'''
-	if filetype == 'shape':
-		df = gp.read_file(filename)
-	elif filetype == 'csv':
-		df = pd.read_csv(filename, encoding = encoding)
-
-	return df
 
 def subset_df(df, cols_to_keep):
 	'''
