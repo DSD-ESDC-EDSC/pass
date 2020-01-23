@@ -1,6 +1,7 @@
 $(document).ready(function (){
   var map = initMap();
-  addMarker(poi, map);
+  addMarker(poi, map, "marker");
+  //addMarker(demand_point, map, "circle");
   addBoundary(demand, map);
 });
 
@@ -17,11 +18,24 @@ function initMap(){
   return map;
 }
 
-function addMarker(markers, map) {
+function addMarker(markers, map, type) {
+  var options = {
+    radius: 3,
+    fillColor: "#000",// "#28ea3f",//"#0163FF",
+    color: "#000", //"#0163FF",
+    weight: 2,
+    opacity: 1,
+    fillOpacity: 1,
+    // className: 'marker-cluster'
+  };
   for (i = 0; i < markers.length; i++) {
     var lng = parseFloat(markers[i].geometry[1]),
       ltd = parseFloat(markers[i].geometry[0]);
-    L.marker([lng, ltd]).addTo(map);
+    if (type == "marker") {
+      L.marker([lng, ltd]).addTo(map);
+    } else {
+      L.circleMarker([lng, ltd]).addTo(map, options);
+    }
   }
 }
 

@@ -14,31 +14,35 @@ import json
 import osgeo.ogr
 import geopandas as gp
 from weighted_centroid import *
+from distance_matrix import *
 
-class InitSchema(object):
-    """Initialize the PostgreSQL database
-
-    Attributes:
-        self.db_conn (object):
-            database connection
-    """
+class InitSchema():
+    """Initialize the PostgreSQL database"""
 
     def __init__(self, poi_path, demand_path_lg, uid, population, demand_path_sm=None, weight=None):
         """Create the PostgreSQL database tables
 
         Arguments:
-            demand_path_lg (str):
-                path for demand geodata geodata file
             poi_path (str):
                 path for POI csv file
+            demand_path_lg (str):
+                path for large demand geodata file
+            uid (str):
+                unique id column name in the large demand geodata file
+            population (str):
+                population column name in the large demand geodata file
             demand_path_sm (str):
                 path for smaller demand geodata file
+            weight (str):
+                population weight column name in the small demand geodata file
         """
 
         from db import DbConnect
         with DbConnect() as db_conn:
             self.db_conn = db_conn
-            self.create_schema(weight, population, uid, demand_path_lg, poi_path, demand_path_sm)
+            #self.init_demand(demand_path_lg, uid, population, demand_path_sm, weight)
+            #self.init_poi(poi_path)
+            self.init_distance_matrix()
 
     # TO DO function for dynamic reading data files and importing them into db based on values
 
@@ -53,20 +57,9 @@ class InitSchema(object):
         self.db_conn.cur.execute(query)
         self.db_conn.conn.commit()
 
-    def create_schema(self, weight, population, uid, demand_path_lg, poi_path, demand_path_sm):
-        """Create each PostgreSQL database table
-
-        Arguments:
-            demand_path_lg (str):
-                path for demand geodata geodata file
-            poi_path (str):
-                path for POI csv file
-            demand_path_sm (str):
-                path for smaller demand geodata file
-        """
-        self.init_demand(weight, population, uid, demand_path_lg, demand_path_sm)
-        self.init_poi(poi_path)
-		# self.initDistanceMatrix()
+        if query.startswith("SELECT"):
+            records = [r[0] for r in self.db_conn.cur.fetchall()]
+            return records
 
     def init_poi(self, poi_path):
         """Create the poi PostgreSQL database table
@@ -105,20 +98,20 @@ class InitSchema(object):
         """
         self.execute_query(query_alter)
 
-    def init_demand(self, weight, population, uid, demand_path_lg, demand_path_sm=None):
+    def init_demand(self, demand_path_lg, uid, population, demand_path_sm=None, weight=None):
         """Create the demand PostgreSQL database table
 
         Arguments:
-            weight (str):
-                population weight column name in the small demand geodata file
-            population (str):
-                population column name in the large demand geodata file
-            uid (str):
-                unique id column name in the large demand geodata file
             demand_path_lg (str):
                 path for large demand geodata file
+            uid (str):
+                unique id column name in the large demand geodata file
+            population (str):
+                population column name in the large demand geodata file
             demand_path_sm (str):
                 path for smaller demand geodata file
+            weight (str):
+                population weight column name in the small demand geodata file
         """
 
         boundary_lg_gdf = gp.read_file(demand_path_lg)
@@ -149,14 +142,28 @@ class InitSchema(object):
             pop = feature.GetField(population)
             geometry = feature.GetGeometryRef()
             wkt = geometry.ExportToWkt()
-            self.db_conn.cur.execute("INSERT INTO demand (geoUID, boundary, centroid, pop) VALUES (%s,ST_SetSRID(ST_GeomFromText(%s),3347),%s,%s);", (fuid,wkt,centroid,pop))
+            self.db_conn.cur.execute("INSERT INTO demand (geoUID, boundary, centroid, pop) VALUES (%s,ST_SetSRID(ST_GeomFromText(%s),3347),ST_SetSRID(ST_GeomFromText(%s),3347),%s);", (fuid,wkt,centroid,pop))
             self.db_conn.conn.commit()
 
         # create index for demand table
         self.execute_query("CREATE INDEX idx_demand ON demand USING GIST(centroid, boundary);")
 
+    def init_distance_matrix(self):
+        # create matrix
+        poi_uids = self.execute_query("SELECT geouid FROM poi;")
+        poi_points = self.execute_query("SELECT ARRAY[ST_Y(ST_Transform(point, 4326)),ST_X(ST_Transform(point, 4326))] FROM poi;")
+        demand_uids = self.execute_query("SELECT geouid FROM demand;")
+        demand_points = self.execute_query("SELECT ARRAY[ST_Y(ST_Transform(centroid, 4326)),ST_X(ST_Transform(centroid, 4326))] FROM demand;")
+        type = "car"
+        threshold = 1800
+        threshold_type = "time"
+        sleep_time = 0
+        CreateDistanceMatrix(type, poi_points, threshold, threshold_type, poi_uids, sleep_time)
+
+        # push to db table
+
 def main():
-    """Runs script as __main__. """
+    """Runs script as __main__."""
 
     demand_path_lg = "../data/demand_lg_pop_mtl.shp"
     demand_path_sm = "../data/demand_sm_pop_mtl.shp"

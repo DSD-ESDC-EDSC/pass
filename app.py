@@ -145,10 +145,10 @@ app.secret_key = APP_SECRET_KEY
 # route for NILFA hub / landing page
 @app.route('/')
 def index():
-    poi = json.dumps(db.getPOI())
-    #demand_point = db.getDemand('point')
-    demand_boundary = json.dumps(db.getDemand('boundary'))
-    return render_template('index.html', poi=poi, demand=demand_boundary)
+    poi = json.dumps(db.get_poi())
+    demand_point = json.dumps(db.get_demand('point'))
+    demand_boundary = json.dumps(db.get_demand('boundary'))
+    return render_template('index.html', poi=poi, demand=demand_boundary, demand_point=demand_point)
 
 # route for retreiving data for the calculator tool
 @app.route('/runModel',methods=['POST'])
