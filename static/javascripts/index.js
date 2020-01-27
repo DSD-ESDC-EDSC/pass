@@ -2,7 +2,9 @@ $(document).ready(function (){
   var map = initMap();
   addMarker(poi, map, "marker");
   //addMarker(demand_point, map, "circle");
-  addBoundary(demand, map);
+  // addBoundary(demand, map);
+  addBoundary(region, map);
+  console.log(region)
 });
 
 function initMap(){
@@ -29,8 +31,8 @@ function addMarker(markers, map, type) {
     // className: 'marker-cluster'
   };
   for (i = 0; i < markers.length; i++) {
-    var lng = parseFloat(markers[i].geometry[1]),
-      ltd = parseFloat(markers[i].geometry[0]);
+    var lng = parseFloat(markers[i].geometry[0]),
+      ltd = parseFloat(markers[i].geometry[1]);
     if (type == "marker") {
       L.marker([lng, ltd]).addTo(map);
     } else {

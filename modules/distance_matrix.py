@@ -18,6 +18,8 @@ class CreateDistanceMatrix():
 
     Attributes:
         type (str): "car" or "transit"
+
+    TO DO: SHOULD RETURN DISTANCE_MATRIX AS DATAFRAME
     """
 
     def __init__(self, type, poi_points, threshold, threshold_type, poi_uids, catchment_sleep_time):
@@ -27,10 +29,10 @@ class CreateDistanceMatrix():
         # self.threshold_type = threshold_type
         # self.poi_uids = poi_uids
         # self.isochrone_sleep_time = isochrone_sleep_time
-        self.poi_catchment = self.calculate_poi_catchment(type, poi_points, threshold, threshold_type, poi_uids, catchment_sleep_time)
-        print(self.poi_catchment)
+        self.poi_catchment_polygons = self.calculate_poi_catchment(type, poi_points, threshold, threshold_type, poi_uids, catchment_sleep_time)
 
-    def calculate_poi_catchment(self, type, poi_points, threshold, threshold_type, poi_uids, sleep_time=0):
+
+    def calculate_poi_catchment(self, type, poi_points, range, range_type, poi_uids, sleep_time=0):
         '''
         Calls ORS API and creates geody7ataframe of polygons indicating catchment area
         Inputs: client- ORS client connection
@@ -47,13 +49,12 @@ class CreateDistanceMatrix():
 
         for i, loc in zip(poi_uids, poi_points):
             time.sleep(sleep_time)
-            print([loc])
             if type == "car":
                 client_url = "http://"+os.environ.get('DB_HOST')+":8080/ors"
                 api_response = ors.Client(key="", base_url = client_url, timeout = 500, retry_over_query_limit = True).isochrones(locations = [loc],
         						 profile = 'driving-car',
-        						 range = [threshold],
-        						 range_type = threshold_type,
+        						 range = [range],
+        						 range_type = range_type,
         						 units = 'm'
         						 )
 
@@ -75,6 +76,9 @@ class CreateDistanceMatrix():
         polygon = gpd.GeoDataFrame(index = ids, crs = crs, geometry = polygons)
         polygon['id'] = ids
         polygon['location'] = locations_list
+
+        for index, row in polygon.iterrows():
+            cent_gdf_subset['POS_' + str(row['id'])] = self.filter_centroids(cent_gdf_subset, 'proj_lat', 'proj_lon', row)
 
         return polygon
 

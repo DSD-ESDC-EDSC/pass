@@ -146,9 +146,10 @@ app.secret_key = APP_SECRET_KEY
 @app.route('/')
 def index():
     poi = json.dumps(db.get_poi())
-    demand_point = json.dumps(db.get_demand('point'))
-    demand_boundary = json.dumps(db.get_demand('boundary'))
-    return render_template('index.html', poi=poi, demand=demand_boundary, demand_point=demand_point)
+    region = json.dumps(db.get_region())
+    #demand_point = json.dumps(db.get_demand('point'))
+    #demand_boundary = json.dumps(db.get_demand('boundary'))
+    return render_template('index.html', poi=poi, region=region)
 
 # route for retreiving data for the calculator tool
 @app.route('/runModel',methods=['POST'])

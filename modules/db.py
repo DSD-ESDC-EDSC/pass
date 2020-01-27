@@ -33,8 +33,23 @@ def get_poi():
 	with DbConnect() as db_conn:
 
 		db_conn.cur.execute("""
-		SELECT json_build_object('name', name, 'type', type, 'geometry', ARRAY[ST_X(ST_Transform(point, 4326)),ST_Y(ST_Transform(point, 4326))], 'supply', supply)
+		SELECT json_build_object('name', name, 'type', type, 'geometry', ARRAY[ST_Y(ST_Transform(point, 4326)),ST_X(ST_Transform(point, 4326))], 'supply', supply)
 		FROM poi
+		""")
+
+		records = [r[0] for r in db_conn.cur.fetchall()]
+		return records
+
+def get_region():
+	with DbConnect() as db_conn:
+
+		db_conn.cur.execute("""
+		SELECT jsonb_build_object('type', 'FeatureCollection', 'features', jsonb_agg(features.feature))
+		FROM (
+			SELECT jsonb_build_object('type', 'Feature', 'geometry', ST_AsGeoJSON(ST_Transform(ST_Simplify(boundary,0.5), 4326))::jsonb, 'properties', to_jsonb(inputs) - 'boundary' - 'id'
+		) AS feature
+			FROM (
+				SELECT * FROM region) inputs) features;
 		""")
 
 		records = [r[0] for r in db_conn.cur.fetchall()]
