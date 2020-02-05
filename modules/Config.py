@@ -24,7 +24,7 @@ class Config:
 			print(JSON_ERROR)
 
 		try:
-			self.sml_popfile = None
+			self.sml_popfile = data['files']['population_small']['file']
 		except(KeyError):
 			print(JSON_ERROR)
 
@@ -50,7 +50,7 @@ class Config:
 			print(JSON_ERROR)
 
 		try:
-			self.smlpop_type = None
+			self.smlpop_type = data['files']['population_small']['type']
 		except(KeyError):
 			print(JSON_ERROR)
 
@@ -61,6 +61,35 @@ class Config:
 
 		try:
 			self.pos_type = None 
+		except(KeyError):
+			print(JSON_ERROR)
+
+
+		# encoding
+
+		try:
+			self.smlpop_encode = data['files']['population_small']['encoding']
+		except(KeyError):
+			print(JSON_ERROR)
+
+		try:
+			self.lrgpop_type = None
+		except(KeyError):
+			print(JSON_ERROR)
+				
+		try:
+			self.pos_type = None
+		except(KeyError):
+			print(JSON_ERROR)
+
+		# projection 
+		try:
+			self.smlshape_projection = data['files']['shape_small']['projection']
+		except(KeyError):
+			print(JSON_ERROR)
+
+		try:	
+			self.lrgshape_projection = data['files']['shape_large']['projection']
 		except(KeyError):
 			print(JSON_ERROR)
 
@@ -76,7 +105,7 @@ class Config:
 			print(JSON_ERROR)
 
 		try:
-			self.smlpop_columns = None
+			self.smlpop_columns = data['files']['population_small']['columns']
 		except(KeyError):
 			print(JSON_ERROR)
 
@@ -92,6 +121,8 @@ class Config:
 
 
 		self.required_cols = {}
-		self.required_cols['shape'] = ['ID', 'geometry']
-		self.required_cols['weight'] = ['ID', 'weight']
-		self.required_cols['POI'] = ['ID', 'latitude', 'longitude']
+		self.required_cols['shape'] = ['ID', 'LRG_ID', 'geometry']
+		self.required_cols['csv'] = ['ID', 'weight']
+		self.required_cols['POI'] = ['ID', 'latitude', 'longitude', 'supply']
+
+		self.types_dict = {'str': [str, 'O'], 'int': [float, int]}

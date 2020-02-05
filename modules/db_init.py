@@ -15,6 +15,9 @@ import osgeo.ogr
 import geopandas as gp
 from weighted_centroid import *
 
+from Config import Config
+from DataFrame import DataFrame
+
 class InitSchema(object):
     """Initialize the PostgreSQL database
 
@@ -23,7 +26,7 @@ class InitSchema(object):
             database connection
     """
 
-    def __init__(self, poi_path, demand_path_lg, uid, population, demand_path_sm=None, weight=None):
+    def __init__(self, config):
         """Create the PostgreSQL database tables
 
         Arguments:
@@ -105,7 +108,7 @@ class InitSchema(object):
         """
         self.execute_query(query_alter)
 
-    def init_demand(self, weight, population, uid, demand_path_lg, demand_path_sm=None):
+    def init_demand(self):
         """Create the demand PostgreSQL database table
 
         Arguments:
@@ -121,11 +124,21 @@ class InitSchema(object):
                 path for smaller demand geodata file
         """
 
+        '''
         boundary_lg_gdf = gp.read_file(demand_path_lg)
         boundary_sm_gdf = gp.read_file(demand_path_sm)
         boundary_lg_gdf = calculate_centroid(boundary_sm_gdf, boundary_lg_gdf, uid, weight)
         boundary_lg_gdf = osgeo.ogr.Open(boundary_lg_gdf.to_json())
         layer = boundary_lg_gdf.GetLayer(0)
+        '''
+
+        boundary_lg = DataFrame(config.lrg_shapefile, config.lrgshape_type, config.lrgshape_encode, config.lrgshape_columns, config.required_cols[config.lrgshape_type])
+        boundary_lg_gdf = boundary_lg.df
+
+        boundary_sm = DataFrame(config.sml_shapefile, config.smlshape_type, config.smlshape_encode, config.smlshape_columns, config.required_cols[config.smlshape_type])
+        boundary_sm_gdf = boundary_sm.df
+
+        import pdb; pdb.set_trace()
 
         # create demand table
         query_create = """
@@ -168,4 +181,9 @@ def main():
     InitSchema(poi_path, demand_path_lg, uid, population, demand_path_sm, weight)
 
 if __name__ == "__main__":
-    main()
+   #  main()
+   config = Config('config.json')
+
+   db_schema = InitSchema(config)
+
+   db_schema.init_demand()
