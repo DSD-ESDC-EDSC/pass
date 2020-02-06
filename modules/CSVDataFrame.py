@@ -11,6 +11,7 @@ class CSVDataFrame(DataFrame):
 		super().__init__(filename, filetype, columns, required_columns)
 
 	def read_file(self):
+		""" Read in csv file """
 		df = pd.read_csv(self.name, encoding = self.encoding)
 
 		return df

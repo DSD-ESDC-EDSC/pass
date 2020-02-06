@@ -13,10 +13,12 @@ class GeoDataFrame(DataFrame):
 		super().__init__(filename, filetype, columns, required_columns)
 
 	def read_file(self):
+		""" Read in shape file """ 
 		df = gp.read_file(self.name)
 		return df
 
 	def set_projection(self):
+		""" Change geometry projection """
 		self.df.crs = {'init' : self.projection}
 
 

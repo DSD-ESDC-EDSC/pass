@@ -10,6 +10,7 @@ from weighted_centroid import WeightedCentroid
 
 if __name__ == '__main__':
 	config = Config('config.json')
+	POS = CSVDataFrame(config.pos_file, config.pos_type, config.pos_columns, config.required_cols[config.pos_type], config.pos_encode)
 
 	large_shape = GeoDataFrame(config.lrg_shapefile, config.lrgshape_type, config.lrgshape_columns, config.required_cols[config.lrgshape_type], config.lrgshape_projection)  #filename, filetype, encoding, columns, required_columns
 	small_shape = GeoDataFrame(config.sml_shapefile, config.smlshape_type, config.smlshape_columns, config.required_cols[config.smlshape_type], config.smlshape_projection)
@@ -19,6 +20,7 @@ if __name__ == '__main__':
 
 	centroid = WeightedCentroid(small_shape, large_shape)
 	weighted_centroid_df = centroid.calculate_weighted_centroid()
-	centroid.map_weighted_centroid(0.001, 'test_maps/test')
+	# centroid.map_weighted_centroid(0.001, 'test_maps/test')
 
 	import pdb; pdb.set_trace()
+

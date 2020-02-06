@@ -12,13 +12,17 @@ class Column:
 		self.colunit = unit
 
 	def get_colname(self):
+		""" Returns name of column """
 		return self.colname
 
 	def get_coltype(self):
+		""" Returns type of column """
 		return self.coltype
 
 	def get_coldesc(self):
+		""" Returns description of column """
 		return self.coldesc
 
 	def get_colunit(self):
+		""" Return unit of column """
 		return self.colunit

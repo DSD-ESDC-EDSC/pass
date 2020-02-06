@@ -58,7 +58,44 @@
 					"descr":"population"
 				}
 			}	
-		}
+		}, 
+		"POS": {
+			"file":"D:/Projects/geo/Data/Service Canada Office Locations/Sites_Jun2019.csv", 
+			"type":"POS", 
+			"encoding":"latin-1", 
+			"columns": {
+				"ID": {
+					"name":"OBJECTID",
+					"type":"ID",
+					"descr":"int"
+					},
+				"latitude" : {
+					"name":"Latitude",
+					"type":"latitude",
+					"descr":"geo"
+				}, 
+				"longitude" : {
+					"name":"Longitude",
+					"type":"longitude",
+					"descr":"geo"
+				},
+				"address": {
+					"name":"Address", 
+					"type": "POS_info", 
+					"descr":"address"
+				}, 
+				"city": {
+					"name":"CSDNAME", 
+					"type": "POS_info", 
+					"descr":"city"
+				}, 	
+				"name": {
+					"name":"Site_Name", 
+					"type": "POS_info", 
+					"descr":"name"
+				} 				
+			}	
+		}		
 	}
 
 }
