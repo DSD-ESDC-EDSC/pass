@@ -204,8 +204,6 @@ class InitSchema():
         print(poi_points)
         distance_matrix = CreateDistanceMatrix(type, poi_points, threshold, threshold_type, poi_uids, sleep_time)
 
-        # push to db table
-
 def main():
     """Runs script as __main__."""
 

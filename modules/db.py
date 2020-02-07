@@ -1,13 +1,20 @@
+from __future__ import unicode_literals
 import psycopg2 as pg
 from psycopg2 import pool
 import csv
 import json
 import osgeo.ogr
+import shutil
 import geopandas as gp
 from dotenv import load_dotenv
 import os
 import re
+import math
 load_dotenv()
+
+# What is BASE_DIR?
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+CACHE_DIR = os.path.join(BASE_DIR,'cache')
 
 class DbConnect:
 	def __init__(self):

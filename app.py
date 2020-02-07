@@ -7,7 +7,7 @@ from waitress import serve
 from werkzeug.security import generate_password_hash, check_password_hash
 import json
 import sys
-from modules import db
+from modules import db, tiles
 from dotenv import load_dotenv
 import os
 import gzip
@@ -146,24 +146,32 @@ app.secret_key = APP_SECRET_KEY
 @app.route('/')
 def index():
     poi = json.dumps(db.get_poi())
-    region = json.dumps(db.get_region())
+    # region = json.dumps(db.get_region())
     #demand_point = json.dumps(db.get_demand('point'))
     #demand_boundary = json.dumps(db.get_demand('boundary'))
-    return render_template('index.html', poi=poi, region=region)
+    return render_template('index.html', poi=poi)
+
+@app.route('/test')
+def test():
+    return render_template('test.html')
 
 # route for retreiving data for the calculator tool
-@app.route('/runModel',methods=['POST'])
-def getCalculatorData():
-	req = request.get_json()
-	param = req['param']
-	data = json.dumps(db.queryCalculator(param))
-	return data
+ #@app.route('/model',methods=['POST'])
+
+@app.route('/tiles')
+@app.route('/tiles/<int:z>/<int:x>/<int:y>', methods=['GET'])
+def get_tiles(z=0, x=0, y=0):
+    print(z)
+    # mvt_mvp_regions(x integer, y integer, zoom integer, out mvt bytea)
+    mvt = tiles.get_tile(z, x, y)
+    response = make_response(mvt)
+    response.headers['Content-Type'] = "application/octet-stream"
+    return response
 
 # route for bad HTTP requests
 @app.errorhandler(400)
 def error(e):
 	return render_template('error.html')
-
 
 if __name__ == '__main__':
 	serve(app, host=APP_HOST,port=APP_PORT,threads=APP_THREADS)
