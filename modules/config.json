@@ -1,0 +1,101 @@
+{
+	"files": {
+		"shape_large": {
+			"file":"D:/Projects/geo/Data/Census 2016 Boundaries/lda_000b16a_e (da)/lda_000b16a_e.shp",
+			"type":"shape", 
+			"projection": "epsg:3347", 
+			"columns": {
+				"LRG_ID" : { 
+					"name": "CMAUID", 
+					"type": "LRG_ID", 
+					"descr": "int"
+						}, 
+				"ID" : { 
+					"name": "DAUID", 
+					"type": "ID", 
+					"descr": "int"
+						},
+				"geometry": {
+					"name": "geometry",
+					"type": "geometry", 
+					"descr": "Polygon"
+						}
+				}
+				}, 
+		"shape_small": {
+			"file": "D:/Projects/geo/Data/Census 2016 Boundaries/ldb_000b16a_e(db)/ldb_000b16a_e.shp", 
+			"type": "shape", 
+			"projection":"epsg:3347",
+			"columns": {
+				"ID" : { 
+					"name": "DBUID", 
+					"type": "ID", 
+					"descr": "int"}, 
+				"LRG_ID" : { 
+					"name": "DAUID", 
+					"type": "LRG_ID", 
+					"descr": "int"}, 
+				"geometry": {
+					"name": "geometry",
+					"type": "geometry", 
+					"descr": "Polygon"
+						} 
+					}
+		},
+		"population_small": {
+			"file":"D:/Projects/geo/Data/Census 2016 Demographics (DA and DB Levels)/db_population.csv", 
+			"type":"csv", 
+			"encoding":"latin-1", 
+			"columns": {
+				"ID": {
+					"name":"DBuid/IDidu",
+					"type":"ID",
+					"descr":"int"
+					},
+				"weight": {
+					"name":" DBpop2016/IDpop2016", 
+					"type": "weight", 
+					"descr":"population"
+				}
+			}	
+		}, 
+		"POS": {
+			"file":"D:/Projects/geo/Data/Service Canada Office Locations/Sites_Jun2019.csv", 
+			"type":"POS", 
+			"encoding":"latin-1", 
+			"columns": {
+				"ID": {
+					"name":"OBJECTID",
+					"type":"ID",
+					"descr":"int"
+					},
+				"latitude" : {
+					"name":"Latitude",
+					"type":"latitude",
+					"descr":"geo"
+				}, 
+				"longitude" : {
+					"name":"Longitude",
+					"type":"longitude",
+					"descr":"geo"
+				},
+				"address": {
+					"name":"Address", 
+					"type": "POS_info", 
+					"descr":"address"
+				}, 
+				"city": {
+					"name":"CSDNAME", 
+					"type": "POS_info", 
+					"descr":"city"
+				}, 	
+				"name": {
+					"name":"Site_Name", 
+					"type": "POS_info", 
+					"descr":"name"
+				} 				
+			}	
+		}		
+	}
+
+}

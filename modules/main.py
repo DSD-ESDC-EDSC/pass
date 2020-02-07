@@ -56,7 +56,7 @@ client = ors.Client(key="", base_url = client_url, timeout = timeout, retry_over
 ################################
 ###### GET CENTROID  DATA ######
 ################################
-'''
+
 # reading in files
 shape_df = read_files(census_shapefile, 'shape')
 pop_df = read_files(census_popfile, 'csv', 'ISO-8859-1')
@@ -82,7 +82,7 @@ centroids_nonull = centroids_nonull[['DAUID', 'DBUID', 'DBRPLAMX', 'DBRPLAMY', '
 'DB_Population', 'db_lon', 'db_lat', 'da_lon_w', 'da_lat_w', 'da_population']]
 
 write_file(centroids_nonull, centroid_filename)
-'''
+
 #################################
 ###### GET DISTANCE MATRIX ######
 #################################

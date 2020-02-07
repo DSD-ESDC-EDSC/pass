@@ -16,10 +16,18 @@ import geopandas as gp
 from weighted_centroid import *
 from distance_matrix import *
 
-class InitSchema():
-    """Initialize the PostgreSQL database"""
+from Config import Config
+from DataFrame import DataFrame
 
-    def __init__(self, poi_path, demand_path_lg, uid, population, region_path, demand_path_sm=None, weight=None):
+class InitSchema(object):
+    """Initialize the PostgreSQL database
+
+    Attributes:
+        self.db_conn (object):
+            database connection
+    """
+
+    def __init__(self, config):
         """Create the PostgreSQL database tables
 
         Arguments:
@@ -99,7 +107,7 @@ class InitSchema():
         """
         self.execute_query(query_alter)
 
-    def init_demand(self, demand_path_lg, uid, population, demand_path_sm=None, weight=None):
+    def init_demand(self):
         """Create the demand PostgreSQL database table
 
         Arguments:
@@ -115,12 +123,22 @@ class InitSchema():
                 population weight column name in the small demand geodata file
         """
 
+        '''
         boundary_lg_gdf = gp.read_file(demand_path_lg)
         boundary_sm_gdf = gp.read_file(demand_path_sm)
         #boundary_lg_gdf = self.crs_transform(boundary_lg_gdf)
         boundary_lg_gdf = calculate_centroid(boundary_sm_gdf, boundary_lg_gdf, uid, weight)
         boundary_lg_gdf = osgeo.ogr.Open(boundary_lg_gdf.to_json())
         layer = boundary_lg_gdf.GetLayer(0)
+        '''
+
+        boundary_lg = DataFrame(config.lrg_shapefile, config.lrgshape_type, config.lrgshape_encode, config.lrgshape_columns, config.required_cols[config.lrgshape_type])
+        boundary_lg_gdf = boundary_lg.df
+
+        boundary_sm = DataFrame(config.sml_shapefile, config.smlshape_type, config.smlshape_encode, config.smlshape_columns, config.required_cols[config.smlshape_type])
+        boundary_sm_gdf = boundary_sm.df
+
+        import pdb; pdb.set_trace()
 
         # create demand table
         query_create = """
@@ -207,7 +225,7 @@ class InitSchema():
 def main():
     """Runs script as __main__."""
 
-    demand_path_lg = "../data/demand_lg_pop_mtl.shp"
+    demand_path_lg = "../data/demand_lg_pop_mtl.shpg"
     demand_path_sm = "../data/demand_sm_pop_mtl.shp"
     region_path = "../data/region.shp"
     poi_path = "../data/poi.csv"
@@ -218,4 +236,9 @@ def main():
     InitSchema(poi_path, demand_path_lg, uid, population, region_path, demand_path_sm, weight)
 
 if __name__ == "__main__":
-    main()
+   #  main()
+   config = Config('config.json')
+
+   db_schema = InitSchema(config)
+
+   db_schema.init_demand()

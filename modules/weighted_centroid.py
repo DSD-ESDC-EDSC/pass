@@ -4,148 +4,98 @@ import geopandas as gp
 from shapely.geometry import MultiLineString, Point
 from shapely import wkt
 from random import sample
-#mport matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
+from shapely import wkt
 
 import sys
 import pandas as pd
 
-def subset_df(df, cols_to_keep):
-	'''
-	Helper function to subset dataframe
-	Inputs: df- dataframe to subset
-			cols_to_keep- list of column names to keep in dataframe
-	Returns: subsetted dataframe
-	'''
-	if cols_to_keep != None:
-		df = df[cols_to_keep]
 
-	return df
+class WeightedCentroid():
 
-def rename_cols(df, new_col_names):
-	'''
-	Helper function to rename columns
-	Input: df- dataframe
-		   new_col_names- list of new column names, length of new columns must match df shape
-	Returns: df with new names
-	'''
-	if new_col_names != None:
-		df.columns = new_col_names
+	def __init__(self, boundary_sm, boundary_lg):
+		self.boundary_sm = boundary_sm
+		self.boundary_lg = boundary_lg
 
-	return df
+	def calculate_weighted_centroid(self):
+		""" Calculates the centroid of boundary_lg, weighted by weight column of boundary_sm. 
+		    If not weight column is found, calculates geographic centroid. """
 
-def calculate_centroid(boundary_sm, boundary_lg, uid, weight):
-	'''
-	Function to calculated population weighted centroids. Takes in a dataframe and column names for the
-	grouping variable, local geometry, and population (or something else) weights. Returns a dataframe with new columns
-	Inputs: boundary_sm - geodataframe of small boundary file, must have a weight column already joined to file
-		boundary_lg - geodataframe of large boundary file
-		uid - boundary_lg unique id column name
-		weight - boundary_small weight column name (e.g., population)
-	Returns: boundary_lg
-	'''
+		if self.boundary_sm.get_column_by_type('weight'):
 
-	if (weight):
-	    # calculates local centroid and creates separate lat/lon columns
-		boundary_sm['centroid'] = boundary_sm['geometry'].centroid
-		boundary_sm[weight] = boundary_sm[weight].dropna().astype(int)
+			# calculating geographic centroids for smallest geography  
+			self.boundary_sm.df['centroid'] = self.boundary_sm.df[self.boundary_sm.get_column_by_type('geometry').get_colname()].centroid
+			self.boundary_sm.add_col({'colname':'centroid', 'coltype':'centroid', 'coldesc': 'geographic centroid', 'unit': 'geo'})
 
-		# TO DO: UPDATE THIS TO REFLECT OGR CENTROID, NOT GEODATAFRAME
-		boundary_sm['wtd_lng'] = boundary_sm.centroid.apply(lambda p: p.x)
-		boundary_sm['wtd_ltd'] = boundary_sm.centroid.apply(lambda p: p.y)
+			# creating lambda function to calculate weighted centroid average
+			wm = lambda x: np.ma.average(x, weights = self.boundary_sm.df.loc[x.index, self.boundary_sm.get_column_by_type('weight').get_colname()])
 
-		# define a lambda function to compute the weighted mean
-		wm = lambda x: np.ma.average(x, weights = boundary_sm.loc[x.index, weight])
+			weighted_cent = pd.DataFrame()
 
-		# defining aggregate functions and applying them to each region
-		f_lng = {weight: ['sum'], 'wtd_lng': wm }
-		f_ltd = {weight: ['sum'], 'wtd_ltd': wm }
+			# calculating weighted latitude and longitude 
+			for l in ['lng', 'ltd']:
+				colname = 'wtd_' + l
+				if l == 'lng':
+					self.boundary_sm.df[colname] = self.boundary_sm.df.centroid.apply(lambda p:p.x)
+				else:
+					self.boundary_sm.df[colname] = self.boundary_sm.df.centroid.apply(lambda p:p.y)
 
-		temp_lng = boundary_sm.groupby([uid]).agg(f_lng)
-		temp_ltd = boundary_sm.groupby([uid]).agg(f_ltd)
+				f = {self.boundary_sm.get_column_by_type('weight').get_colname(): 'sum', colname: wm}
 
-		# merging lat/lon and cleanup
-		# TO DO RENAME THESE / REDUCE SCRIPTING FOR THIS
-		agg_merge = pd.merge(temp_lng, temp_ltd, left_index=True, right_index=True)
-		agg_merge = agg_merge[["wtd_lng", "wtd_ltd"]]
-		agg_merge.columns = ["wtd_lng", "wtd_ltd"]
-		agg_merge = agg_merge[['wtd_lng', 'wtd_ltd']]
-		final = pd.merge(boundary_lg, agg_merge.reset_index(), on = uid)
-		centroid_geom = [Point(xy).wkt for xy in zip (final.wtd_lng, final.wtd_ltd)]
-		final = final.drop(["wtd_lng", "wtd_ltd"], axis=1)
-		final['centroid'] = centroid_geom
-		return final
+				temp = self.boundary_sm.df.groupby(self.boundary_sm.get_column_by_type('LRG_ID').get_colname()).agg(f)
 
-	else:
-		boundary_lg['centroid'] = boundary_lg['geometry'].centroid
-		return boundary_lg
+				if weighted_cent.empty: 
+					weighted_cent = temp
+				else:
+					weighted_cent = pd.merge(weighted_cent.drop(self.boundary_sm.get_column_by_type('weight').get_colname(), axis = 1), temp, left_index = True, right_index = True)
 
-def impute_missing_centroid(df, da_df, DAUID, da_geometry):
-	'''
-	Imputing centroid lat/lon for DAs which have no population. Instead of DB population weighted centroid, these areas
-	will have the basic geographical centroid
-	Inputs: df- table of already calculated centroids
-			da_df- table at DA level
-			DAUID- ID variable name for DA
-			da_geometry- variable name of DA geometry column
-	Returns: df with missing centroids filled
-	'''
-	da_df['centroid_lat'] = da_df[da_geometry].centroid.apply(lambda p:p.y)
-	da_df['centroid_lon'] = da_df[da_geometry].centroid.apply(lambda p:p.x)
+			# zipping weighted lat / lon 
+			weighted_cent['weighted_centroid'] = [Point(xy).wkt for xy in zip(weighted_cent.wtd_lng, weighted_cent.wtd_ltd)]
 
-	dadb_df = pd.merge(df, da_df[[DAUID, 'centroid_lat', 'centroid_lon']], on = DAUID)
+			weighted_cent = weighted_cent[[self.boundary_sm.get_column_by_type('weight').get_colname(), 'weighted_centroid']].reset_index()
 
-	dadb_df['da_lon_w'] = np.where(dadb_df['da_lon_w'].isnull(), dadb_df['centroid_lon'], dadb_df['da_lon_w'])
-	dadb_df['da_lat_w'] = np.where(dadb_df['da_lat_w'].isnull(), dadb_df['centroid_lat'], dadb_df['da_lat_w'])
+			# merging weighted centroid back into boundary_lg
+			self.boundary_lg.df = pd.merge(self.boundary_lg.df, weighted_cent[[self.boundary_sm.get_column_by_type('LRG_ID').get_colname(), self.boundary_sm.get_column_by_type('weight').get_colname(), 'weighted_centroid']])
+			# adding columns to boundary_lg
+			self.boundary_lg.add_col({'colname':'weighted_centroid', 'coltype':'centroid', 'coldesc': 'weighted centroid', 'unit': 'geo'})
+			self.boundary_lg.add_col({'colname':self.boundary_sm.get_column_by_type('weight').get_colname(), 'coltype':'weight', 'coldesc':'population', 'unit':'int'})
 
-	dadb_df.drop(labels = ['centroid_lat', 'centroid_lon'], axis = 1)
+			# imputing missing values with geographic centroid
+			self.boundary_lg.df[self.boundary_lg.get_column_by_type('centroid').get_colname()] = np.where(self.boundary_lg.df[self.boundary_sm.get_column_by_type('weight').get_colname()] == 0, self.boundary_lg.df[self.boundary_lg.get_column_by_type('geometry').get_colname()].centroid, self.boundary_lg.df[self.boundary_lg.get_column_by_type('centroid').get_colname()])
 
-	return dadb_df
+		else:
+			# no weight column, calculate geographic centroid 
+			self.boundary_lg.df['centroid'] = self.boundary_lg.df[self.boundary_lg.get_column_by_type('geometry').get_colname()].centroid
+			self.boundary_lg.add_col({'colname':'centroid', 'coltype':'centroid', 'coldesc': 'geographic centroid', 'unit': 'geo'})
 
-def map_weighted_centroid(df, region_id, local_centroid, weighted_centroid, weights, prop_maps, filename_prefix):
-    '''
-    Function to map regional weighted centroid against local geographic centriods. Visual indication
-    of the sucess of the population wieghted centroids
-    Inputs: df- dataframe containing all pertinent information
-            region_id- column name of the ID of the larger region, will be used as base for map
-            local_centroid- column name of centroid of the smaller, local region which will be plot against the regional, weighted centroid
-            weighted_centroid- columns name of the population weighted centroid, calculated by calculate_weighted_centroid function
-            weights- column name of the variable to be used as weights, most often population. Must be numeric type variable.
-            prop_maps- number betweeon 0-1 indicating the proportion of region_ids to sample when creating maps. If maps of all
-            regions is wanted, input 1
-            filename_prefix- prefix to use when generating individual files of generated maps.
-    Returns: nothing, but outputs pictures of the generated maps
-    '''
+		return self.boundary_lg.df
 
-    # getting random subset of regions
-    all_IDs = list(set(list(df[region_id])))
-    sample_IDs = sample(all_IDs, round(prop_maps * len(all_IDs)))
+	def map_weighted_centroid(self, prop, filename_prefix):
+		""" Function to map sample centroids. Mostly for spot checking. """
+		all_IDS = list(set(list(self.boundary_lg.df[self.boundary_lg.get_column_by_type('ID').get_colname()])))
+		sample_IDS = sample(all_IDS, round(prop * len(all_IDS)))
 
-    for ID in sample_IDs:
-        filename = '{}_{}.png'.format(filename_prefix, ID)
+		for ID in sample_IDS:
+			filename = '{}_{}.png'.format(filename_prefix, ID)
 
-        subset = df[df[region_id] == ID]
+			# subsetting large and small boundary dfs by sample ID 
+			lg_subset = self.boundary_lg.df[self.boundary_lg.df[self.boundary_lg.get_column_by_type('ID').get_colname()] == ID]
 
-        # creating map base of region outline
-        base = subset.plot(color = 'white', edgecolor = 'black')
+			sm_subset = self.boundary_sm.df[self.boundary_sm.df[self.boundary_sm.get_column_by_type('LRG_ID').get_colname()] == ID]
 
-        # creating second layer of local geometric centroids
-        subset_centroid = subset.set_geometry(local_centroid)
-        base2 = subset_centroid.plot(ax=base, marker = 'o', color = 'red')
+			# plotting base
+			base = sm_subset.plot(color = 'white', edgecolor = 'black')
 
-        # adding text to the map of local populations
-        pops = []
-        for x, y, label in zip(subset_centroid.geometry.x, subset_centroid.geometry.y, subset_centroid[weights]):
-            pops.append(plt.text(x, y, label, fontsize = 8))
+			# plotting sm_subset geographic centroids
+			sm_centroid = sm_subset.set_geometry(self.boundary_sm.get_column_by_type('centroid').get_colname())
+			base2 = sm_centroid.plot(ax = base, marker = 'o', color = 'red')
 
-        # 3rd layer of population weighted centroid
-        subset_CT_centroid = subset_centroid.set_geometry(weighted_centroid)
-        subset_CT_centroid.plot(ax = base2, marker = 'o', color = 'blue').get_figure().savefig(filename)
-
-def write_file(df, filename):
-	'''
-	Write dataframe to csv file
-	Inputs: df- dataframe
-			filename- filename to use when writing file
-	Returns: nothing
-	'''
-	df.to_csv(filename, index = False)
+			# adding population to map 
+			pops = []
+			for x, y, label in zip(sm_centroid.geometry.x, sm_centroid.geometry.y, sm_centroid[self.boundary_sm.get_column_by_type('weight').get_colname()]):
+				pops.append(plt.text(x, y, label, fontsize = 8))				
+			
+			# plotting lg_subset weighted centroid 
+			lg_subset['weighted_centroid'] = lg_subset['weighted_centroid'].apply(wkt.loads)	
+			lg_centroid = lg_subset.set_geometry(self.boundary_lg.get_column_by_type('centroid').get_colname())
+			lg_centroid.plot(ax = base2, marker = 'o', color = 'blue').get_figure().savefig(filename)
