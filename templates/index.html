@@ -24,24 +24,86 @@
       <link rel="stylesheet" href="static/stylesheets/WET/theme.css"/>
       <link rel="stylesheet" href="static/stylesheets/CDO-theme.css"/>
       <script src="static/javascripts/external/selectize.min.js"></script>
+      <!-- Font Awesome 5 -->
+      <script defer src="https://use.fontawesome.com/releases/v5.12.0/js/all.js"></script>
       <!-- Leaflet -->
       <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin=""/>
       <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js" integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew==" crossorigin=""></script>
-      <script src="https://unpkg.com/leaflet.vectorgrid@latest/dist/Leaflet.VectorGrid.bundled.js"></script>
-
+      <!-- <script src="https://unpkg.com/leaflet.vectorgrid@latest/dist/Leaflet.VectorGrid.bundled.js"></script> -->
+      <link rel="stylesheet" href="static/javascripts/external/Leaflet.ExtraMarkers/dist/css/leaflet.extra-markers.min.css">
+      <script src="static/javascripts/external/Leaflet.ExtraMarkers/dist/js/leaflet.extra-markers.min.js"></script>
+      <!-- Chroma.js -->
+      <script src="static/javascripts/external/chroma.min.js"></script>
       <!--Interal Scripts and CSS -->
       <link rel="stylesheet" href="static/stylesheets/index.css" />
+      <script src="/static/javascripts/download.js"></script>
+      <script src="/static/javascripts/map.js"></script>
       <script src="/static/javascripts/index.js"></script>
+
 
       <script>
         var poi = JSON.parse({{ poi | tojson }});
       </script>
   </head>
   <body>
-   <div id="navbar">Potential Accessibility Software Service</div>
+   <div id="navbar">
+     <a id="logo" class="col-lg-5 font-secondary"><strong>P</strong>otential <strong>A</strong>ccessibility <strong>S</strong>oftware <strong>S</strong>ervice</a>
+     <a id="guide" class="wb-lbx" href="#popup-modal-guide" aria-controls="popup-modal" role="button">Guide</a>
+     <a id="about" class="wb-lbx" href="#popup-modal-about" aria-controls="popup-modal" role="button">About</a>
+   </div>
    <div id="map"></div>
    <div id="menu">
+     <p>Welcome to PASS, a tool that quantifies accessibility. Pan and zoom to your area of interest, change the parameters below, and submit to calculate accessibility scores</p>
+     <p>
+       <label>Travel Time Threshold (min)</label>
+       <div class="slidecontainer">
+          <label>0</label>
+          <label>120</label>
+          <input type="range" min="0" max="120" value="60" class="slider" id="threshold">
+       </div>
+    </p>
+    <p>
+       <label>Mode of transportation</label>
+       <select id="transportation">
+         <option value="car">Car</option>
+         <option value="public transit">Public Transit</option>
+       </select>
+    </p>
+    <p>
+       <label>Willingness to Commute</label>
+       <select id="beta">
+         <option value="1.0">Less</option>
+         <option value="1.3">More</option>
+       </select>
+    </p>
+     <button id="model" class="btn">Calculate Score</button>
    </div>
+
+    <section class="mfp-hide modal-content modal-dialog overlay-def" id="popup-modal-about">
+      <header class="modal-header">
+        <h2 class="modal-title">About PASS</h2>
+      </header>
+      <div class="modal-body">
+        <h3>Developers</h3>
+        <p> CDO
+        </p>
+        <h3>Methodology</h3>
+        <p>
+          TO COMPLETE
+        </p>
+      </div>
+    </section>
+
+    <section class="mfp-hide modal-content modal-dialog overlay-def" id="popup-modal-guide">
+      <header class="modal-header">
+        <h2 class="modal-title">Guide</h2>
+      </header>
+      <div class="modal-body">
+        <h3>PASS Guide</h3>
+        <p> CDO
+        </p>
+      </div>
+    </section>
     <!-- WET JS part -->
     <script src="static/javascripts/WET/wet-boew.js"></script>
     <script src="static/javascripts/WET/theme.js"></script>

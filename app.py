@@ -7,7 +7,7 @@ from waitress import serve
 from werkzeug.security import generate_password_hash, check_password_hash
 import json
 import sys
-from modules import db, tiles
+from modules import db
 from dotenv import load_dotenv
 import os
 import gzip
@@ -146,13 +146,23 @@ app.secret_key = APP_SECRET_KEY
 @app.route('/')
 def index():
     poi = json.dumps(db.get_poi())
-    # region = json.dumps(db.get_region())
+    #region = json.dumps(db.get_region())
     #demand_point = json.dumps(db.get_demand('point'))
     #demand_boundary = json.dumps(db.get_demand('boundary'))
     return render_template('index.html', poi=poi)
 
 # route for retreiving data for the calculator tool
- #@app.route('/model',methods=['POST'])
+@app.route('/model',methods=['POST'])
+def model():
+    req = request.get_json()
+    beta = float(req['beta'])
+    transportation = req['transportation']
+    threshold = int(req['threshold'])
+    bounds = req['bounds']
+    print(bounds)
+    # data = model()
+    demand_boundary = json.dumps(db.get_demand('boundary'))
+    return demand_boundary
 
 # @app.route('/tiles')
 # @app.route('/tiles/<int:z>/<int:x>/<int:y>', methods=['GET'])
