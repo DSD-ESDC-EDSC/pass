@@ -151,22 +151,18 @@ def index():
     #demand_boundary = json.dumps(db.get_demand('boundary'))
     return render_template('index.html', poi=poi)
 
-@app.route('/test')
-def test():
-    return render_template('test.html')
-
 # route for retreiving data for the calculator tool
  #@app.route('/model',methods=['POST'])
 
-@app.route('/tiles')
-@app.route('/tiles/<int:z>/<int:x>/<int:y>', methods=['GET'])
-def get_tiles(z=0, x=0, y=0):
-    print(z)
-    # mvt_mvp_regions(x integer, y integer, zoom integer, out mvt bytea)
-    mvt = tiles.get_tile(z, x, y)
-    response = make_response(mvt)
-    response.headers['Content-Type'] = "application/octet-stream"
-    return response
+# @app.route('/tiles')
+# @app.route('/tiles/<int:z>/<int:x>/<int:y>', methods=['GET'])
+# def get_tiles(z=0, x=0, y=0):
+#     print(z)
+#     # mvt_mvp_regions(x integer, y integer, zoom integer, out mvt bytea)
+#     mvt = tiles.get_tile(z, x, y)
+#     response = make_response(mvt)
+#     response.headers['Content-Type'] = "application/octet-stream"
+#     return response
 
 # route for bad HTTP requests
 @app.errorhandler(400)

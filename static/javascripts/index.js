@@ -8,8 +8,8 @@ $(document).ready(function (){
 
 function initMap(){
   var map = L.map('map').setView([45.5833,-73.6510], 10);
-  var url = 'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}';
-  var tiles =  'http://localhost:8000/{z}/{x}/{y}.mvt';
+  var tiles = 'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}';
+  //var tiles =  'http://localhost:8000/{z}/{x}/{y}.mvt';
   //var tiles =  'http://10.54.61.201:5050/tiles/{z}/{x}/{y}';
 
   L.tileLayer(url, {
@@ -21,15 +21,15 @@ function initMap(){
       accessToken: 'pk.eyJ1IjoianVsY29ueiIsImEiOiJjamhzYzdiMGUwMWcwM3FteW16cmNhYmFxIn0.Epbp18qkWUT8g-Cg7ifkuA'
   }).addTo(map);
 
-  var vectorStyle = {
-    regions: {	// Apply these options to the "water" layer...
-      fill: true,
-      weight: 1,
-      fillColor: '#06cccc',
-      color: '#06cccc',
-      fillOpacity: 0.2,
-      opacity: 0.4
-    }
+  // var vectorStyle = {
+  //   regions: {	// Apply these options to the "water" layer...
+  //     fill: true,
+  //     weight: 1,
+  //     fillColor: '#06cccc',
+  //     color: '#06cccc',
+  //     fillOpacity: 0.2,
+  //     opacity: 0.4
+  //   }
   };
 
   // own vector grid
