@@ -70,7 +70,7 @@ class InitSchema(object):
             demand_path_sm (str):
                 path for smaller demand geodata file
         """
-        # self.init_demand()
+        self.init_demand()
         self.init_poi()
 		# self.initDistanceMatrix()
 
@@ -108,8 +108,6 @@ class InitSchema(object):
 
         query_create = query_create + """)"""
 
-        import pdb; pdb.set_trace()
-
         self.execute_query(query_create)
 
         sql_col_string = '"' + '", "'.join(sql_columns) + '"'
@@ -143,8 +141,6 @@ class InitSchema(object):
         boundary_sm = GeoDataFrame(self.config.sml_shapefile, self.config.smlshape_type, self.config.smlshape_columns, self.config.required_cols[self.config.smlshape_type], self.config.smlshape_projection)
         small_pop = CSVDataFrame(self.config.sml_popfile, self.config.smlpop_type, self.config.smlpop_columns, self.config.required_cols[self.config.smlpop_type], self.config.smlpop_encode)
         boundary_sm.merge_DataFrame(small_pop)
-
-        import pdb; pdb.set_trace()
 
         centroid = WeightedCentroid(boundary_lg, boundary_sm)
         centroid.calculate_centroid()
@@ -184,23 +180,7 @@ class InitSchema(object):
         # create index for demand table
         self.execute_query("CREATE INDEX idx_demand ON demand USING GIST(centroid, boundary);")
 
-def main():
-    """Runs script as __main__. """
-    '''
-    demand_path_lg = "../data/demand_lg_pop_mtl.shp"
-    demand_path_sm = "../data/demand_sm_pop_mtl.shp"
-    poi_path = "../data/poi.csv"
-    weight = "demand_sm_"
-    population = "demand_lg_"
-    uid = "DAUID"
-
-    InitSchema(poi_path, demand_path_lg, uid, population, demand_path_sm, weight)
-    '''
-
 if __name__ == "__main__":
-   #  main()
    config = Config('config.json')
 
    db_schema = InitSchema(config)
-
-   import pdb; pdb.set_trace()

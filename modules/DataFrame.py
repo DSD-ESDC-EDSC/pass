@@ -61,6 +61,7 @@ class DataFrame:
 		return new_columns
 
 	def preprocess_opt_columns(self, col):
+		""" preprocessing text columns to remove quotations """ 
 		if self.df[col].dtype == 'O':
 			self.df[col] = self.df[col].str.replace("'", " ")
 			self.df[col] = self.df[col].str.replace('"', ' ')
@@ -163,6 +164,7 @@ class DataFrame:
 		self.columns.remove(col_toremove)
 
 	def add_uniform_col(self, new_col_name):
+		""" Adding column of 1s to df """
 		self.df[new_col_name] = 1
 		new_col = self.add_col({'colname': new_col_name, 'coltype':new_col_name, 'coldesc': 'uniform ' + new_col_name, 'unit': 'int'})
 
@@ -191,10 +193,8 @@ class DataFrame:
 			self.add_col(col, False)
 
 	def prepare_DataFrame(self):
-		### SOMETHING WITH SETTING UP THE PROPER ORDER OF COLUMNS 
-		### ID FIRST AND THEN GEOMETRY AND THEN OTHER REQUIRED COLUMNS 
-		### THEN LEFTOVERS AFTER 
-		
+		""" adds supply / demand term to table if necessary. Orders columns for easy writing to sql db """ 
+
 		final_column_order = []
 
 		for col_type in self.req_columns:
