@@ -26,3 +26,13 @@ class Column:
 	def get_colunit(self):
 		""" Return unit of column """
 		return self.colunit
+
+	def get_sql_colunit(self):
+		if self.colunit == 'O':
+			unit = 'text'
+		elif self.colunit == 'float':
+			unit = 'float'
+		elif self.colunit == 'int':
+			unit = 'int'
+
+		return unit

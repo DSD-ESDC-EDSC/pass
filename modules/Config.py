@@ -34,7 +34,7 @@ class Config:
 			print(JSON_ERROR)
 				
 		try:
-			self.pos_file = data['files']['POS']['file']
+			self.supply_file = data['files']['supply']['file']
 		except(KeyError):
 			print(JSON_ERROR)
 
@@ -60,7 +60,7 @@ class Config:
 			print(JSON_ERROR)
 
 		try:
-			self.pos_type = data['files']['POS']['type'] 
+			self.supply_type = data['files']['supply']['type'] 
 		except(KeyError):
 			print(JSON_ERROR)
 
@@ -78,7 +78,7 @@ class Config:
 			print(JSON_ERROR)
 				
 		try:
-			self.pos_encode = data['files']['POS']['encoding']
+			self.supply_encode = data['files']['supply']['encoding']
 		except(KeyError):
 			print(JSON_ERROR)
 
@@ -115,14 +115,14 @@ class Config:
 			print(JSON_ERROR)
 
 		try:
-			self.pos_columns = data['files']['POS']['columns']
+			self.supply_columns = data['files']['supply']['columns']
 		except(KeyError):
 			print(JSON_ERROR)
 
 
 		self.required_cols = {}
 		self.required_cols['shape'] = ['ID', 'LRG_ID', 'geometry']
-		self.required_cols['csv'] = ['ID']
-		self.required_cols['POS'] = ['ID', 'latitude', 'longitude']
+		self.required_cols['demand'] = ['ID']
+		self.required_cols['supply'] = ['ID', 'latitude', 'longitude']
 
 		self.types_dict = {'str': [str, 'O'], 'int': [float, int]}
