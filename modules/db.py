@@ -39,10 +39,10 @@ class DbConnect:
 def get_poi():
 	with DbConnect() as db_conn:
 
-		db_conn.cur.execute(""""
+		db_conn.cur.execute("""
 		SELECT jsonb_build_object('type', 'FeatureCollection', 'features', jsonb_agg(features.feature))
 		FROM (
-			SELECT jsonb_build_object('type', 'Feature', 'geometry', ST_AsGeoJSON(ST_Transform(point, 4326))::jsonb, 'properties', to_jsonb(inputs) - 'geom'
+			SELECT jsonb_build_object('type', 'Feature', 'geometry', ST_AsGeoJSON(ST_Transform(point, 4326))::jsonb, 'properties', to_jsonb(inputs) - 'point' - 'lng' - 'ltd'
 		) AS feature
 			FROM (
 				SELECT * FROM poi) inputs) features;
