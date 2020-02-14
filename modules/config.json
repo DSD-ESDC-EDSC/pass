@@ -110,6 +110,22 @@
 				} 				
 			}	
 		}		
+	}, 
+	"ORS_params": {
+		"connection": {
+			"client_url": "http://10.54.61.201:8080/ors",
+			"timeout": 500
+		}, 
+		"isochrones": {
+			"catchment_range": 500, 
+			"catchment_range_type": "time", 
+			"profile": "driving-car",
+			"sleep_time": 0
+		}, 
+		"distance_matrix": {
+			"metric": "distance", 
+			"unit": "m" , 
+			"sleep_time": 0
+		}
 	}
-
 }

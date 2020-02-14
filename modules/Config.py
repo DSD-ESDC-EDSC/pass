@@ -119,6 +119,23 @@ class Config:
 		except(KeyError):
 			print(JSON_ERROR)
 
+		## ORS stuff 
+
+		try: 
+			self.ORS_client = data['ORS_params']['connection']['client_url']
+			self.ORS_timeout = data['ORS_params']['connection']['timeout']
+
+			self.iso_catchment_range = data['ORS_params']['isochrones']['catchment_range']
+			self.iso_catchment_type = data['ORS_params']['isochrones']['catchment_range_type']
+			self.iso_profile = data['ORS_params']['isochrones']['profile']
+			self.iso_sleep_time = data['ORS_params']['isochrones']['sleep_time']
+
+			self.dm_metric = data['ORS_params']['distance_matrix']['metric']
+			self.dm_unit = data['ORS_params']['distance_matrix']['unit']
+			self.dm_sleep_time = data['ORS_params']['distance_matrix']['sleep_time']
+		except(KeyError):
+			print(JSON_ERROR)
+
 
 		self.required_cols = {}
 		self.required_cols['shape'] = ['ID', 'LRG_ID', 'geometry']
