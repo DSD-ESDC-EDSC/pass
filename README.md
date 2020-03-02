@@ -1,6 +1,6 @@
 # POI Potential Spatial Accessibility Web App
 
-This repository of code provides scripts for calculating potential spatial accessibility from population demand locations (e.g., Dissemination Area population-weighted centroids) to points of interest (POS).
+This repository of code provides scripts for calculating potential spatial accessibility from population demand locations (e.g., Dissemination Area population-weighted centroids) to points of interest (POS). Accessibility, that is the ability to get from location A to B, is a multi-dimensional construct that can account for various components, like social and geographic. Moreover, access can be measured based on `potential` (i.e., based on who could access a given service) and/or `actual` demand (i.e., based on a given services' actual clients/users of the service). **Potential spatial accessibility looks at the availability (i.e., supply and capacity of services) and accessibility (i.e., barriers) of potential demand (e.g., Census demographics) to a given service.**
 
 # Installation
 
