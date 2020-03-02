@@ -90,6 +90,12 @@
 					"descr":"Longitude point of supply", 
 					"unit": "float"
 				},
+				"LRG_ID" : {
+					"name":"CMAUID",
+					"type":"LRG_ID",
+					"descr":"ID of city", 
+					"unit": "str"						
+				},
 				"address": {
 					"name":"Address", 
 					"type": "supply_info", 

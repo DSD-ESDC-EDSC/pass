@@ -13,12 +13,14 @@ import csv
 import json
 import osgeo.ogr
 import geopandas as gp
+import numpy as np
 from weighted_centroid import *
 
 from Config import Config
 from GeoDataFrame import GeoDataFrame
 from CSVDataFrame import CSVDataFrame
 from weighted_centroid import WeightedCentroid
+from DistanceMatrix import DistanceMatrix
 
 class InitSchema(object):
     """Initialize the PostgreSQL database
@@ -40,6 +42,12 @@ class InitSchema(object):
                 path for smaller demand geodata file
         """
         self.config = config
+
+        self.poi = CSVDataFrame(self.config.supply_file, self.config.supply_type, self.config.supply_columns, self.config.required_cols['supply'], self.config.supply_encode)
+        self.boundary_lg = GeoDataFrame(self.config.lrg_shapefile, self.config.lrgshape_type, self.config.lrgshape_columns, self.config.required_cols[self.config.lrgshape_type], self.config.lrgshape_projection)
+        self.boundary_sm = GeoDataFrame(self.config.sml_shapefile, self.config.smlshape_type, self.config.smlshape_columns, self.config.required_cols[self.config.smlshape_type], self.config.smlshape_projection)
+        self.small_pop = CSVDataFrame(self.config.sml_popfile, self.config.smlpop_type, self.config.smlpop_columns, self.config.required_cols[self.config.smlpop_type], self.config.smlpop_encode)
+
 
         from db import DbConnect
         with DbConnect() as db_conn:
@@ -72,7 +80,15 @@ class InitSchema(object):
         """
         self.init_demand()
         self.init_poi()
-		# self.initDistanceMatrix()
+        self.init_distance_matrix()
+
+    def init_distance_matrix(self):
+        # import pdb; pdb.set_trace()
+
+        dm = DistanceMatrix(self.calculated_centroid, self.poi, self.calculated_centroid, self.config.ORS_client, self.config.iso_catchment_range, 
+            self.config.iso_catchment_type, self.config.iso_profile, self.config.iso_sleep_time, self.config.dm_metric, 
+            self.config.dm_unit, self.config.dm_sleep_time, self.config.ORS_timeout)
+
 
     def init_poi(self):
         """Create the poi PostgreSQL database table
@@ -88,18 +104,20 @@ class InitSchema(object):
             CREATE TABLE poi(
             id serial PRIMARY KEY,
             geouid text, 
+            LRG_ID text,
             latitude float, 
             longitude float, 
             supply int
         """
-        sql_columns = ['id', 'geouid', 'latitude', 'longitude', 'supply']
+        sql_columns = ['id', 'geouid', 'lrg_id', 'latitude', 'longitude', 'supply']
 
         # create POI DataFrame object 
 
-        poi = CSVDataFrame(self.config.supply_file, self.config.supply_type, self.config.supply_columns, self.config.required_cols['supply'], self.config.supply_encode)
-        poi.df.reset_index(inplace = True)
+        self.poi.df.reset_index(inplace = True)
 
-        for col in poi.get_column_by_type('supply_info'):
+        self.poi.df.CMAUID = np.where(self.poi.df.CMAUID == ' ', None, self.poi.df.CMAUID)
+
+        for col in self.poi.get_column_by_type('supply_info'):
             col_name = 'info_' + col.get_colname().lower().replace(" ", "_")
             unit = col.get_sql_colunit()
 
@@ -112,9 +130,9 @@ class InitSchema(object):
 
         sql_col_string = '"' + '", "'.join(sql_columns) + '"'
 
-        for i in poi.df.index:
+        for i in self.poi.df.index:
 
-            value_string = "'" + "', '".join(poi.df.loc[i].astype(str).values.flatten().tolist()) + "'"
+            value_string = "'" + "', '".join(self.poi.df.loc[i].astype(str).values.flatten().tolist()) + "'"
 
             insert_query = """ INSERT into poi(%s) values (%s); 
             """ % (sql_col_string, value_string)
@@ -137,15 +155,13 @@ class InitSchema(object):
                 path for smaller demand geodata file
         """
 
-        boundary_lg = GeoDataFrame(self.config.lrg_shapefile, self.config.lrgshape_type, self.config.lrgshape_columns, self.config.required_cols[self.config.lrgshape_type], self.config.lrgshape_projection)
-        boundary_sm = GeoDataFrame(self.config.sml_shapefile, self.config.smlshape_type, self.config.smlshape_columns, self.config.required_cols[self.config.smlshape_type], self.config.smlshape_projection)
-        small_pop = CSVDataFrame(self.config.sml_popfile, self.config.smlpop_type, self.config.smlpop_columns, self.config.required_cols[self.config.smlpop_type], self.config.smlpop_encode)
-        boundary_sm.merge_DataFrame(small_pop)
+        self.boundary_sm.merge_DataFrame(self.small_pop)
 
-        centroid = WeightedCentroid(boundary_lg, boundary_sm)
+        centroid = WeightedCentroid(self.boundary_lg, self.boundary_sm)
         centroid.calculate_centroid()
-        calculated_centroid = centroid.boundary_lg
-        centroid_df = calculated_centroid.df
+        self.calculated_centroid = centroid.boundary_lg
+        centroid_df = self.calculated_centroid.df
+        centroid_df[self.calculated_centroid.get_column_by_type('centroid').get_colname()] = [x.wkt for x in centroid_df[self.calculated_centroid.get_column_by_type('centroid').get_colname()]]
 
         centroid_df = osgeo.ogr.Open(centroid_df.to_json())
 
@@ -167,11 +183,11 @@ class InitSchema(object):
         for i in range(layer.GetFeatureCount()):
             # import pdb; pdb.set_trace()
             feature = layer.GetFeature(i) # index value 
-            fuid = feature.GetField(calculated_centroid.get_column_by_type('ID').get_colname()) # id 
-            centroid = feature.GetField(calculated_centroid.get_column_by_type('centroid').get_colname()) # centroid 
+            fuid = feature.GetField(self.calculated_centroid.get_column_by_type('ID').get_colname()) # id 
+            centroid = feature.GetField(self.calculated_centroid.get_column_by_type('centroid').get_colname()) # centroid 
             if centroid.startswith("POINT (-n") or centroid.startswith("POINT (n"):
             	centroid = feature.GetGeometryRef().Centroid().ExportToWkt()
-            pop = feature.GetField(calculated_centroid.get_column_by_type('demand').get_colname()) # population / weight ? 
+            pop = feature.GetField(self.calculated_centroid.get_column_by_type('demand').get_colname()) # population / weight ? 
             geometry = feature.GetGeometryRef()
             wkt = geometry.ExportToWkt()
             self.db_conn.cur.execute("INSERT INTO demand (geoUID, boundary, centroid, pop) VALUES (%s,ST_SetSRID(ST_GeomFromText(%s),3347),%s,%s);", (fuid,wkt,centroid,pop))

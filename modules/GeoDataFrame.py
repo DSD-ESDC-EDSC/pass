@@ -22,7 +22,7 @@ class GeoDataFrame(DataFrame):
 			self.req_columns = df.req_columns
 			self.columns = df.columns
 
-			self.df = gp.GeoDataFrame(df.df, geometry = df.df[geometry], crs = {'init': projection})
+			self.df = gp.GeoDataFrame(df.df, geometry = df.df[geometry.get_colname()], crs = {'init': projection})
 
 	def read_file(self):
 		""" Read in shape file """ 
@@ -33,11 +33,14 @@ class GeoDataFrame(DataFrame):
 		""" Change geometry projection """
 		self.df.crs = {'init' : self.projection}
 
+
 	def get_projection(self):
 		return self.projection
 
 	def change_projection(self, new_projection):
 		self.df = self.df.to_crs({'init': new_projection})
+
+		self.projection = new_projection
 
 
 
