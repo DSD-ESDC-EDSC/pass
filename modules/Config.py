@@ -140,6 +140,6 @@ class Config:
 		self.required_cols = {}
 		self.required_cols['shape'] = ['ID', 'LRG_ID', 'geometry']
 		self.required_cols['demand'] = ['ID']
-		self.required_cols['supply'] = ['ID', 'latitude', 'longitude']
+		self.required_cols['supply'] = ['ID', 'LRG_ID', 'latitude', 'longitude']
 
 		self.types_dict = {'str': [str, 'O'], 'int': [float, int]}

@@ -4,7 +4,7 @@ import geopandas as gp
 from shapely.geometry import MultiLineString, Point
 from shapely import wkt
 from random import sample
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 from shapely import wkt
 
 import sys
@@ -64,12 +64,12 @@ class WeightedCentroid():
 
 			# imputing missing values with geographic centroid
 			self.boundary_lg.df[self.boundary_lg.get_column_by_type('centroid').get_colname()] = np.where(self.boundary_lg.df[self.boundary_sm.get_column_by_type('demand').get_colname()] == 0, self.boundary_lg.df[self.boundary_lg.get_column_by_type('geometry').get_colname()].centroid, self.boundary_lg.df[self.boundary_lg.get_column_by_type('centroid').get_colname()])
-			self.boundary_lg.df['weighted_centroid'] = [x.wkt for x in self.boundary_lg.df.weighted_centroid]
+			# self.boundary_lg.df['weighted_centroid'] = [x.wkt for x in self.boundary_lg.df.weighted_centroid]
 
 		else:
 			# no weight column, calculate geographic centroid 
 			self.boundary_lg.df['centroid'] = self.boundary_lg.df[self.boundary_lg.get_column_by_type('geometry').get_colname()].centroid
-			self.boundary_lg.df['centroid'] = [x.wkt for x in self.boundary_lg.df.centroid]
+			# self.boundary_lg.df['centroid'] = [x.wkt for x in self.boundary_lg.df.centroid]
 			self.boundary_lg.add_col({'colname':'centroid', 'coltype':'centroid', 'coldesc': 'geographic centroid', 'unit': 'geo'})
 
 		# return self.boundary_lg.df
