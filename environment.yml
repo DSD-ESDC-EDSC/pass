@@ -1,18 +1,23 @@
-name: poi
+name: pass
 channels:
-  - anaconda
+  - nilsnolde
   - conda-forge
+  - anaconda
   - defaults
 dependencies:
+  - asn1crypto=1.3.0=py36_0
   - attrs=19.3.0=py_0
   - boost-cpp=1.70.0=h6a4c333_2
   - bzip2=1.0.8=hfa6e2cd_2
-  - ca-certificates=2019.11.28=hecc5488_0
+  - ca-certificates=2019.11.27=0
   - certifi=2019.11.28=py36_0
+  - cffi=1.13.2=py36h7a1dbc1_0
   - cfitsio=3.470=hfa6e2cd_2
+  - chardet=3.0.4=py36_1003
   - click=7.0=py_0
   - click-plugins=1.1.1=py_0
   - cligj=0.5.0=py_0
+  - cryptography=2.8=py36h7a1dbc1_0
   - curl=7.65.3=h4496350_0
   - expat=2.2.5=he025d50_1004
   - fiona=1.8.9.post2=py36h3234bc7_0
@@ -28,6 +33,7 @@ dependencies:
   - hdf4=4.2.13=hf8e6fe8_1003
   - hdf5=1.10.5=nompi_ha405e13_1104
   - icu=64.2=he025d50_1
+  - idna=2.8=py36_0
   - intel-openmp=2019.4=245
   - itsdangerous=1.1.0=py36_0
   - jinja2=2.10.3=py_0
@@ -66,7 +72,8 @@ dependencies:
   - munch=2.5.0=py_0
   - numpy=1.17.3=py36hc71023c_0
   - openjpeg=2.3.1=h57dd2e7_3
-  - openssl=1.1.1d=hfa6e2cd_0
+  - openrouteservice=2.2.2=py36_0
+  - openssl=1.1.1=he774522_0
   - pandas=0.25.3=py36he350917_0
   - pcre=8.43=h6538335_0
   - pip=19.3.1=py36_0
@@ -75,26 +82,32 @@ dependencies:
   - postgresql=11.5=h06f7779_2
   - proj=6.2.1=ha7a8c7b_0
   - psycopg2=2.8.4=py36h7a1dbc1_0
+  - pycparser=2.19=py36_0
+  - pyopenssl=19.1.0=py36_0
   - pyproj=2.4.2.post1=py36h9716dcf_0
+  - pysocks=1.7.1=py36_0
   - python=3.6.10=h9f7ef89_0
   - python-dateutil=2.8.1=py_0
   - python-dotenv=0.10.3=py_0
   - pytz=2019.3=py_0
+  - requests=2.22.0=py36_1
   - rtree=0.9.3=py36hbf79ddb_0
   - setuptools=45.0.0=py36_1
   - shapely=1.6.4=py36ha35856d_1006
   - six=1.13.0=py36_0
   - sqlite=3.30.1=hfa6e2cd_0
   - tk=8.6.10=hfa6e2cd_0
+  - urllib3=1.25.7=py36_0
   - vc=14.1=h0510ff6_4
   - vs2015_runtime=14.16.27012=hf0eaf9b_1
   - waitress=1.4.1=py_0
   - werkzeug=0.16.0=py_0
   - wheel=0.33.6=py36_0
+  - win_inet_pton=1.1.0=py36_0
   - wincertstore=0.2=py36_1003
   - xerces-c=3.2.2=h6538335_1004
   - xz=5.2.4=h2fa13f4_1001
   - zlib=1.2.11=vc14h1cdd9ab_1
   - zstd=1.4.4=hd8a0e53_1
-prefix: C:\Tools\Continuum\anaconda3\envs\poi
+prefix: C:\Tools\Continuum\anaconda3\envs\pass
 

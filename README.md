@@ -8,8 +8,8 @@ This repository of code provides scripts for calculating potential spatial acces
 
 - Anaconda > 4.0 (National Service Desk)
 - Git Bash (Application Catalogue)
-- PostgreSQL
-- PostGIS (PostgreSQL extension)
+- PostgreSQL > 11
+- PostGIS (PostgreSQL extension) > 2.5
 
 ### Steps to Install
 
@@ -17,10 +17,10 @@ This repository of code provides scripts for calculating potential spatial acces
 2. To make Anaconda run from Git Bash, you will have to change your Environment Variables on your user account:
 	- Open the application "Edit environment variables for your account"
 	- Add a new variable PATH if it doesn't exist, otherwise add the following to the PATH variable: `C:\ProgramData\Anaconda3; C:\ProgramData\Anaconda3\Scripts`
-3. Now in Git Bash, clone the repo: `git clone https://gccode.ssc-spc.gc.ca/DSCV/projects/pos-accessibility/app`
-4. Still in Git Bash, change directory to the folder: `cd app`
+3. Now in Git Bash, clone the repo: `git clone https://gccode.ssc-spc.gc.ca/DSCV/projects/pos-accessibility/pass`
+4. Still in Git Bash, change directory to the folder: `cd pass`
 5. Then in Git Bash clone the Anaconda environment from the environment.yml file: `conda env create -f environment.yml`
-6. Once you have all the dependencies installed, activate the environment: `source activate poi`
+6. Once you have all the dependencies installed, activate the environment: `source activate pass`
 7. You will also need to create a `.env` file within the same directory. The following information should exist within the file, but with add values specific for your use case:
 
 ```
@@ -43,7 +43,7 @@ USER_PASSWORD=
 Once you completed the Installation step, which you only need to complete once, to run the actual web app from now on, you must complete the following:
 
 1. Open Git Bash and change directory (cd) to your `app` folder. Alternatively, in your windows explorer (1) go to the app folder and (2) right-click and select 'Git Bash Here', and then Git Bash will open within your app folder
-2. Now with Git Bash opened within your app folder, activate your Anaconda environment: `source activate [environment name, e.g., poi]`
+2. Now with Git Bash opened within your app folder, activate your Anaconda environment: `source activate pass`
 3. Run the following command in Git Bash to start the app: `python app.py`
 4. After running the command, go to your browser, and you can open the app with your provided `APP_HOST:APP_PORT`
 5. To close the app, in Git Bash press the Ctrl + C keys
