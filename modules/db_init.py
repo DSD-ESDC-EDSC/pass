@@ -13,7 +13,6 @@ import json
 import osgeo.ogr
 import geopandas as gp
 import numpy as np
-from weighted_centroid import *
 from Config import Config
 from GeoDataFrame import GeoDataFrame
 from CSVDataFrame import CSVDataFrame
@@ -48,7 +47,7 @@ class InitSchema():
             self.db_conn = db_conn
             self.create_schema()
 
-    def execute_query(self, query, name=None, params=None):
+    def execute_query(self, query, msg=None, params=None):
         """Execute query to either create or store data into database table
 
         Arguments:
@@ -61,9 +60,9 @@ class InitSchema():
             else:
                 self.db_conn.cur.execute(query)
                 self.db_conn.conn.commit()
-            logger.info(f'Successfully {name} database table')
+            logger.info(f'Successfully {msg} database table')
         except Exception as e:
-            logger.error(f'Unsuccessfully {name} database table: {e}')
+            logger.error(f'Unsuccessfully {msg} database table: {e}')
 
     def create_schema(self):
         "Create each PostgreSQL database table"
@@ -80,7 +79,6 @@ class InitSchema():
             self.config.iso_catchment_type, self.config.iso_profile, self.config.iso_sleep_time, self.config.dm_metric,
             self.config.dm_unit, self.config.dm_sleep_time, self.config.ORS_timeout)
 
-
     def init_poi(self):
         "Create the poi database table"
 
@@ -91,15 +89,19 @@ class InitSchema():
             id serial PRIMARY KEY,
             geouid text,
             LRG_ID text,
-            latitude float,
-            longitude float,
+            point geometry(POINT,3347),
             supply int
         """
-        sql_columns = ['id', 'geouid', 'lrg_id', 'latitude', 'longitude', 'supply']
+
+        # TO DO: ask Chelsea about LRD_ID
+
+        sql_columns = ['id', 'geouid', 'lrg_id', 'point', 'supply']
 
         # create POI DataFrame object
 
         self.poi.df.reset_index(inplace = True)
+
+        # TO DO: CMAUID is hard coded?
 
         self.poi.df.CMAUID = np.where(self.poi.df.CMAUID == ' ', None, self.poi.df.CMAUID)
 
@@ -108,7 +110,7 @@ class InitSchema():
             unit = col.get_sql_colunit()
 
             sql_columns.append(col_name)
-            query_create = query_create + """ ,  %s %s """ % (col_name, unit)
+            query_create = query_create + """,  %s %s""" % (col_name, unit)
 
         query_create = query_create + """)"""
 
@@ -117,13 +119,21 @@ class InitSchema():
         sql_col_string = '"' + '", "'.join(sql_columns) + '"'
 
         for i in self.poi.df.index:
+            values = self.poi.df.loc[i].astype(str).values.flatten().tolist()
 
-            value_string = "'" + "', '".join(self.poi.df.loc[i].astype(str).values.flatten().tolist()) + "'"
+            # TO DO: remove hardcoding, base it off config file (need to ask Chelsea still what each key/value means)
+            vals_default = "'" + "', '".join(values[0:3]) + "'"
+            lat = values[3]
+            lng = values[4]
+            vals_info = "'" + "', '".join(values[5:]) + "'"
 
-            query_insert = """ INSERT into poi(%s) values (%s);
-            """ % (sql_col_string, value_string)
+            query_insert = """ INSERT into poi(%s) values (%s, ST_SetSRID(ST_MakePoint(%s, %s),3347),%s);
+            """ % (sql_col_string, vals_default, lng, lat, vals_info)
 
             self.execute_query(query_insert, "updated poi")
+
+        # create index for poi table
+        self.execute_query("CREATE INDEX idx_poi ON poi USING GIST(point);", "indexed poi")
 
     def init_demand(self):
         "Create the demand database table"

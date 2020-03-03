@@ -12,7 +12,7 @@ import logging
 load_dotenv()
 
 
-def logger():
+def init_logger():
 	log_levels = {
 		'debug': logging.DEBUG,
 		'info': logging.INFO,
@@ -21,16 +21,16 @@ def logger():
 		'critical': logging.CRITICAL,
 	}
 
-	DEFAULT_LOG_LEVEL = os.environ.get('DEFAULT_LOG_LEVEL')
+	LOG_DEFAULT_LEVEL = os.environ.get('LOG_DEFAULT_LEVEL')
 
 	# initialize logging
-	logging.basicConfig(format='%(asctime)s: %(levelname)s: %(message)s')
+	logging.basicConfig(format='%(asctime)s: %(levelname)s: %(message)s') # to save as log file: filename=os.environ.get('LOG_FILE_PATH'), filemode='a',level=logging.DEBUG)
 	logger = logging.getLogger(__name__)
-	logger.setLevel(log_levels.get(DEFAULT_LOG_LEVEL, logging.INFO))
+	logger.setLevel(log_levels.get(LOG_DEFAULT_LEVEL, logging.INFO))
 
 	return logger
 
-logger = logger()
+logger = init_logger()
 
 class DbConnect:
 	def __init__(self):
