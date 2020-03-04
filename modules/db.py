@@ -35,7 +35,7 @@ logger = init_logger()
 class DbConnect:
 	def __init__(self):
 		try:
-			self.pg_pool = pool.SimpleConnectionPool(1,5, user=os.environ.get('DB_USER'), password=os.environ.get('DB_PASSWORD'), host=os.environ.get('DB_HOST'), database=os.environ.get('DB_NAME'))
+			self.pg_pool = pool.SimpleConnectionPool(1, 5, user=os.environ.get('DB_USER'), password=os.environ.get('DB_PASSWORD'), host=os.environ.get('DB_HOST'), database=os.environ.get('DB_NAME'))
 			self.conn = self.pg_pool.getconn()
 			self.cur = self.conn.cursor()
 			logger.info('Connection to database succeeded')

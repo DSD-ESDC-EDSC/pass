@@ -19,6 +19,7 @@ from CSVDataFrame import CSVDataFrame
 from WeightedCentroid import WeightedCentroid
 from DistanceMatrix import DistanceMatrix
 from db import init_logger
+import pandas as pd
 
 logger = init_logger()
 
@@ -67,17 +68,57 @@ class InitSchema():
     def create_schema(self):
         "Create each PostgreSQL database table"
 
-        self.init_demand()
-        self.init_poi()
-        #self.init_distance_matrix()
+        #self.init_demand()
+        #self.init_poi()
+        self.init_distance_matrix()
 
-    def init_distance_matrix(self):
+    def init_distance_matrix(self, profiles=["car"]):
         "Create distance_matrix database table"
         # import pdb; pdb.set_trace()
 
-        dm = DistanceMatrix(self.calculated_centroid, self.poi, self.calculated_centroid, self.config.ORS_client, self.config.iso_catchment_range,
-            self.config.iso_catchment_type, self.config.iso_profile, self.config.iso_sleep_time, self.config.dm_metric,
-            self.config.dm_unit, self.config.dm_sleep_time, self.config.ORS_timeout)
+        for profile in profiles:
+            # TO DO: this will need to change based on different profiles
+            distance_matrix = DistanceMatrix(self.calculated_centroid, self.poi, self.calculated_centroid, self.config.ORS_client, self.config.iso_catchment_range,
+                self.config.iso_catchment_type, self.config.iso_profile, self.config.iso_sleep_time, self.config.dm_metric,
+                self.config.dm_unit, self.config.dm_sleep_time, self.config.ORS_timeout)
+
+            # TO DO: distance_matrix return should be of this structure:
+            # geouid, poiuid ...
+
+            # for testing rest of script
+            #distance_matrix = pd.read_csv("C:/Code/pos-accessibility/pos-accessibility-app/data/distance_matrix_60min.csv", encoding = "latin-1")
+
+            # TO DO: update query for different distance_matrix_* based on mode of transportation (will have to update config.json)
+            query_create = """
+                        DROP TABLE IF EXISTS distance_matrix_%s;
+                        CREATE TABLE distance_matrix_%s(
+                        id serial PRIMARY KEY""" % (profile, profile)
+
+            # loop through all columns to build query statement to create the distance_matrix_* table
+            # TO DO: consider different data type?
+            for col in distance_matrix.columns.values:
+                if col == distance_matrix.columns.values[-1]:
+                    query_create += ", " + col + " text)"
+                else:
+                    query_create += ", " + col + " text"
+
+            self.execute_query(query_create, "created distance_matrix_"+profile)
+
+            columns = ", ".join(distance_matrix.columns.values.tolist()) # list of columns as a string
+            rows = distance_matrix.to_numpy().tolist() # list of rows
+
+            # for each row in distance matrix
+            for i in distance_matrix.index:
+                rows[i] = [str(value) for value in rows[i]] # cast each row value as string
+                values = "'" + "', '".join(rows[i]) + "'" # store a row's values into a list as a string
+
+                # insert row into database table
+                query_insert = """ INSERT into distance_matrix_%s (%s) VALUES (%s);
+                """ % (profile, columns, values)
+                self.execute_query(query_insert, "updated distance_matrix")
+
+            # create index for distance_matrix table
+            self.execute_query("CREATE INDEX idx_distance_matrix_%s ON distance_matrix_%s (%s);" % (profile, profile, columns), "indexed distance_matrix_%s" % (profile))
 
     def init_poi(self):
         "Create the poi database table"
@@ -127,7 +168,7 @@ class InitSchema():
             lng = values[4]
             vals_info = "'" + "', '".join(values[5:]) + "'"
 
-            query_insert = """ INSERT into poi(%s) values (%s, ST_SetSRID(ST_MakePoint(%s, %s),3347),%s);
+            query_insert = """ INSERT into poi(%s) VALUES (%s, ST_SetSRID(ST_MakePoint(%s, %s),3347),%s);
             """ % (sql_col_string, vals_default, lng, lat, vals_info)
 
             self.execute_query(query_insert, "updated poi")
