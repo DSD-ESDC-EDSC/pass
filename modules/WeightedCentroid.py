@@ -30,7 +30,7 @@ class WeightedCentroid():
 			# creating lambda function to calculate weighted centroid average
 			wm = lambda x: np.ma.average(x, weights = self.boundary_sm.df.loc[x.index, self.boundary_sm.get_column_by_type('demand').get_colname()])
 
-			weighted_cent = pd.DataFrame()
+			weighted_cent = gp.GeoDataFrame(crs = self.boundary_lg.df.crs)
 
 			# calculating weighted latitude and longitude
 			for l in ['lng', 'ltd']:
@@ -52,8 +52,6 @@ class WeightedCentroid():
 			# zipping weighted lat / lon
 			weighted_cent['weighted_centroid'] = [Point(xy) for xy in zip(weighted_cent.wtd_lng, weighted_cent.wtd_ltd)]
 
-			#import pdb; pdb.set_trace()
-
 			weighted_cent = weighted_cent[[self.boundary_sm.get_column_by_type('demand').get_colname(), 'weighted_centroid']].reset_index()
 
 			# merging weighted centroid back into boundary_lg
@@ -69,7 +67,6 @@ class WeightedCentroid():
 		else:
 			# no weight column, calculate geographic centroid
 			self.boundary_lg.df['centroid'] = self.boundary_lg.df[self.boundary_lg.get_column_by_type('geometry').get_colname()].centroid
-			# self.boundary_lg.df['centroid'] = [x.wkt for x in self.boundary_lg.df.centroid]
 			self.boundary_lg.add_col({'colname':'centroid', 'coltype':'centroid', 'coldesc': 'geographic centroid', 'unit': 'geo'})
 
 		# return self.boundary_lg.df

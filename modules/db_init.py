@@ -68,17 +68,15 @@ class InitSchema():
     def create_schema(self):
         "Create each PostgreSQL database table"
 
-        #self.init_demand()
-        #self.init_poi()
+        self.init_demand()
+        self.init_poi()
         self.init_distance_matrix()
 
     def init_distance_matrix(self, profiles=["car"]):
         "Create distance_matrix database table"
-        # import pdb; pdb.set_trace()
-
         for profile in profiles:
             # TO DO: this will need to change based on different profiles
-            distance_matrix = DistanceMatrix(self.calculated_centroid, self.poi, self.calculated_centroid, self.config.ORS_client, self.config.iso_catchment_range,
+            DM = DistanceMatrix(self.poi, self.calculated_centroid, self.config.ORS_client, self.config.iso_catchment_range,
                 self.config.iso_catchment_type, self.config.iso_profile, self.config.iso_sleep_time, self.config.dm_metric,
                 self.config.dm_unit, self.config.dm_sleep_time, self.config.ORS_timeout)
 
@@ -96,19 +94,19 @@ class InitSchema():
 
             # loop through all columns to build query statement to create the distance_matrix_* table
             # TO DO: consider different data type?
-            for col in distance_matrix.columns.values:
-                if col == distance_matrix.columns.values[-1]:
+            for col in DM.distance_matrix.columns.values:
+                if col == DM.distance_matrix.columns.values[-1]:
                     query_create += ", " + col + " text)"
                 else:
                     query_create += ", " + col + " text"
 
-            self.execute_query(query_create, "created distance_matrix_"+profile)
+            self.execute_query(query_create, "created distance_matrix_" + profile)
 
-            columns = ", ".join(distance_matrix.columns.values.tolist()) # list of columns as a string
-            rows = distance_matrix.to_numpy().tolist() # list of rows
+            columns = ", ".join(DM.distance_matrix.columns.values.tolist()) # list of columns as a string
+            rows = DM.distance_matrix.to_numpy().tolist() # list of rows
 
             # for each row in distance matrix
-            for i in distance_matrix.index:
+            for i in DM.distance_matrix.index:
                 rows[i] = [str(value) for value in rows[i]] # cast each row value as string
                 values = "'" + "', '".join(rows[i]) + "'" # store a row's values into a list as a string
 
@@ -184,7 +182,7 @@ class InitSchema():
         centroid = WeightedCentroid(self.boundary_lg, self.boundary_sm)
         centroid.calculate_centroid()
         self.calculated_centroid = centroid.boundary_lg
-        centroid_df = self.calculated_centroid.df
+        centroid_df = self.calculated_centroid.df.copy(deep = True)
         centroid_df[self.calculated_centroid.get_column_by_type('centroid').get_colname()] = [x.wkt for x in centroid_df[self.calculated_centroid.get_column_by_type('centroid').get_colname()]]
 
         centroid_df = osgeo.ogr.Open(centroid_df.to_json())
