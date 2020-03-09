@@ -75,8 +75,8 @@ class InitSchema():
         "Create each PostgreSQL database table"
 
         #self.init_demand()
-        #self.init_poi()
-        self.init_distance_matrix()
+        self.init_poi()
+        #self.init_distance_matrix()
 
     def init_distance_matrix(self, profiles=["car"]):
         "Create distance_matrix database table"
@@ -171,9 +171,9 @@ class InitSchema():
             lng = values[4]
             vals_info = "'" + "', '".join(values[5:]) + "'"
 
-            query_insert = """ INSERT into poi(%s) VALUES (%s, ST_SetSRID(ST_MakePoint(%s, %s),3347),%s);
-            """ % (sql_col_string, vals_default, lng, lat, vals_info)
-
+            query_insert = """ INSERT into poi(%s) VALUES (%s, ST_Transform(ST_SetSRID(ST_MakePoint(%s, %s),%s),3347),%s);
+            """ % (sql_col_string, vals_default, lng, lat, self.config.supply_projection, vals_info)
+            print(query_insert)
             self.execute_query(query_insert, "updated poi")
 
         # create index for poi table

@@ -6,19 +6,19 @@ JSON_ERROR = 'JSON Error. Please ensure format is correct.'
 class Config:
 
 	def __init__(self, config_file):
-		self.config_file = config_file 
+		self.config_file = config_file
 
-		with open('config.json') as json_data_file: 
+		with open('config.json') as json_data_file:
 			data = json.load(json_data_file)
 
 
-		# files 
-		try: 
+		# files
+		try:
 			self.sml_shapefile = data['files']['shape_small']['file']
 		except(KeyError):
 			print(JSON_ERROR)
 
-		try:	
+		try:
 			self.lrg_shapefile = data['files']['shape_large']['file']
 		except(KeyError):
 			print(JSON_ERROR)
@@ -32,19 +32,24 @@ class Config:
 			self.lrg_popfile = None
 		except(KeyError):
 			print(JSON_ERROR)
-				
+
 		try:
 			self.supply_file = data['files']['supply']['file']
 		except(KeyError):
 			print(JSON_ERROR)
 
-		# file types 
+		try:
+			self.supply_projection = data['files']['supply']['projection']
+		except(KeyError):
+			print(JSON_ERROR)
+
+		# file types
 		try:
 			self.smlshape_type = data['files']['shape_small']['type']
 		except(KeyError):
 			print(JSON_ERROR)
 
-		try:	
+		try:
 			self.lrgshape_type = data['files']['shape_large']['type']
 		except(KeyError):
 			print(JSON_ERROR)
@@ -60,7 +65,7 @@ class Config:
 			print(JSON_ERROR)
 
 		try:
-			self.supply_type = data['files']['supply']['type'] 
+			self.supply_type = data['files']['supply']['type']
 		except(KeyError):
 			print(JSON_ERROR)
 
@@ -76,24 +81,24 @@ class Config:
 			self.lrgpop_encode = None
 		except(KeyError):
 			print(JSON_ERROR)
-				
+
 		try:
 			self.supply_encode = data['files']['supply']['encoding']
 		except(KeyError):
 			print(JSON_ERROR)
 
-		# projection 
+		# projection
 		try:
 			self.smlshape_projection = data['files']['shape_small']['projection']
 		except(KeyError):
 			print(JSON_ERROR)
 
-		try:	
+		try:
 			self.lrgshape_projection = data['files']['shape_large']['projection']
 		except(KeyError):
 			print(JSON_ERROR)
 
-		# columns 
+		# columns
 		try:
 			self.smlshape_columns = data['files']['shape_small']['columns']
 		except(KeyError):
@@ -119,9 +124,9 @@ class Config:
 		except(KeyError):
 			print(JSON_ERROR)
 
-		## ORS stuff 
+		## ORS stuff
 
-		try: 
+		try:
 			self.ORS_client = data['ORS_params']['connection']['client_url']
 			self.ORS_timeout = data['ORS_params']['connection']['timeout']
 
