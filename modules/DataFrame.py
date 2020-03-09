@@ -16,6 +16,7 @@ class DataFrame:
 		self.columns = self.columns + self._init_opt_columns(columns)
 		if skinny:
 			self._shave_df()
+		self.df = self.prepare_DataFrame()
 
 
 	def _init_req_columns(self, columns):
@@ -25,6 +26,7 @@ class DataFrame:
 
 		# looping through required columns
 		for col in self.req_columns:
+			'''
 			try: 
 				# getting the variable type of the column 
 				unit = self.df[columns[col]['name']].dtype
@@ -32,10 +34,10 @@ class DataFrame:
 				# exit if the column isn't found in the data 
 				print(col, ' column not found in data.')
 				sys.exit(1)
-
+			'''
 			try:
 				# creating new column object 
-				new_col = Column(columns[col]['name'], columns[col]['type'], columns[col]['descr'], unit)
+				new_col = Column(columns[col]['name'], columns[col]['type'], columns[col]['descr'], columns[col]['unit'])
 				new_columns.append(new_col)
 			except:
 				print('Please ensure you have all required columns in config file.')
@@ -51,10 +53,18 @@ class DataFrame:
 		for col in columns:
 			if col not in self.req_columns:
 				unit = self.df[columns[col]['name']].dtype
+				if unit == 'O':
+					self.preprocess_opt_columns(columns[col]['name'])
 				new_col = Column(columns[col]['name'], columns[col]['type'], columns[col]['descr'], unit)
 				new_columns.append(new_col)
 
 		return new_columns
+
+	def preprocess_opt_columns(self, col):
+		""" preprocessing text columns to remove quotations """ 
+		if self.df[col].dtype == 'O':
+			self.df[col] = self.df[col].str.replace("'", " ")
+			self.df[col] = self.df[col].str.replace('"', ' ')
 
 	def _shave_df(self):
 		""" Subsets df to only columns defined by user """
@@ -67,8 +77,8 @@ class DataFrame:
 			Converts column to user defined type if not already conformed """
 		for col in self.columns:
 			# get user defined unit and actual column unit
-			defined_unit = col.get_coldesc()
-			current_unit = col.get_colunit()
+			defined_unit = col.get_colunit()
+			current_unit = self.df[col.get_colname()].dtype
 
 			# ensuring defined and actual column units are the same, changing them if not 
 			if current_unit == 'O' or current_unit == 'str':
@@ -90,15 +100,32 @@ class DataFrame:
 			 
 	def get_column_by_type(self, coltype):
 		""" Returns all column objects matching specified column type """
+		columns_toreturn = []
+
 		for column in self.columns:
 			if column.get_coltype() == coltype:
-				return column
+				columns_toreturn.append(column)
+
+		if len(columns_toreturn) ==1:
+			return columns_toreturn[0]
+		elif len(columns_toreturn) > 1:
+			return columns_toreturn
+		else:
+			return None
 
 	def get_column_by_name(self, colname):
 		""" Returns all column objects matching specified column name """
+		columns_toreturn = []
 		for column in self.columns:
 			if column.get_colname() == colname:
-				return column
+				columns_toreturn.append(column)
+
+		if len(columns_toreturn) == 1:
+			return columns_toreturn[0]
+		elif len(columns_toreturn) > 1:
+			return columns_toreturn
+		else:
+			return None
 
 	def get_col_names(self):
 		""" Returns names of all column objects """
@@ -116,9 +143,30 @@ class DataFrame:
 
 		return coltypes
 
+	def get_col_descs(self):
+		""" Returns descriptions of all column objects """
+		coldescs = []
+		for column in self.columns:
+			coldescs.append(column.get_coldesc())
+
+		return coldescs		
+
+	def get_col_units(self):
+		""" Returns units of all column objects """
+		colunits = []
+		for column in self.columns:
+			colunits.append(column.get_colunit())
+
+		return colunits		
+
 	def remove_col(self, col_toremove):
 		""" Removes column object. Only ever called by add_col """
 		self.columns.remove(col_toremove)
+
+	def add_uniform_col(self, new_col_name):
+		""" Adding column of 1s to df """
+		self.df[new_col_name] = 1
+		new_col = self.add_col({'colname': new_col_name, 'coltype':new_col_name, 'coldesc': 'uniform ' + new_col_name, 'unit': 'int'})
 
 	def add_col(self, new_col, override = False):
 		""" Adds new column object to DataFrame. """
@@ -144,4 +192,29 @@ class DataFrame:
 		for col in df2.get_columns():
 			self.add_col(col, False)
 
+	def prepare_DataFrame(self):
+		""" adds supply / demand term to table if necessary. Orders columns for easy writing to sql db """ 
+
+		final_column_order = []
+
+		for col_type in self.req_columns:
+			final_column_order.append(self.get_column_by_type(col_type).get_colname())
+
+		if self.type == 'supply':
+			# check that there's a supply column, if not, add one
+			if not self.get_column_by_type('supply'):
+				self.add_uniform_col('supply')
+
+			final_column_order.append(self.get_column_by_type('supply').get_colname())
+		elif self.type == 'demand':
+			if not self.get_column_by_type('demand'):
+				self.add_uniform_col('demand')
+
+			final_column_order.append(self.get_column_by_type('demand').get_colname())
+
+		additional_columns = set(self.get_col_names()).difference(set(final_column_order))
+
+		final_column_order += additional_columns
+
+		return self.df[final_column_order]
 

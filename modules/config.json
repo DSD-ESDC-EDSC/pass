@@ -8,17 +8,20 @@
 				"LRG_ID" : { 
 					"name": "CMAUID", 
 					"type": "LRG_ID", 
-					"descr": "int"
+					"descr": "Census Metropolitan Area ID", 
+					"unit": "int"
 						}, 
 				"ID" : { 
 					"name": "DAUID", 
 					"type": "ID", 
-					"descr": "int"
+					"descr": "Dissemination Area ID", 
+					"unit": "int"
 						},
 				"geometry": {
 					"name": "geometry",
 					"type": "geometry", 
-					"descr": "Polygon"
+					"descr": "DA boundaries", 
+					"unit": "geometry"
 						}
 				}
 				}, 
@@ -30,72 +33,105 @@
 				"ID" : { 
 					"name": "DBUID", 
 					"type": "ID", 
-					"descr": "int"}, 
+					"descr": "Dissemination Block ID", 
+					"unit": "int"}, 
 				"LRG_ID" : { 
 					"name": "DAUID", 
 					"type": "LRG_ID", 
-					"descr": "int"}, 
+					"descr": "Dissemination Area ID", 
+					"unit": "int"}, 
 				"geometry": {
 					"name": "geometry",
 					"type": "geometry", 
-					"descr": "Polygon"
+					"descr": "DB boundaries", 
+					"unit": "geometry"
 						} 
 					}
 		},
 		"population_small": {
 			"file":"D:/Projects/geo/Data/Census 2016 Demographics (DA and DB Levels)/db_population.csv", 
-			"type":"csv", 
+			"type":"demand", 
 			"encoding":"latin-1", 
 			"columns": {
 				"ID": {
 					"name":"DBuid/IDidu",
 					"type":"ID",
-					"descr":"int"
+					"descr":"Dissemination Block ID", 
+					"unit": "int"
 					},
-				"weight": {
+				"demand": {
 					"name":" DBpop2016/IDpop2016", 
-					"type": "weight", 
-					"descr":"population"
+					"type": "demand", 
+					"descr":"Dissemination Block Total Population", 
+					"unit": "int"
 				}
 			}	
 		}, 
-		"POS": {
+		"supply": {
 			"file":"D:/Projects/geo/Data/Service Canada Office Locations/Sites_Jun2019.csv", 
-			"type":"POS", 
+			"type":"supply", 
 			"encoding":"latin-1", 
 			"columns": {
 				"ID": {
 					"name":"OBJECTID",
 					"type":"ID",
-					"descr":"int"
+					"descr":"supply ID", 
+					"unit": "int"
 					},
 				"latitude" : {
 					"name":"Latitude",
 					"type":"latitude",
-					"descr":"geo"
+					"descr":"Latitude point of supply", 
+					"unit": "float"
 				}, 
 				"longitude" : {
 					"name":"Longitude",
 					"type":"longitude",
-					"descr":"geo"
+					"descr":"Longitude point of supply", 
+					"unit": "float"
+				},
+				"LRG_ID" : {
+					"name":"CMAUID",
+					"type":"LRG_ID",
+					"descr":"ID of city", 
+					"unit": "str"						
 				},
 				"address": {
 					"name":"Address", 
-					"type": "POS_info", 
-					"descr":"address"
+					"type": "supply_info", 
+					"descr":"Address of supply", 
+					"unit": "text"
 				}, 
 				"city": {
 					"name":"CSDNAME", 
-					"type": "POS_info", 
-					"descr":"city"
+					"type": "supply_info", 
+					"descr":"City of supply", 
+					"unit": "text"
 				}, 	
 				"name": {
 					"name":"Site_Name", 
-					"type": "POS_info", 
-					"descr":"name"
+					"type": "supply_info", 
+					"descr":"supply Site Name", 
+					"unit": "text"
 				} 				
 			}	
 		}		
+	}, 
+	"ORS_params": {
+		"connection": {
+			"client_url": "http://10.54.61.201:8080/ors",
+			"timeout": 500
+		}, 
+		"isochrones": {
+			"catchment_range": 500, 
+			"catchment_range_type": "time", 
+			"profile": "driving-car",
+			"sleep_time": 0
+		}, 
+		"distance_matrix": {
+			"metric": "distance", 
+			"unit": "m" , 
+			"sleep_time": 0
+		}
 	}
-
 }

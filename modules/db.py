@@ -9,31 +9,48 @@ import geopandas as gp
 from dotenv import load_dotenv
 import os
 import re
-import math
+import time
+import logging
 load_dotenv()
 
-# What is BASE_DIR?
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-CACHE_DIR = os.path.join(BASE_DIR,'cache')
+def init_logger():
+	log_levels = {
+		'debug': logging.DEBUG,
+		'info': logging.INFO,
+		'warning': logging.WARNING,
+		'error': logging.ERROR,
+		'critical': logging.CRITICAL,
+	}
+
+	LOG_DEFAULT_LEVEL = os.environ.get('LOG_DEFAULT_LEVEL')
+
+	# initialize logging
+	logging.basicConfig(format='%(asctime)s: %(levelname)s: %(message)s') # to save as log file: filename=os.environ.get('LOG_FILE_PATH'), filemode='a',level=logging.DEBUG)
+	logger = logging.getLogger(__name__)
+	logger.setLevel(log_levels.get(LOG_DEFAULT_LEVEL, logging.INFO))
+
+	return logger
+
+logger = init_logger()
 
 class DbConnect:
 	def __init__(self):
-		self.host = os.environ.get('DB_HOST')
-		self.name = os.environ.get('DB_NAME')
-		self.user = os.environ.get('DB_USER')
-		self.password = os.environ.get('DB_PASSWORD')
+		try:
+			self.pg_pool = pool.SimpleConnectionPool(1, 5, user=os.environ.get('DB_USER'), password=os.environ.get('DB_PASSWORD'), host=os.environ.get('DB_HOST'), database=os.environ.get('DB_NAME'))
+			self.conn = self.pg_pool.getconn()
+			self.cur = self.conn.cursor()
+			logger.info('Connection to database succeeded')
+		except Exception as e:
+			logger.error(f'Connection to database failed: {e}')
+		self.start_time = time.time()
 
 	def __enter__(self):
-		self.pg_pool = pool.SimpleConnectionPool(1,5, user=self.user, password=self.password, host=self.host, database=self.name)
-		self.conn = self.pg_pool.getconn()
-		self.cur = self.conn.cursor()
 		return self
 
 	def __exit__(self, type, value, traceback):
 		self.cur.close()
 		self.pg_pool.putconn(self.conn)
-
-# function that creates the geography table
+		logger.info(f'Released database connection: held for {time.time() - self.start_time} seconds')
 
 ## IMPROVE THIS
 def get_poi():
