@@ -61,30 +61,35 @@ class InitSchema():
             else:
                 self.db_conn.cur.execute(query)
                 self.db_conn.conn.commit()
+
+            if "SELECT" in query:
+                records = pd.DataFrame(self.db_conn.cur.fetchall(), columns=[desc[0] for desc in self.db_conn.cur.description])
+                return records
+
             logger.info(f'Successfully {msg} database table')
+
         except Exception as e:
             logger.error(f'Unsuccessfully {msg} database table: {e}')
 
     def create_schema(self):
         "Create each PostgreSQL database table"
 
-        self.init_demand()
-        self.init_poi()
+        #self.init_demand()
+        #self.init_poi()
         self.init_distance_matrix()
 
     def init_distance_matrix(self, profiles=["car"]):
         "Create distance_matrix database table"
+
+        # TO DO: update this so that's it's in the same structure as self.calculated_centroid.df, etc.
+        if not hasattr(self, 'calculated_centroid'):
+            self.calculated_centroid = self.execute_query("SELECT * FROM demand;", "retrieved centroids")
+
         for profile in profiles:
             # TO DO: this will need to change based on different profiles
             DM = DistanceMatrix(self.poi, self.calculated_centroid, self.config.ORS_client, self.config.iso_catchment_range,
                 self.config.iso_catchment_type, self.config.iso_profile, self.config.iso_sleep_time, self.config.dm_metric,
                 self.config.dm_unit, self.config.dm_sleep_time, self.config.ORS_timeout)
-
-            # TO DO: distance_matrix return should be of this structure:
-            # geouid, poiuid ...
-
-            # for testing rest of script
-            #distance_matrix = pd.read_csv("C:/Code/pos-accessibility/pos-accessibility-app/data/distance_matrix_60min.csv", encoding = "latin-1")
 
             # TO DO: update query for different distance_matrix_* based on mode of transportation (will have to update config.json)
             query_create = """
@@ -104,19 +109,19 @@ class InitSchema():
 
             columns = ", ".join(DM.distance_matrix.columns.values.tolist()) # list of columns as a string
             rows = DM.distance_matrix.to_numpy().tolist() # list of rows
-
+            print(rows)
             # for each row in distance matrix
-            for i in DM.distance_matrix.index:
-                rows[i] = [str(value) for value in rows[i]] # cast each row value as string
-                values = "'" + "', '".join(rows[i]) + "'" # store a row's values into a list as a string
-
-                # insert row into database table
-                query_insert = """ INSERT into distance_matrix_%s (%s) VALUES (%s);
-                """ % (profile, columns, values)
-                self.execute_query(query_insert, "updated distance_matrix")
-
-            # create index for distance_matrix table
-            self.execute_query("CREATE INDEX idx_distance_matrix_%s ON distance_matrix_%s (%s);" % (profile, profile, columns), "indexed distance_matrix_%s" % (profile))
+            # for i in DM.distance_matrix.index:
+            #     rows[i] = [str(value) for value in rows[i]] # cast each row value as string
+            #     values = "'" + "', '".join(rows[i]) + "'" # store a row's values into a list as a string
+            #
+            #     # insert row into database table
+            #     query_insert = """ INSERT into distance_matrix_%s (%s) VALUES (%s);
+            #     """ % (profile, columns, values)
+            #     self.execute_query(query_insert, "updated distance_matrix")
+            #
+            # # create index for distance_matrix table
+            # self.execute_query("CREATE INDEX idx_distance_matrix_%s ON distance_matrix_%s (%s);" % (profile, profile, columns), "indexed distance_matrix_%s" % (profile))
 
     def init_poi(self):
         "Create the poi database table"

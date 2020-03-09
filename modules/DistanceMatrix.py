@@ -1,7 +1,7 @@
-import numpy as np 
-import math 
+import numpy as np
+import math
 import time
-import geopandas as gpd 
+import geopandas as gpd
 import re
 from shapely.geometry import Polygon, Point
 import shapely
@@ -13,13 +13,13 @@ from CSVDataFrame import CSVDataFrame
 
 class DistanceMatrix:
 
-	def __init__(self, POI, weighted_centroid, ORS_client_url, catchment_range, catchment_range_type, catchment_profile, 
+	def __init__(self, POI, weighted_centroid, ORS_client_url, catchment_range, catchment_range_type, catchment_profile,
 					catchment_sleep, dm_metric_type, dm_unit, dm_sleep, ORS_timeout):
-		
+
 		self.web_projection = 'epsg:4326'
 		self.SC_projection = 'epsg:3347'
 
-		# ORS variables 
+		# ORS variables
 		self.client = ors.Client(key="", base_url = ORS_client_url, timeout = ORS_timeout, retry_over_query_limit = True)
 
 		self.catchment_range = catchment_range
@@ -31,8 +31,10 @@ class DistanceMatrix:
 		self.dm_unit = dm_unit
 		self.sleep_time = dm_sleep
 
-		# data 
+		# data
 		self.weighted_centroid = weighted_centroid
+
+		# TO DO: Update weighted_centroid is that it can either be a data frame from db or from self
 
 		self.weighted_centroid.df.set_geometry(self.weighted_centroid.get_column_by_type('centroid').get_colname(), inplace = True)
 
@@ -52,7 +54,7 @@ class DistanceMatrix:
 
 		self.POI = GeoDataFrame(from_file = False, projection = self.web_projection, geometry = self.POI.get_column_by_type('geometry'), df = self.POI)
 
-		# calculate catchment area for each POS 
+		# calculate catchment area for each POS
 		self.ISO = self.get_supply_catchment()
 
 		self.in_iso = self.weighted_centroid.df
@@ -60,7 +62,7 @@ class DistanceMatrix:
 		# filter centroids included in each catchment
 		self.filter_centroids()
 
-		# get distance matrix 
+		# get distance matrix
 		self.dist_m_wrapper()
 
 		pos_cols = [col for col in self.weighted_centroid.df if col.startswith('POS')]
@@ -82,7 +84,7 @@ class DistanceMatrix:
 		# IDs of all POIs -- self.POI.df[self.POI.get_column_by_type('ID').get_colname()]
 		for i, loc in zip(self.POI.df[self.POI.get_column_by_type('ID').get_colname()], zip(self.POI.df[self.POI.get_column_by_type('longitude').get_colname()], self.POI.df[self.POI.get_column_by_type('latitude').get_colname()])):
 			time.sleep(self.catchment_sleep)
-			try: 
+			try:
 				call = self.client.isochrones(locations = [loc], profile = self.catchment_profile, range = [self.catchment_range])
 
 				iso_geometry = call['features'][0]['geometry']
@@ -114,7 +116,7 @@ class DistanceMatrix:
 			self.weighted_centroid.df['POS_' + str(row['id'])] = self.weighted_centroid.df[self.weighted_centroid.get_column_by_type('centroid').get_colname()].map(lambda x: True if row.geometry.contains(x) == True else False)
 
 	def dist_m_wrapper(self):
-		# get list of POS IDs 
+		# get list of POS IDs
 
 		POS_IDs = [int(col[4:]) for col in self.weighted_centroid.df if col.startswith('POS')]
 
@@ -147,10 +149,10 @@ class DistanceMatrix:
 
 			all_locations = [pos] + centroid_list
 
-			call = self.client.distance_matrix(locations = all_locations, 
-												destinations = [0], 
-												profile = 'driving-car', 
-												metrics = [self.dm_metric_type], 
+			call = self.client.distance_matrix(locations = all_locations,
+												destinations = [0],
+												profile = 'driving-car',
+												metrics = [self.dm_metric_type],
 												units = self.dm_unit)
 
 			result = call[self.dm_metric_type + 's']
