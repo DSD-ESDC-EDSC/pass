@@ -74,12 +74,14 @@ class InitSchema():
     def create_schema(self):
         "Create each PostgreSQL database table"
 
-        #self.init_demand()
+        self.init_demand()
         self.init_poi()
-        #self.init_distance_matrix()
+        self.init_distance_matrix()
 
     def init_distance_matrix(self, profiles=["car"]):
         "Create distance_matrix database table"
+
+        logger.info(f'Calculating distance matrix for {profiles}...')
 
         # TO DO: update this so that's it's in the same structure as self.calculated_centroid.df, etc.
         if not hasattr(self, 'calculated_centroid'):
@@ -87,39 +89,51 @@ class InitSchema():
 
         for profile in profiles:
             # TO DO: this will need to change based on different profiles
-            DM = DistanceMatrix(self.poi, self.calculated_centroid, self.config.ORS_client, self.config.iso_catchment_range,
-                self.config.iso_catchment_type, self.config.iso_profile, self.config.iso_sleep_time, self.config.dm_metric,
-                self.config.dm_unit, self.config.dm_sleep_time, self.config.ORS_timeout)
+            try:
+                DM = DistanceMatrix(self.poi, self.calculated_centroid, self.config.ORS_client, self.config.iso_catchment_range,
+                    self.config.iso_catchment_type, self.config.iso_profile, self.config.iso_sleep_time, self.config.dm_metric,
+                    self.config.dm_unit, self.config.dm_sleep_time, self.config.ORS_timeout)
+                logger.info(f'Successfully calculated distance matrix for {profile}')
+            except Exception as e:
+                logger.error(f'Unsuccessfully calculated the distance matrix for {profile}: {e}')
 
             # TO DO: update query for different distance_matrix_* based on mode of transportation (will have to update config.json)
             query_create = """
                         DROP TABLE IF EXISTS distance_matrix_%s;
                         CREATE TABLE distance_matrix_%s(
-                        id serial PRIMARY KEY""" % (profile, profile)
+                        id serial PRIMARY KEY,
+                        geouid int""" % (profile, profile)
 
             # loop through all columns to build query statement to create the distance_matrix_* table
             # TO DO: consider different data type?
-            for col in DM.distance_matrix.columns.values:
+
+            DM.distance_matrix = DM.distance_matrix.where(pd.notnull(DM.distance_matrix), 'NULL')
+            columns = ['geouid']
+
+            for col in DM.distance_matrix.columns.values[1:]:
+                col_id = "poiuid_" + "".join([i for i in col if i.isdigit()])
+                columns.append(col_id)
                 if col == DM.distance_matrix.columns.values[-1]:
-                    query_create += ", " + col + " text)"
+                    query_create += ", " + col_id  + " numeric)"
                 else:
-                    query_create += ", " + col + " text"
+                    query_create += ", " + col_id  + " numeric"
 
             self.execute_query(query_create, "created distance_matrix_" + profile)
 
-            columns = ", ".join(DM.distance_matrix.columns.values.tolist()) # list of columns as a string
+            #columns = ", ".join(DM.distance_matrix.columns.values.tolist()) # list of columns as a string
+            columns = ", ".join(columns)
             rows = DM.distance_matrix.to_numpy().tolist() # list of rows
 
             # for each row in distance matrix
             for i in DM.distance_matrix.index:
                 rows[i] = [str(value) for value in rows[i]] # cast each row value as string
-                values = "'" + "', '".join(rows[i]) + "'" # store a row's values into a list as a string
+                values = ", ".join(rows[i]) # store a row's values into a list as a string
 
                 # insert row into database table
                 query_insert = """ INSERT into distance_matrix_%s (%s) VALUES (%s);
                 """ % (profile, columns, values)
                 self.execute_query(query_insert, "updated distance_matrix")
-
+                print(query_insert)
             # create index for distance_matrix table
             self.execute_query("CREATE INDEX idx_distance_matrix_%s ON distance_matrix_%s (%s);" % (profile, profile, columns), "indexed distance_matrix_%s" % (profile))
 
@@ -173,7 +187,7 @@ class InitSchema():
 
             query_insert = """ INSERT into poi(%s) VALUES (%s, ST_Transform(ST_SetSRID(ST_MakePoint(%s, %s),%s),3347),%s);
             """ % (sql_col_string, vals_default, lng, lat, self.config.supply_projection, vals_info)
-            print(query_insert)
+
             self.execute_query(query_insert, "updated poi")
 
         # create index for poi table

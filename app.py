@@ -4,7 +4,7 @@ from waitress import serve
 from werkzeug.security import generate_password_hash, check_password_hash
 import json
 import sys
-from modules import db
+from modules import db, model
 from dotenv import load_dotenv
 import os
 import gzip
@@ -49,9 +49,8 @@ def model():
     beta = float(req['beta'])
     transportation = req['transportation']
     threshold = int(req['threshold'])
-    bounds = req['bounds']
-    print(bounds)
-    # data = model()
+    bounds = req['bounds'] # {'_southWest': {'lat': 45.25362179991922, 'lng': -74.80590820312501}, '_northEast': {'lat': 45.91103315853964, 'lng': -72.49603271484376}}
+    test = model.accessibiltiy(bounds, beta, transportation, threshold)
     demand_boundary = json.dumps(db.get_demand('boundary'))
     return demand_boundary
 
