@@ -24,6 +24,11 @@ class Config:
 			print(JSON_ERROR)
 
 		try:
+			self.lrgshape_projection = data['files']['shape_large']['projection']
+		except(KeyError):
+			print(JSON_ERROR)
+
+		try:
 			self.sml_popfile = data['files']['population_small']['file']
 		except(KeyError):
 			print(JSON_ERROR)

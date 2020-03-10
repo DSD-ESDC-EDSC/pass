@@ -75,8 +75,8 @@ class InitSchema():
         "Create each PostgreSQL database table"
 
         self.init_demand()
-        self.init_poi()
-        self.init_distance_matrix()
+        #self.init_poi()
+        #self.init_distance_matrix()
 
     def init_distance_matrix(self, profiles=["car"]):
         "Create distance_matrix database table"
@@ -231,7 +231,7 @@ class InitSchema():
             pop = feature.GetField(self.calculated_centroid.get_column_by_type('demand').get_colname()) # population / weight ?
             geometry = feature.GetGeometryRef()
             wkt = geometry.ExportToWkt()
-            self.execute_query("INSERT INTO demand (geoUID, boundary, centroid, pop) VALUES (%s,ST_SetSRID(ST_GeomFromText(%s),3347),%s,%s);", "updated demand", (fuid,wkt,centroid,pop))
+            self.execute_query("INSERT INTO demand (geoUID, boundary, centroid, pop) VALUES (%s,ST_Transform(ST_SetSRID(ST_GeomFromText(%s),%s),3347),ST_Transform(ST_SetSRID(ST_GeomFromText(%s),%s),3347),%s);", "updated demand", (fuid, wkt, self.config.lrgshape_projection, centroid, self.config.lrgshape_projection, pop))
             self.db_conn.conn.commit()
 
         # create index for demand table
