@@ -28,7 +28,7 @@ import sys
 
 import numpy as np
 
-from aceso import decay
+from modules.aceso import decay
 
 
 class GravityModel(object):
@@ -151,44 +151,44 @@ class GravityModel(object):
             An array of access scores at each demand location.
         """
 
-        if demand_array is None: # if don't have population of each demand location, weight them each equally 
+        if demand_array is None: # if don't have population of each demand location, weight them each equally
             demand_array = np.ones(distance_matrix.shape[0])
         if supply_array is None: # if no Points of Service 'attractiveness' data (e.g., number of workers at each location) is specified, weight them all equally
             supply_array = np.ones(distance_matrix.shape[1])
 
-        ######### Step 2 (part 1/2) in 3SFCA: Calculating Denominator of Equation #########  
+        ######### Step 2 (part 1/2) in 3SFCA: Calculating Denominator of Equation #########
         # Prob * P * W
 
-        demand_potentials = self._calculate_demand_potentials( 
+        demand_potentials = self._calculate_demand_potentials(
             distance_matrix=distance_matrix,
             demand_array=demand_array,
-        ) 
+        )
 
-        inverse_demands = np.reciprocal(demand_potentials) # inverting the demand potential to be able to multiply the service capacity/supply 
-        inverse_demands[np.isinf(inverse_demands)] = 0.0 # if the initial demand potential was 0, it will now be infinite, so recode back to 0 
-        
-        ######### Step 2 (part 2/2) in 3SFCA: Calculating Provider to Population Ratio  ######### 
-        # S / (Prob * P * W) 
+        inverse_demands = np.reciprocal(demand_potentials) # inverting the demand potential to be able to multiply the service capacity/supply
+        inverse_demands[np.isinf(inverse_demands)] = 0.0 # if the initial demand potential was 0, it will now be infinite, so recode back to 0
+
+        ######### Step 2 (part 2/2) in 3SFCA: Calculating Provider to Population Ratio  #########
+        # S / (Prob * P * W)
         access_ratio_matrix = supply_array * inverse_demands # supply * inverse_demands == supply / demands
-        
-        ######### Step 3 (part 1/3) in 3SFCA: Multiplying PPR and Distance Decays  #########  
+
+        ######### Step 3 (part 1/3) in 3SFCA: Multiplying PPR and Distance Decays  #########
         # R * W
         access_ratio_matrix = access_ratio_matrix * np.power(
             self.decay_function(distance_matrix),
-            self.suboptimality_exponent # suboptimality_exponent will always be 1 for 3SFCA method 
-        ) 
+            self.suboptimality_exponent # suboptimality_exponent will always be 1 for 3SFCA method
+        )
 
-        ######### Step 3 (part 2/3) in 3SFCA: Multiplying (PPR and Distance Decays) and Selection Weights #########  
-        # Prob * R * W 
-        if self.huff_normalization: # huff normalization is always true with the 3SFCA method 
-            access_ratio_matrix *= self._calculate_interaction_probabilities(distance_matrix) 
+        ######### Step 3 (part 2/3) in 3SFCA: Multiplying (PPR and Distance Decays) and Selection Weights #########
+        # Prob * R * W
+        if self.huff_normalization: # huff normalization is always true with the 3SFCA method
+            access_ratio_matrix *= self._calculate_interaction_probabilities(distance_matrix)
 
-        ######### Step 3 (part 3/3) in 3SFCA: Summing over population centroid #########  
+        ######### Step 3 (part 3/3) in 3SFCA: Summing over population centroid #########
         # sum(Prob * R * W)
         return np.nansum(access_ratio_matrix, axis=1) #  will leave us with one score per DA
 
 
-    # Step 2 
+    # Step 2
     def _calculate_demand_potentials(self, distance_matrix, demand_array):
         """Calculate the demand potential at each input location.
 
@@ -197,11 +197,11 @@ class GravityModel(object):
         array
             An array of demand at each supply location.
         """
-        demand_matrix = demand_array.reshape(-1, 1) * self.decay_function(distance_matrix) # applying decay scores to populations 
+        demand_matrix = demand_array.reshape(-1, 1) * self.decay_function(distance_matrix) # applying decay scores to populations
                                                                                            # (the farther away a location is, the smaller the decay score and, consequently, the smaller the weighted population)
         if self.huff_normalization:
-            demand_matrix *= self._calculate_interaction_probabilities(distance_matrix) # if normalizing, apply the selection weights as well 
-        return np.nansum(demand_matrix, axis=0) # sum over columns, will give us one value for each POS 
+            demand_matrix *= self._calculate_interaction_probabilities(distance_matrix) # if normalizing, apply the selection weights as well
+        return np.nansum(demand_matrix, axis=0) # sum over columns, will give us one value for each POS
 
     ######### Step 1 in 3SFCA: Calculating Selection Weights #########
     # Prob = Cd^B / sum(Cd^B) (in our case C is an array of 1s)

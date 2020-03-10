@@ -1,8 +1,9 @@
-from aceso import decay, gravity
-import db
+import modules.aceso
+import modules.db
 
-def accessibiltiy(bounds, beta, transportation, threshold):
-
+def accessibility(bounds, beta, transportation, threshold):
+    print(bounds)
+    return bounds
     # prepare params (query db based on params):
     # SELECT demand WHERE
     # SELECT poi where
