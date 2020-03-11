@@ -1,7 +1,7 @@
 import json
 
 
-JSON_ERROR = 'JSON Error. Please ensure format is correct.'
+JSON_ERROR = 'JSON Error. Unable to read config for file '
 
 class Config:
 
@@ -14,68 +14,58 @@ class Config:
 
 		# files
 		try:
-			self.sml_shapefile = data['files']['shape_small']['file']
+			self.demand_geo_weight_file = data['files']['demand_geo_weight']['file']
 		except(KeyError):
-			print(JSON_ERROR)
+			print(JSON_ERROR + 'demand_geo_weight')
 
 		try:
-			self.lrg_shapefile = data['files']['shape_large']['file']
+			self.demand_geo_file = data['files']['demand_geo']['file']
 		except(KeyError):
-			print(JSON_ERROR)
+			print(JSON_ERROR + 'demand_geo')
 
 		try:
-			self.sml_popfile = data['files']['population_small']['file']
+			self.demand_pop_file = data['files']['demand_pop']['file']
 		except(KeyError):
-			print(JSON_ERROR)
-
-		try:
-			self.lrg_popfile = None
-		except(KeyError):
-			print(JSON_ERROR)
+			print(JSON_ERROR + 'demand_pop')
 
 		try:
 			self.supply_file = data['files']['supply']['file']
 		except(KeyError):
-			print(JSON_ERROR)
+			print(JSON_ERROR + 'supply')
 
 		try:
-			self.supply_projection = data['files']['supply']['projection']
+			self.supply_crs = data['files']['supply']['crs']
 		except(KeyError):
-			print(JSON_ERROR)
+			print(JSON_ERROR + 'supply')
 
 		# file types
 		try:
-			self.smlshape_type = data['files']['shape_small']['type']
+			self.demand_geo_weight_type = data['files']['demand_geo_weight']['type']
 		except(KeyError):
-			print(JSON_ERROR)
+			print(JSON_ERROR + 'demand_geo_weight')
 
 		try:
-			self.lrgshape_type = data['files']['shape_large']['type']
+			self.demand_geo_type = data['files']['demand_geo']['type']
 		except(KeyError):
-			print(JSON_ERROR)
+			print(JSON_ERROR + 'demand_geo')
 
 		try:
-			self.smlpop_type = data['files']['population_small']['type']
+			self.demand_pop_type = data['files']['demand_pop']['type']
 		except(KeyError):
-			print(JSON_ERROR)
-
-		try:
-			self.lrgpop_type = None
-		except(KeyError):
-			print(JSON_ERROR)
+			print(JSON_ERROR + 'demand_pop')
 
 		try:
 			self.supply_type = data['files']['supply']['type']
 		except(KeyError):
-			print(JSON_ERROR)
+			print(JSON_ERROR + 'supply')
 
 
 		# encoding
 
 		try:
-			self.smlpop_encode = data['files']['population_small']['encoding']
+			self.demand_pop_encode = data['files']['demand_pop']['encoding']
 		except(KeyError):
-			print(JSON_ERROR)
+			print(JSON_ERROR + 'demand_pop')
 
 		try:
 			self.lrgpop_encode = None
@@ -85,44 +75,39 @@ class Config:
 		try:
 			self.supply_encode = data['files']['supply']['encoding']
 		except(KeyError):
-			print(JSON_ERROR)
+			print(JSON_ERROR + 'supply')
 
 		# projection
 		try:
-			self.smlshape_projection = data['files']['shape_small']['projection']
+			self.demand_geo_weight_crs = data['files']['demand_geo_weight']['crs']
 		except(KeyError):
-			print(JSON_ERROR)
+			print(JSON_ERROR + 'demand_geo_weight')
 
 		try:
-			self.lrgshape_projection = data['files']['shape_large']['projection']
+			self.demand_geo_crs = data['files']['demand_geo']['crs']
 		except(KeyError):
-			print(JSON_ERROR)
+			print(JSON_ERROR + 'demand_geo')
 
 		# columns
 		try:
-			self.smlshape_columns = data['files']['shape_small']['columns']
+			self.demand_geo_weight_columns = data['files']['demand_geo_weight']['columns']
 		except(KeyError):
-			print(JSON_ERROR)
+			print(JSON_ERROR + 'demand_geo_weight')
 
 		try:
-			self.lrgshape_columns = data['files']['shape_large']['columns']
+			self.demand_geo_columns = data['files']['demand_geo']['columns']
 		except(KeyError):
-			print(JSON_ERROR)
+			print(JSON_ERROR + 'demand_geo')
 
 		try:
-			self.smlpop_columns = data['files']['population_small']['columns']
+			self.demand_pop_columns = data['files']['demand_pop']['columns']
 		except(KeyError):
-			print(JSON_ERROR)
-
-		try:
-			self.lrgpop_columns = None
-		except(KeyError):
-			print(JSON_ERROR)
+			print(JSON_ERROR + 'demand_pop')
 
 		try:
 			self.supply_columns = data['files']['supply']['columns']
 		except(KeyError):
-			print(JSON_ERROR)
+			print(JSON_ERROR + 'supply')
 
 		## ORS stuff
 
@@ -144,7 +129,7 @@ class Config:
 
 		self.required_cols = {}
 		self.required_cols['shape'] = ['ID', 'LRG_ID', 'geometry']
-		self.required_cols['demand'] = ['ID']
+		self.required_cols['demand'] = ['ID', 'demand']
 		self.required_cols['supply'] = ['ID', 'LRG_ID', 'latitude', 'longitude']
 
 		self.types_dict = {'str': [str, 'O'], 'int': [float, int]}

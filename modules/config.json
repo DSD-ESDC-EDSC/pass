@@ -1,118 +1,103 @@
 {
 	"files": {
-		"shape_large": {
-			"file":"C:/Code/pos-accessibility/pos-accessibility-app/data/demand_lg_pop_mtl.shp",
+		"demand_geo": {
+			"file":"D:/Projects/geo/Data/Census 2016 Boundaries/lda_000b16a_e (da)/lda_000b16a_e.shp",
 			"type":"shape",
-			"projection": "epsg:3347",
+			"crs": "epsg:3347",
 			"columns": {
-				"LRG_ID" : {
-					"name": "CMAUID",
-					"type": "LRG_ID",
-					"descr": "Census Metropolitan Area ID",
-					"unit": "int"
-						},
 				"ID" : {
 					"name": "DAUID",
-					"type": "ID",
-					"descr": "Dissemination Area ID",
+					"type": "geouid",
+					"unit": "int"
+						},
+				"LRG_ID" : {
+					"name": "CMAUID",
+					"type": "lrg_id",
 					"unit": "int"
 						},
 				"geometry": {
 					"name": "geometry",
 					"type": "geometry",
-					"descr": "DA boundaries",
 					"unit": "geometry"
 						}
 				}
 			},
-		"shape_small": {
-			"file": "C:/Code/pos-accessibility/pos-accessibility-app/data/demand_sm_pop_mtl.shp",
+		"demand_geo_weight": {
+			"file": "D:/Projects/geo/Data/Census 2016 Boundaries/ldb_000b16a_e(db)/ldb_000b16a_e.shp",
 			"type": "shape",
-			"projection":"epsg:3347",
+			"crs":"epsg:3347",
 			"columns": {
 				"ID" : {
 					"name": "DBUID",
-					"type": "ID",
-					"descr": "Dissemination Block ID",
+					"type": "geouid",
 					"unit": "int"},
 				"LRG_ID" : {
 					"name": "DAUID",
-					"type": "LRG_ID",
-					"descr": "Dissemination Area ID",
+					"type": "lrg_id",
 					"unit": "int"},
 				"geometry": {
 					"name": "geometry",
 					"type": "geometry",
-					"descr": "DB boundaries",
 					"unit": "geometry"
 						}
 					}
 		},
-		"population_small": {
-			"file":"C:/Code/pos-accessibility/pos-accessibility-app/data/demand_sm_population.csv",
+		"demand_pop": {
+			"file":"D:/Projects/geo/Data/Census 2016 Demographics (DA and DB Levels)/db_population.csv",
 			"type":"demand",
 			"encoding":"latin-1",
 			"columns": {
 				"ID": {
 					"name":"DBuid/IDidu",
-					"type":"ID",
-					"descr":"Dissemination Block ID",
+					"type":"geouid",
 					"unit": "int"
-					},
+					}, 
 				"demand": {
 					"name":" DBpop2016/IDpop2016",
 					"type": "demand",
-					"descr":"Dissemination Block Total Population",
 					"unit": "int"
-				}
+}
 			}
 		},
 		"supply": {
-			"file":"C:/Code/pos-accessibility/pos-accessibility-app/data/Sites_Jun2019.csv",
+			"file":"D:/Projects/geo/Data/Service Canada Office Locations/Sites_Jun2019.csv",
 			"type":"supply",
 			"encoding":"latin-1",
-			"projection":"4326",
+			"crs":"4326",
 			"columns": {
 				"ID": {
 					"name":"OBJECTID",
-					"type":"ID",
-					"descr":"supply ID",
+					"type":"geouid",
 					"unit": "int"
 					},
 				"latitude" : {
 					"name":"Latitude",
 					"type":"latitude",
-					"descr":"Latitude point of supply",
 					"unit": "float"
 				},
 				"longitude" : {
 					"name":"Longitude",
 					"type":"longitude",
-					"descr":"Longitude point of supply",
 					"unit": "float"
 				},
 				"LRG_ID" : {
 					"name":"CMAUID",
-					"type":"LRG_ID",
-					"descr":"ID of city",
+					"type":"lrg_id",
 					"unit": "str"
 				},
 				"address": {
 					"name":"Address",
 					"type": "supply_info",
-					"descr":"Address of supply",
 					"unit": "text"
 				},
 				"city": {
 					"name":"CSDNAME",
 					"type": "supply_info",
-					"descr":"City of supply",
 					"unit": "text"
 				},
 				"name": {
 					"name":"Site_Name",
 					"type": "supply_info",
-					"descr":"supply Site Name",
 					"unit": "text"
 				}
 			}

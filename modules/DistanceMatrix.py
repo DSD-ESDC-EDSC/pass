@@ -16,8 +16,10 @@ class DistanceMatrix:
 	def __init__(self, POI, weighted_centroid, ORS_client_url, catchment_range, catchment_range_type, catchment_profile,
 					catchment_sleep, dm_metric_type, dm_unit, dm_sleep, ORS_timeout):
 
-		self.web_projection = 'epsg:4326'
-		self.SC_projection = 'epsg:3347'
+		self.web_projection = 4326
+		self.SC_projection = 3347
+
+		self.crs_preffix = 'epsg:'
 
 		# ORS variables
 		self.client = ors.Client(key="", base_url = ORS_client_url, timeout = ORS_timeout, retry_over_query_limit = True)
@@ -36,28 +38,25 @@ class DistanceMatrix:
 
 		# TO DO: Update weighted_centroid is that it can either be a data frame from db or from self
 
-		self.weighted_centroid.df.set_geometry(self.weighted_centroid.get_column_by_type('centroid').get_colname(), inplace = True)
+		self.weighted_centroid = self.weighted_centroid.set_geometry('centroid')
 
-		if self.weighted_centroid.get_projection() != self.web_projection:
-			self.weighted_centroid.change_projection(self.web_projection)
+		if self.weighted_centroid.crs != self.crs_preffix + str(self.web_projection):
+			self.weighted_centroid.to_crs({'init': self.crs_preffix + str(self.web_projection)}, inplace = True)
 
-		self.weighted_centroid.df['latitude'] = self.weighted_centroid.df.geometry.y
-		self.weighted_centroid.df['longitude'] = self.weighted_centroid.df.geometry.x
-
-		self.weighted_centroid.add_col({'colname': 'latitude', 'coltype': 'latitude', 'coldesc': 'latitude of point', 'unit': 'geo'})
-		self.weighted_centroid.add_col({'colname': 'longitude', 'coltype': 'longitude', 'coldesc': 'longitude of point', 'unit': 'geo'})
+		self.weighted_centroid['latitude'] = self.weighted_centroid.geometry.y
+		self.weighted_centroid['longitude'] = self.weighted_centroid.geometry.x
 
 		self.POI = POI
 
-		self.POI.df['POI'] = [Point(xy) for xy in zip(self.POI.df[self.POI.get_column_by_type('longitude').get_colname()], self.POI.df[self.POI.get_column_by_type('latitude').get_colname()])]
-		self.POI.add_col({'colname': 'POI', 'coltype': 'geometry', 'coldesc': 'POI lat/lon', 'unit': 'geo'})
+		self.POI['POI'] = [Point(xy) for xy in zip(self.POI.longitude, self.POI.latitude)]
 
-		self.POI = GeoDataFrame(from_file = False, projection = self.web_projection, geometry = self.POI.get_column_by_type('geometry'), df = self.POI)
+		self.POI = self.POI.set_geometry('POI')
+		self.POI.crs = {'init': self.crs_preffix + str(self.web_projection)}
 
 		# calculate catchment area for each POS
 		self.ISO = self.get_supply_catchment()
 
-		self.in_iso = self.weighted_centroid.df
+		self.in_iso = self.weighted_centroid
 
 		# filter centroids included in each catchment
 		self.filter_centroids()
@@ -65,26 +64,24 @@ class DistanceMatrix:
 		# get distance matrix
 		self.dist_m_wrapper()
 
-		pos_cols = [col for col in self.weighted_centroid.df if col.startswith('POS')]
+		import pdb; pdb.set_trace()
+
+		pos_cols = [col for col in self.weighted_centroid if col.startswith('POS')]
 
 		cols_tokeep = [self.weighted_centroid.get_column_by_type('ID').get_colname()] + pos_cols
 
-		self.distance_matrix = self.weighted_centroid.df[cols_tokeep]
+		self.distance_matrix = self.weighted_centroid[cols_tokeep]
 
 	def get_supply_catchment(self):
 		polygons = []
 		ids = []
 		locations_list = []
 
-		# not_found_i = []
-		# not_found_locations = []
-
-		# import pdb; pdb.set_trace()
-
-		# IDs of all POIs -- self.POI.df[self.POI.get_column_by_type('ID').get_colname()]
-		for i, loc in zip(self.POI.df[self.POI.get_column_by_type('ID').get_colname()], zip(self.POI.df[self.POI.get_column_by_type('longitude').get_colname()], self.POI.df[self.POI.get_column_by_type('latitude').get_colname()])):
+		for i, loc in zip(self.POI.geouid, zip(self.POI.longitude, self.POI.latitude)):
 			time.sleep(self.catchment_sleep)
 			try:
+				# import pdb; pdb.set_trace()
+
 				call = self.client.isochrones(locations = [loc], profile = self.catchment_profile, range = [self.catchment_range])
 
 				iso_geometry = call['features'][0]['geometry']
@@ -104,7 +101,7 @@ class DistanceMatrix:
 				# not_found_locations.append(loc)
 				print('unable to build isochrone for loc ', loc, '. It will not be included in results.')
 
-		polygon = gpd.GeoDataFrame(index = ids, crs = self.web_projection, geometry = polygons)
+		polygon = gpd.GeoDataFrame(index = ids, crs = self.crs_preffix + str(self.web_projection), geometry = polygons)
 		polygon['id'] = ids
 		polygon['location'] = locations_list
 
@@ -113,29 +110,31 @@ class DistanceMatrix:
 	def filter_centroids(self):
 
 		for index, row in self.ISO.iterrows():
-			self.weighted_centroid.df['POS_' + str(row['id'])] = self.weighted_centroid.df[self.weighted_centroid.get_column_by_type('centroid').get_colname()].map(lambda x: True if row.geometry.contains(x) == True else False)
+			self.weighted_centroid['poi_' + str(row['id'])] = self.weighted_centroid['centroid'].map(lambda x: True if row.geometry.contains(x) == True else False)
 
 	def dist_m_wrapper(self):
 		# get list of POS IDs
 
-		POS_IDs = [int(col[4:]) for col in self.weighted_centroid.df if col.startswith('POS')]
+		import pdb; pdb.set_trace()
+
+		POS_IDs = [int(col[4:]) for col in self.weighted_centroid if col.startswith('poi')]
 
 		for posID in POS_IDs:
-			colname = 'POS_' + str(posID)
+			colname = 'poi_' + str(posID)
 			pos = list(self.ISO[self.ISO.id == posID].iloc[0]['location'])
 
-			centroid_subset = self.weighted_centroid.df[self.weighted_centroid.df[colname]]
-			dm_name = 'POS' + str(posID) + '_' + self.dm_metric_type
+			centroid_subset = self.weighted_centroid[self.weighted_centroid[colname]]
+			dm_name = 'poiuid_' + str(posID) 
 
 			if len(centroid_subset.index) > 0:
-				result = self.get_dist_m(pos, centroid_subset, self.weighted_centroid.get_column_by_type('latitude').get_colname(), self.weighted_centroid.get_column_by_type('longitude').get_colname())
+				result = self.get_dist_m(pos, centroid_subset, 'latitude', 'longitude')
 			else:
-				centroid_subset[dm_name] = np.nan
+				centroid_subset[dm_name] = None
 				result = centroid_subset
 
 			result.rename(columns = {self.dm_metric_type:dm_name}, inplace = True)
-			self.weighted_centroid.df = self.weighted_centroid.df.merge(result[[self.weighted_centroid.get_column_by_type('ID').get_colname(), dm_name]], how = 'left', on = self.weighted_centroid.get_column_by_type('ID').get_colname())
-			self.weighted_centroid.df.drop(labels = colname, axis = 1, inplace = True)
+			self.weighted_centroid = self.weighted_centroid.merge(result[['geouid', dm_name]], how = 'left', on = 'geouid')
+			self.weighted_centroid.drop(labels = colname, axis = 1, inplace = True)
 
 
 	def get_dist_m(self, pos, centroid_subset, lat, lon):

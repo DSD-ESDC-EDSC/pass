@@ -37,7 +37,7 @@ class DataFrame:
 			'''
 			try:
 				# creating new column object 
-				new_col = Column(columns[col]['name'], columns[col]['type'], columns[col]['descr'], columns[col]['unit'])
+				new_col = Column(columns[col]['name'], columns[col]['type'], columns[col]['unit'])
 				new_columns.append(new_col)
 			except:
 				print('Please ensure you have all required columns in config file.')
@@ -55,7 +55,7 @@ class DataFrame:
 				unit = self.df[columns[col]['name']].dtype
 				if unit == 'O':
 					self.preprocess_opt_columns(columns[col]['name'])
-				new_col = Column(columns[col]['name'], columns[col]['type'], columns[col]['descr'], unit)
+				new_col = Column(columns[col]['name'], columns[col]['type'], unit)
 				new_columns.append(new_col)
 
 		return new_columns
@@ -143,14 +143,6 @@ class DataFrame:
 
 		return coltypes
 
-	def get_col_descs(self):
-		""" Returns descriptions of all column objects """
-		coldescs = []
-		for column in self.columns:
-			coldescs.append(column.get_coldesc())
-
-		return coldescs		
-
 	def get_col_units(self):
 		""" Returns units of all column objects """
 		colunits = []
@@ -166,12 +158,12 @@ class DataFrame:
 	def add_uniform_col(self, new_col_name):
 		""" Adding column of 1s to df """
 		self.df[new_col_name] = 1
-		new_col = self.add_col({'colname': new_col_name, 'coltype':new_col_name, 'coldesc': 'uniform ' + new_col_name, 'unit': 'int'})
+		new_col = self.add_col({'colname': new_col_name, 'coltype':new_col_name, 'unit': 'int'})
 
 	def add_col(self, new_col, override = False):
 		""" Adds new column object to DataFrame. """
 		if type(new_col) == dict:
-			new_col = Column(new_col['colname'], new_col['coltype'], new_col['coldesc'], new_col['unit'])
+			new_col = Column(new_col['colname'], new_col['coltype'],new_col['unit'])
 			
 		if override:
 			# replace column in current DataFrame object with df2 column (if there are overlapping column types) 	
