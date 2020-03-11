@@ -19,7 +19,7 @@ def accessibility(bounds, beta, transportation, threshold):
 
     # store in an array the geouids that are contained within the client's window view (bounding box)
     demand_query = """
-        SELECT geouid, pop
+        SELECT geouid, ST_AsText(ST_Transform(boundary, 4326)) as boundary, pop::float
         FROM demand
         WHERE ST_Contains(
             ST_Transform(
@@ -37,7 +37,7 @@ def accessibility(bounds, beta, transportation, threshold):
 
     # store in an array the demand population counts that are contained within the client's window view (bounding box)
     supply_query = """
-        SELECT geouid, supply
+        SELECT geouid, supply::float
         FROM poi
         WHERE ST_Contains(
             ST_Transform(
@@ -53,12 +53,14 @@ def accessibility(bounds, beta, transportation, threshold):
         poi_array = np.array(poi['geouid'])
         supply_array = np.array(poi['supply'])
 
-    cols = ", poiuid_".join(poi_array)
+    # TO DO: INSTEAD OF THIS UPDATE db_init's init_distance_matrix to store as float, not numeric
+    floats = [col + "::float" for col in poi_array]
+    cols = ", poiuid_".join(floats)
     ids = ", ".join(map(str, geouid_array))
 
     # create data frame of distance matrix by first subsetting it based on the geouids and poiuids
-    dm_query =  """
-        SELECT geouid, poiuid_%s
+    dm_query = """
+        SELECT poiuid_%s
         FROM distance_matrix_%s
         WHERE geouid = ANY(ARRAY[%s])
         ORDER BY geouid;
@@ -81,20 +83,15 @@ def accessibility(bounds, beta, transportation, threshold):
     logger.info(f'ARRAY LENGTH OF SUPPLY COUNTS: {supply_array_len}')
     logger.info(f'COLUMNS OF DISTANCE MATRIX: {distance_matrix_len}')
 
-    # run models
-    # scores should append to demand df
-    print(type(demand_array))
-    print(type(distance_matrix["poiuid_" + str(poi_array[0])]))
-    print(type(beta))
+    try:
+        model = aceso.ThreeStepFCA(decay_function="negative_power", decay_params={"beta": beta})
+        demand["scores"] = model.calculate_accessibility_scores(
+            distance_matrix=distance_matrix,
+            demand_array=demand_array,
+            supply_array=supply_array
+        )
+        logger.info(f'Successfully calculated accessibility scores')
+    except Exception as e:
+        logger.error(f'Unsuccessfully calculated accessibility scores: {e}')
 
-    # TO DO: FIGURE OUT DATA TYPE ISSUES CAUSING ERRORS
-
-    model = aceso.ThreeStepFCA(decay_function="negative_power", decay_params={"beta": 1.3})
-    demand["scores"] = model.calculate_accessibility_scores(
-        distance_matrix=distance_matrix,
-        demand_array=demand_array,
-        supply_array=supply_array
-    )
-    print(demand["scores"])
-
-    # return scores
+    return demand

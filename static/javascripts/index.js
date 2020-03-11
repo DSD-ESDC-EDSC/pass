@@ -29,7 +29,8 @@ function runModel(map){
     async: false,
     cache: false,
     success: function(scores) {
-      layer = addChoropleth(scores[0],map);
+      console.log(scores)
+      layer = addChoropleth(scores,map);
       //map.removeLayer(layer)
       $("#menu").append("<button id='download' class='btn'>Download Scores as CSV</button>");
       $("#download").on("click", function(){

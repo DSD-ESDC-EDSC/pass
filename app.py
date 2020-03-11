@@ -7,6 +7,9 @@ import sys
 from modules import db, model
 from dotenv import load_dotenv
 import os
+import geopandas as gpd
+from geojson import Feature, FeatureCollection, Polygon
+from shapely import wkt
 import gzip
 try:
     from StringIO import StringIO ## for Python 2
@@ -46,19 +49,26 @@ def index():
 @app.route('/model',methods=['POST'])
 def run_model():
     req = request.get_json()
-    beta = decimal.Decimal(req['beta'])
+    beta = float(req['beta']) # decimal.Decimal(req['beta'])
     transportation = req['transportation']
     threshold = int(req['threshold'])
     bounds = req['bounds']
 
     scores = model.accessibility(bounds, beta, transportation, threshold)
-    demand_boundary = json.dumps(db.get_demand('boundary'))
-    return demand_boundary
+    scores['boundary'] = scores['boundary'].apply(wkt.loads)
+    features = scores.apply(
+        lambda row: Feature(geometry=row['boundary']),
+        axis=1).tolist()
+    properties = scores.drop(['boundary'], axis=1).to_dict('records')
+    feature_collection = FeatureCollection(features=features, properties=properties)
+    feature_collection = json.dumps(feature_collection)
+
+    return feature_collection
 
 # route for bad HTTP requests
 @app.errorhandler(400)
 def error(e):
-	return render_template('error.html')
+    return render_template('error.html')
 
 if __name__ == '__main__':
-	serve(app, host=APP_HOST,port=APP_PORT,threads=APP_THREADS)
+    serve(app, host=APP_HOST,port=APP_PORT,threads=APP_THREADS)
