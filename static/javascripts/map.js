@@ -71,24 +71,23 @@ function addPopupContent(properties) {
   return title + content;
 }
 
-function getColor(d, int) {
-    return d > 1000 ? '#5e4fa2' :
-           d > 500  ? '#3288bd' :
-           d > 200  ? '#66c2a5' :
-           d > 100  ? '#e6f598' :
-           d > 50   ? '#fdae61' :
-           d > 20   ? '#f46d43' :
-           d > 10   ? '#d53e4f' :
-                      '#9e0142';
-}
+// function getColor(d, int) {
+//     return d > 1000 ? '#5e4fa2' :
+//            d > 500  ? '#3288bd' :
+//            d > 200  ? '#66c2a5' :
+//            d > 100  ? '#e6f598' :
+//            d > 50   ? '#fdae61' :
+//            d > 20   ? '#f46d43' :
+//            d > 10   ? '#d53e4f' :
+//                       '#9e0142';
+// }
 
-function addChoropleth(feature, map) {
+function addChoropleth(feature, map, layerGroup) {
   $(".legend").remove()
-  //map.removeLayer(geojsonLayer);
+  console.log(layerGroup)
 
-  console.log(feature)
 
-  //var getColor = chroma.scale(['#9e0142', '#5e4fa2']).domain([0, 1000]);
+  var getColor = chroma.scale(['#9e0142', '#5e4fa2']).domain([0, 1]);
 
   function style(feature) {
     return {
@@ -101,7 +100,12 @@ function addChoropleth(feature, map) {
     };
   }
 
+  layerGroup.eachLayer(function(layer) {
+    map.removeLayer(layer)
+  })
+
   var choropleth = L.geoJson(feature, {style: style}).addTo(map);
+  layerGroup.addLayer(choropleth)
 
   var legend = L.control({position: 'bottomright'});
 
