@@ -57,10 +57,10 @@ def run_model():
     scores = model.accessibility(bounds, beta, transportation, threshold)
     scores['boundary'] = scores['boundary'].apply(wkt.loads)
     features = scores.apply(
-        lambda row: Feature(geometry=row['boundary']),
+        lambda row: Feature(geometry=row['boundary'], properties={'geouid':row['geouid'], 'score':row['scores']}),
         axis=1).tolist()
-    properties = scores.drop(['boundary'], axis=1).to_dict('records')
-    feature_collection = FeatureCollection(features=features, properties=properties)
+
+    feature_collection = FeatureCollection(features=features)
     feature_collection = json.dumps(feature_collection)
 
     return feature_collection
