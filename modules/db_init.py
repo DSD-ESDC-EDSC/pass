@@ -9,13 +9,12 @@ This module manages initializes the PostgreSQL database
 
 from psycopg2 import pool
 import csv
+import sys 
 import json
 import osgeo.ogr
 import geopandas as gp
 import numpy as np
 from Config import Config
-from GeoDataFrame import GeoDataFrame
-from CSVDataFrame import CSVDataFrame
 from Centroid import Centroid
 from DistanceMatrix import DistanceMatrix
 from db import init_logger
@@ -40,8 +39,8 @@ class InitSchema():
             self.poi = utils.read_file(self.config.supply_file, self.config.supply_type, self.config.supply_columns, self.config.required_cols['supply'], self.config.supply_encode)
             self.demand_geo = utils.read_file(self.config.demand_geo_file, self.config.demand_geo_type, self.config.demand_geo_columns, self.config.required_cols[self.config.demand_geo_type], self.config.demand_geo_crs)
             try: 
-                self.demand_geo_weight = utils.read_file(self.config.demand_geo_weight_file, self.config.demand_geo_weight_type, self.config.demand_geo_weight_columns, self.config.required_cols[self.config.demand_geo_weight_type], self.config.demand_geo_weight_crs )
                 self.centroid = 'weighted'
+                self.demand_geo_weight = utils.read_file(self.config.demand_geo_weight_file, self.config.demand_geo_weight_type, self.config.demand_geo_weight_columns, self.config.required_cols[self.config.demand_geo_weight_type], self.config.demand_geo_weight_crs )
             except:
                 self.centroid = 'geographic'
 
@@ -81,9 +80,8 @@ class InitSchema():
 
     def create_schema(self):
         "Create each PostgreSQL database table"
-
-        # self.init_demand()
-        # self.init_poi()
+        self.init_demand()
+        self.init_poi()
         self.init_distance_matrix()
 
     def init_distance_matrix(self, profiles=["car"]):
@@ -98,8 +96,6 @@ class InitSchema():
         if not hasattr(self, 'poi'):
             self.poi = gp.GeoDataFrame.from_postgis("SELECT * FROM poi;", "retrieved POI", self.db_conn.conn, geom_col = 'point')
 
-        import pdb; pdb.set_trace()
-
         for profile in profiles:
             # TO DO: this will need to change based on different profiles
             try:
@@ -109,6 +105,7 @@ class InitSchema():
                 logger.info(f'Successfully calculated distance matrix for {profile}')
             except Exception as e:
                 logger.error(f'Unsuccessfully calculated the distance matrix for {profile}: {e}')
+                sys.exit(1)
 
             # TO DO: update query for different distance_matrix_* based on mode of transportation (will have to update config.json)
             query_create = """
@@ -120,21 +117,19 @@ class InitSchema():
             # loop through all columns to build query statement to create the distance_matrix_* table
             # TO DO: consider different data type?
 
-            # DM.distance_matrix = DM.distance_matrix.where(pd.notnull(DM.distance_matrix), 'NULL')
+            DM.distance_matrix = DM.distance_matrix.where(pd.notnull(DM.distance_matrix), 'NULL')
             columns = ['geouid']
 
             for col in DM.distance_matrix.columns.values[1:]:
-                col_id = "poiuid_" + "".join([i for i in col if i.isdigit()])
-                columns.append(col_id)
+                columns.append(col)
                 if col == DM.distance_matrix.columns.values[-1]:
-                    query_create += ", " + col_id  + " numeric)"
+                    query_create += ", " + col  + " float)"
                 else:
-                    query_create += ", " + col_id  + " numeric"
+                    query_create += ", " + col  + " float"
 
             self.execute_query(query_create, "created distance_matrix_" + profile)
 
-            #columns = ", ".join(DM.distance_matrix.columns.values.tolist()) # list of columns as a string
-            columns = ", ".join(columns)
+            columns = ", ".join(DM.distance_matrix.columns.values.tolist()) # list of columns as a string
             rows = DM.distance_matrix.to_numpy().tolist() # list of rows
 
             # for each row in distance matrix
@@ -143,8 +138,7 @@ class InitSchema():
                 values = ", ".join(rows[i]) # store a row's values into a list as a string
 
                 # insert row into database table
-                query_insert = """ INSERT into distance_matrix_%s (%s) VALUES (%s);
-                """ % (profile, columns, values)
+                query_insert = """ INSERT into distance_matrix_%s (%s) VALUES (%s);""" % (profile, columns, values)
                 self.execute_query(query_insert, "updated distance_matrix")
                 # print(query_insert)
             # create index for distance_matrix table
@@ -160,9 +154,10 @@ class InitSchema():
             id serial PRIMARY KEY,
             geouid text,
             LRG_ID text,
-            supply int, 
+            supply float, 
             point geometry(POINT,3347)
         """ 
+
         # TO DO: is (POINT, 3347) converting point to 3347 crs or assuming that it's already 3347 crs?
 
         sql_columns = ['id', 'geouid', 'lrg_id', 'supply', 'point']
@@ -173,19 +168,18 @@ class InitSchema():
         self.poi.reset_index(inplace = True)
         self.poi.rename(columns = {'index': 'id'}, inplace = True)
 
-        # self.poi['point'] = utils.create_point(self.poi.longitude, self.poi.latitude)
-
         if 'supply' not in self.poi.columns: 
             self.poi['supply'] = 1
+
+        self.poi.supply = self.poi['supply'].astype(float)
 
         for col in [col for col in self.poi if col.startswith('info')]:
             if self.poi[col].dtype == 'O':
                 unit = 'text'
             else: 
-                unit = 'int'
-
+                unit = 'numeric'
             sql_columns.append(col)
-            query_create = query_create + """,  %s %s""" % (col, unit)
+            query_create = query_create + """,  %s %s""" % ('"' + col + '"', unit)
 
         query_create = query_create + """)"""
 
@@ -215,7 +209,6 @@ class InitSchema():
         "Create the demand database table"
 
         if self.centroid == 'weighted':
-            #
 
             self.demand_geo_weight = self.demand_geo_weight.merge(self.demand_pop, on = 'geouid')
 
@@ -228,11 +221,16 @@ class InitSchema():
             centroid = Centroid(self.demand_geo)
             self.centroid_df = centroid.calculate_geographic_centroid()
 
+        self.centroid_df.pop = self.centroid_df['pop'].astype(float)
+        self.centroid_df.geouid = self.centroid_df['geouid'].astype(int)
+
+        self.centroid_df.reset_index(inplace = True)
+        self.centroid_df.rename(columns = {'index': 'id'}, inplace = True)
+
         centroid_df = self.centroid_df.copy(deep = True)
 
         centroid_df['centroid'] = [x.wkt for x in centroid_df['centroid']]
 
-        centroid_df.reset_index(inplace = True)
 
         centroid_df = osgeo.ogr.Open(centroid_df.to_json())
 
@@ -244,13 +242,51 @@ class InitSchema():
         	CREATE TABLE demand(
         	id serial PRIMARY KEY,
         	geoUID int,
+            pop float, 
         	centroid geometry,
-        	boundary geometry,
-        	pop int)
+        	boundary geometry
         """
+        req_columns = ['id', 'geouid', 'pop']
+        geo_columns = ['centroid', 'boundary']
+        
+
+        pop_columns = []
+        for col in [col for col in self.centroid_df if col.startswith('pop_')]:
+            if self.centroid_df[col].dtype == 'O':
+                unit = 'text'
+            else: 
+                unit = 'float'
+
+            pop_columns.append(col)
+            query_create = query_create + """,  %s %s""" % ('"' + col + '"', unit)
+
+        sql_columns = req_columns + geo_columns + pop_columns
+        sql_col_string = '"' + '", "'.join(sql_columns) + '"'
+
+        query_create = query_create + """)"""
+
         self.execute_query(query_create, "created demand")
 
+        for i in self.centroid_df.index:
+            feature = layer.GetFeature(i)
+            values = self.centroid_df.loc[i]
+
+            req_values = "'" + "', '".join(values[req_columns].astype(str).values.flatten().tolist()) + "'"
+            # req_values = self.centroid_df[req_columns].loc[i] # .astype(str).values.flatten().tolist()
+            geometry = feature.GetGeometryRef().ExportToWkt()
+            centroid = feature.GetGeometryRef().Centroid().ExportToWkt()
+            pop_values = "'" + "', '".join(values[pop_columns].astype(str).values.flatten().tolist()) + "'"
+            # pop_values = self.centroid_df[pop_columns].loc[i]
+
+            query_insert = """ INSERT into demand(%s) VALUES (%s, ST_Transform(ST_SetSRID(ST_GeomFromText(%s),%s),3347), ST_Transform(ST_SetSRID(ST_GeomFromText(%s),%s),3347), %s);
+            """ % (sql_col_string, req_values, "'" + geometry + "'", self.config.demand_geo_crs, "'" + centroid + "'", self.config.demand_geo_crs, pop_values)
+           
+            self.execute_query(query_insert, "updated demand")
+
+        # (fuid,ST_Transform(ST_SetSRID(ST_GeomFromText(wkt),self.config.demand_geo_crs),3347),ST_Transform(ST_SetSRID(ST_GeomFromText(centroid),self.config.demand_geo_crs),3347),pop)
+
         # loop through all features
+        '''
         for i in range(layer.GetFeatureCount()):
             # import pdb; pdb.set_trace()
             feature = layer.GetFeature(i) # index value
@@ -258,11 +294,13 @@ class InitSchema():
             centroid = feature.GetField('centroid') # centroid
             if centroid.startswith("POINT (-n") or centroid.startswith("POINT (n"):
             	centroid = feature.GetGeometryRef().Centroid().ExportToWkt()
-            pop = feature.GetField('demand') # population / weight ?
+            pop = feature.GetField('pop') # population / weight ?
             geometry = feature.GetGeometryRef()
             wkt = geometry.ExportToWkt()
-            self.execute_query("INSERT INTO demand (geoUID, boundary, centroid, pop) VALUES (%s,ST_SetSRID(ST_GeomFromText(%s),3347),%s,%s);", "updated demand", (fuid,wkt,centroid,pop))
+            self.execute_query("INSERT INTO demand (geoUID, boundary, centroid, pop) VALUES (%s,ST_Transform(ST_SetSRID(ST_GeomFromText(%s),%s),3347),ST_Transform(ST_SetSRID(ST_GeomFromText(%s),%s),3347),%s);", "updated demand",
+             (fuid, wkt, self.config.demand_geo_crs, centroid, self.config.demand_geo_crs, pop))
             self.db_conn.conn.commit()
+        '''
 
         # create index for demand table
         self.execute_query("CREATE INDEX idx_demand ON demand USING GIST(centroid, boundary);", "indexed demand")

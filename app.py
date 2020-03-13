@@ -1,8 +1,8 @@
 from base64 import b64decode
 from flask import Flask, request, render_template, jsonify, redirect, url_for, abort, make_response
 from waitress import serve
-from werkzeug.security import generate_password_hash, check_password_hash
 import json
+import decimal
 import sys
 from modules import db, model
 from dotenv import load_dotenv
@@ -44,13 +44,14 @@ def index():
 
 # route for retreiving data for the calculator tool
 @app.route('/model',methods=['POST'])
-def model():
+def run_model():
     req = request.get_json()
-    beta = float(req['beta'])
+    beta = decimal.Decimal(req['beta'])
     transportation = req['transportation']
     threshold = int(req['threshold'])
-    bounds = req['bounds'] # {'_southWest': {'lat': 45.25362179991922, 'lng': -74.80590820312501}, '_northEast': {'lat': 45.91103315853964, 'lng': -72.49603271484376}}
-    test = model.accessibiltiy(bounds, beta, transportation, threshold)
+    bounds = req['bounds']
+
+    scores = model.accessibility(bounds, beta, transportation, threshold)
     demand_boundary = json.dumps(db.get_demand('boundary'))
     return demand_boundary
 

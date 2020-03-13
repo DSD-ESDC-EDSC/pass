@@ -8,18 +8,14 @@ import shapely
 # import matplotlib.pyplot as plt
 import openrouteservice as ors
 
-from GeoDataFrame import GeoDataFrame
-from CSVDataFrame import CSVDataFrame
 
 class DistanceMatrix:
 
 	def __init__(self, POI, weighted_centroid, ORS_client_url, catchment_range, catchment_range_type, catchment_profile,
 					catchment_sleep, dm_metric_type, dm_unit, dm_sleep, ORS_timeout):
 
-		self.web_projection = 4326
-		self.SC_projection = 3347
-
-		self.crs_preffix = 'epsg:'
+		self.web_projection = 'epsg:4326'
+		self.SC_projection = 'epsg:3347'
 
 		# ORS variables
 		self.client = ors.Client(key="", base_url = ORS_client_url, timeout = ORS_timeout, retry_over_query_limit = True)
@@ -36,25 +32,29 @@ class DistanceMatrix:
 		# data
 		self.weighted_centroid = weighted_centroid
 
-		# TO DO: Update weighted_centroid is that it can either be a data frame from db or from self
-
 		self.weighted_centroid = self.weighted_centroid.set_geometry('centroid')
 
-		if self.weighted_centroid.crs != self.crs_preffix + str(self.web_projection):
-			self.weighted_centroid.to_crs({'init': self.crs_preffix + str(self.web_projection)}, inplace = True)
+		if self.weighted_centroid.crs != self.web_projection:
+			self.weighted_centroid.to_crs({'init' : self.web_projection}, inplace = True)
 
 		self.weighted_centroid['latitude'] = self.weighted_centroid.geometry.y
 		self.weighted_centroid['longitude'] = self.weighted_centroid.geometry.x
+
+		# !!! THIS IS ME FILTERING TO MAKE THINGS GO FASTER. REMOVE!!
+		# self.weighted_centroid = self.weighted_centroid.head(500)
 
 		self.POI = POI
 
 		self.POI['POI'] = [Point(xy) for xy in zip(self.POI.longitude, self.POI.latitude)]
 
 		self.POI = self.POI.set_geometry('POI')
-		self.POI.crs = {'init': self.crs_preffix + str(self.web_projection)}
+		self.POI.crs = {'init' : self.web_projection}
 
 		# calculate catchment area for each POS
 		self.ISO = self.get_supply_catchment()
+
+		# write isochrones to file 
+		self.ISO[['id', 'geometry']].to_file("isochrones.shp")
 
 		self.in_iso = self.weighted_centroid
 
@@ -64,11 +64,9 @@ class DistanceMatrix:
 		# get distance matrix
 		self.dist_m_wrapper()
 
-		import pdb; pdb.set_trace()
+		pos_cols = [col for col in self.weighted_centroid if col.startswith('poiuid')]
 
-		pos_cols = [col for col in self.weighted_centroid if col.startswith('POS')]
-
-		cols_tokeep = [self.weighted_centroid.get_column_by_type('ID').get_colname()] + pos_cols
+		cols_tokeep = ['geouid'] + pos_cols
 
 		self.distance_matrix = self.weighted_centroid[cols_tokeep]
 
@@ -80,8 +78,6 @@ class DistanceMatrix:
 		for i, loc in zip(self.POI.geouid, zip(self.POI.longitude, self.POI.latitude)):
 			time.sleep(self.catchment_sleep)
 			try:
-				# import pdb; pdb.set_trace()
-
 				call = self.client.isochrones(locations = [loc], profile = self.catchment_profile, range = [self.catchment_range])
 
 				iso_geometry = call['features'][0]['geometry']
@@ -97,11 +93,9 @@ class DistanceMatrix:
 				locations_list.append(loc)
 
 			except:
-				# not_found_i.append(i)
-				# not_found_locations.append(loc)
 				print('unable to build isochrone for loc ', loc, '. It will not be included in results.')
 
-		polygon = gpd.GeoDataFrame(index = ids, crs = self.crs_preffix + str(self.web_projection), geometry = polygons)
+		polygon = gpd.GeoDataFrame(index = ids, crs = self.web_projection, geometry = polygons)
 		polygon['id'] = ids
 		polygon['location'] = locations_list
 
@@ -114,9 +108,6 @@ class DistanceMatrix:
 
 	def dist_m_wrapper(self):
 		# get list of POS IDs
-
-		import pdb; pdb.set_trace()
-
 		POS_IDs = [int(col[4:]) for col in self.weighted_centroid if col.startswith('poi')]
 
 		for posID in POS_IDs:
@@ -129,11 +120,12 @@ class DistanceMatrix:
 			if len(centroid_subset.index) > 0:
 				result = self.get_dist_m(pos, centroid_subset, 'latitude', 'longitude')
 			else:
-				centroid_subset[dm_name] = None
+				centroid_subset[dm_name] = np.nan
 				result = centroid_subset
 
 			result.rename(columns = {self.dm_metric_type:dm_name}, inplace = True)
 			self.weighted_centroid = self.weighted_centroid.merge(result[['geouid', dm_name]], how = 'left', on = 'geouid')
+			self.weighted_centroid[dm_name] = self.weighted_centroid[dm_name].astype(float)
 			self.weighted_centroid.drop(labels = colname, axis = 1, inplace = True)
 
 

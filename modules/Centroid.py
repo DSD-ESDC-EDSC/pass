@@ -28,7 +28,7 @@ class Centroid():
 		self.demand_geo_weight['centroid'] = self.demand_geo_weight['geometry'].centroid
 
 		# creating lambda function to calculate weighted centroid average
-		wm = lambda x: np.ma.average(x, weights = self.demand_geo_weight.loc[x.index, 'demand'])
+		wm = lambda x: np.ma.average(x, weights = self.demand_geo_weight.loc[x.index, 'pop'])
 
 		weighted_cent = pd.DataFrame()
 
@@ -40,32 +40,32 @@ class Centroid():
 			else:
 				self.demand_geo_weight[colname] = self.demand_geo_weight.centroid.apply(lambda p:p.y)
 
-			f = {'demand': 'sum', colname: wm}
+			f = {'pop': 'sum', colname: wm}
 
 			temp = self.demand_geo_weight.groupby('lrg_id').agg(f)
 
 			if weighted_cent.empty:
 				weighted_cent = temp
 			else:
-				weighted_cent = pd.merge(weighted_cent.drop('demand', axis = 1), temp, left_index = True, right_index = True)
+				weighted_cent = pd.merge(weighted_cent.drop('pop', axis = 1), temp, left_index = True, right_index = True)
 
 		# zipping weighted lat / lon
 		weighted_cent['centroid'] = utils.create_point(weighted_cent.wtd_lng, weighted_cent.wtd_ltd)
 
-		weighted_cent = weighted_cent[['demand', 'centroid']].reset_index()
+		weighted_cent = weighted_cent[['pop', 'centroid']].reset_index()
 
 		# merging weighted centroid back into boundary_lg
-		self.demand_geo = pd.merge(self.demand_geo, weighted_cent[['lrg_id', 'demand', 'centroid']], left_on = 'geouid', right_on = 'lrg_id')
+		self.demand_geo = pd.merge(self.demand_geo, weighted_cent[['lrg_id', 'pop', 'centroid']], left_on = 'geouid', right_on = 'lrg_id')
 		self.demand_geo.drop('lrg_id_y', axis = 1, inplace = True)
 		self.demand_geo.rename(columns = {'lrg_id_x':'lrg_id'}, inplace = True)
 
 		# imputing missing values with geographic centroid
-		self.demand_geo['centroid'] = np.where(self.demand_geo.demand == 0, self.demand_geo.geometry.centroid, self.demand_geo.centroid)
+		self.demand_geo['centroid'] = np.where(self.demand_geo.pop == 0, self.demand_geo.geometry.centroid, self.demand_geo.centroid)
 		# self.boundary_lg.df['weighted_centroid'] = [x.wkt for x in self.boundary_lg.df.weighted_centroid]
 
 		return self.demand_geo
 
-	def calculated_geographic_centroid(self):
+	def calculate_geographic_centroid(self):
 		self.demand_geo['centroid'] = self.demand_geo['geometry'].centroid
 
 		return self.demand_geo
@@ -92,7 +92,7 @@ class Centroid():
 
 			# adding population to map
 			pops = []
-			for x, y, label in zip(sm_centroid.geometry.x, sm_centroid.geometry.y, sm_centroid[self.boundary_sm.get_column_by_type('demand').get_colname()]):
+			for x, y, label in zip(sm_centroid.geometry.x, sm_centroid.geometry.y, sm_centroid[self.boundary_sm.get_column_by_type('pop').get_colname()]):
 				pops.append(plt.text(x, y, label, fontsize = 8))
 
 			# plotting lg_subset weighted centroid

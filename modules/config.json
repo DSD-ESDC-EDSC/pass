@@ -3,7 +3,7 @@
 		"demand_geo": {
 			"file":"D:/Projects/geo/Data/Census 2016 Boundaries/lda_000b16a_e (da)/lda_000b16a_e.shp",
 			"type":"shape",
-			"crs": "epsg:3347",
+			"crs": "3347",
 			"columns": {
 				"ID" : {
 					"name": "DAUID",
@@ -22,41 +22,32 @@
 						}
 				}
 			},
-		"demand_geo_weight": {
-			"file": "D:/Projects/geo/Data/Census 2016 Boundaries/ldb_000b16a_e(db)/ldb_000b16a_e.shp",
-			"type": "shape",
-			"crs":"epsg:3347",
-			"columns": {
-				"ID" : {
-					"name": "DBUID",
-					"type": "geouid",
-					"unit": "int"},
-				"LRG_ID" : {
-					"name": "DAUID",
-					"type": "lrg_id",
-					"unit": "int"},
-				"geometry": {
-					"name": "geometry",
-					"type": "geometry",
-					"unit": "geometry"
-						}
-					}
-		},
 		"demand_pop": {
-			"file":"D:/Projects/geo/Data/Census 2016 Demographics (DA and DB Levels)/db_population.csv",
+			"file":"D:/Projects/geo/Data/Census 2016 Demographics (DA and DB Levels)/da_merge.csv",
 			"type":"demand",
 			"encoding":"latin-1",
 			"columns": {
 				"ID": {
-					"name":"DBuid/IDidu",
+					"name":"ID",
 					"type":"geouid",
 					"unit": "int"
 					}, 
 				"demand": {
-					"name":" DBpop2016/IDpop2016",
-					"type": "demand",
+					"name":"pop_total",
+					"type": "pop",
 					"unit": "int"
-}
+					}, 
+				"old_pop": {
+					"name": "pop_60yrs", 
+					"type": "Elderly Population", 
+					"unit": "int"
+					}, 
+				"aboriginal": {
+					"name": "pop_aboriginal", 
+					"type": "Aboriginal Population", 
+					"unit": "int"
+					}
+
 			}
 		},
 		"supply": {
@@ -87,17 +78,17 @@
 				},
 				"address": {
 					"name":"Address",
-					"type": "supply_info",
+					"type": "Address",
 					"unit": "text"
 				},
 				"city": {
 					"name":"CSDNAME",
-					"type": "supply_info",
+					"type": "CDA",
 					"unit": "text"
 				},
 				"name": {
 					"name":"Site_Name",
-					"type": "supply_info",
+					"type": "Site Name",
 					"unit": "text"
 				}
 			}
