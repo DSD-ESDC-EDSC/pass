@@ -1,6 +1,7 @@
 $(document).ready(function (){
   var map = initMap();
   var layerGroup = new L.LayerGroup();
+  var choropleth;
 
   layerGroup.addTo(map)
   addMarker(poi, map, "marker");
@@ -35,6 +36,7 @@ function runModel(map, layerGroup){
       layer = addChoropleth(scores, map, layerGroup);
       //map.removeLayer(layer)
       $("#menu").append("<button id='download' class='btn'>Download Scores as CSV</button>");
+      $("#menu").append("<strong id='score'></strong>");
       $("#download").on("click", function(){
         downloadData(scores)
       });

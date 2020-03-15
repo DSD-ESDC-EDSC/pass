@@ -35,7 +35,7 @@ function addMarker(markers, map, type) {
   // });
 
   var icon = L.icon({
-    iconUrl: 'https://cdn2.iconfinder.com/data/icons/currency-map-markers-2/512/xxx040-512.png',
+    iconUrl: 'https://cdn4.iconfinder.com/data/icons/flags-of-the-world-set-1/100/.svg-5-512.png',
     iconSize: [40,40]
   })
 
@@ -62,13 +62,12 @@ function addPopupContent(properties) {
   for (var property in properties) {
     var key = property,
       value = properties[property];
-    if (key !== "name" && key !== "id") {
-      rows += "<tr><td class='tbl-var'>" + key + ":</td><td>" + value + "</td></tr>";
+    if (key.indexOf('info_') >= 0) {
+      rows += "<tr><td class='tbl-var'>" + key.slice(5,key.length) + ":</td><td>" + value + "</td></tr>";
     }
   }
-  var title = "<h3>" + properties["name"] + "</h3>";
   var content = "<table>" + rows + "</table>";
-  return title + content;
+  return content;
 }
 
 // function getColor(d, int) {
@@ -82,16 +81,21 @@ function addPopupContent(properties) {
 //                       '#9e0142';
 // }
 
-function addChoropleth(feature, map, layerGroup) {
+function addChoropleth(features, map, layerGroup) {
+  // remove existing legend and choropleth
   $(".legend").remove()
-  console.log(layerGroup)
+  $("#strong").remove()
+  layerGroup.eachLayer(function(layer) {
+    map.removeLayer(layer)
+  })
 
-
+  // set color scale, current static, but can be dynamic based on range
   var getColor = chroma.scale(['#9e0142', '#5e4fa2']).domain([0, 1]);
 
-  function style(feature) {
+  // function for styling choropleth
+  function style(features) {
     return {
-        fillColor: getColor(feature.properties.pop),
+        fillColor: getColor(features.properties.pop),
         weight: 0.5,
         opacity: 1,
         color: 'white',
@@ -100,32 +104,70 @@ function addChoropleth(feature, map, layerGroup) {
     };
   }
 
-  layerGroup.eachLayer(function(layer) {
-    map.removeLayer(layer)
-  })
+  function onMouseover(e) {
+    var layer = e.target;
 
-  var choropleth = L.geoJson(feature, {style: style}).addTo(map);
+    layer.setStyle({
+        weight: 5,
+        color: '#666',
+        dashArray: '',
+        fillOpacity: 0.7
+    });
+    console.log(layer.feature);
+    info.update(layer.feature.properties);
+  }
+
+  function onMouseout(e) {
+    choropleth.resetStyle(e.target);
+    info.update();
+  }
+  // function for mouse events specific to choropleth
+  function onEachFeature(feature, layer) {
+      layer.on({
+          mouseover: onMouseover,
+          mouseout: onMouseout
+      });
+  }
+
+  // create choropleth map layer and add to layerGroup
+  var choropleth = L.geoJson(features, {style: style, onEachFeature: onEachFeature}).addTo(map);
   layerGroup.addLayer(choropleth)
 
+  // leaflet legend
   var legend = L.control({position: 'bottomright'});
-
   legend.onAdd = function (map) {
 
       var div = L.DomUtil.create('div', 'info legend'),
-          grades = [0, 10, 20, 50, 100, 200, 500, 1000],
+          grades = [0, 1],
           labels = [];
 
-      // loop through our density intervals and generate a label with a colored square for each interval
       for (var i = 0; i < grades.length; i++) {
           div.innerHTML +=
               '<i style="background:' + getColor(grades[i] + 1) + '"></i> ' +
               grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
       }
-
       return div;
   };
 
   legend.addTo(map);
+
+  // add controller to present the model results
+  var info = L.control();
+
+  info.onAdd = function (map) {
+      this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+      this.update();
+      return this._div;
+  };
+
+  // method that we will use to update the control based on feature properties passed
+  info.update = function (props) {
+     $('#score').html('<h4>Accessibility score</h4>' +  (props ?
+         '<b> GEOUID: ' + props.geouid + '</b><br /> Score: ' + props.score
+         : 'Hover over a boundary'));
+  };
+
+  info.addTo(map);
 
   return choropleth;
 }

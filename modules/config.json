@@ -3,7 +3,7 @@
 		"shape_large": {
 			"file":"C:/Code/pos-accessibility/pos-accessibility-app/data/demand_lg_pop_mtl.shp",
 			"type":"shape",
-			"projection": "epsg:3347",
+			"projection": "3347",
 			"columns": {
 				"LRG_ID" : {
 					"name": "CMAUID",
