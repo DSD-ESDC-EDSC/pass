@@ -93,6 +93,8 @@ class InitSchema():
         if not hasattr(self, 'centroid_df'):
             self.centroid_df = gp.GeoDataFrame.from_postgis("SELECT * FROM demand;", self.db_conn.conn, geom_col = 'centroid')
 
+        import pdb; pdb.set_trace()
+
         if not hasattr(self, 'poi'):
             self.poi = gp.GeoDataFrame.from_postgis("SELECT * FROM poi;", "retrieved POI", self.db_conn.conn, geom_col = 'point')
 
@@ -231,7 +233,6 @@ class InitSchema():
 
         centroid_df['centroid'] = [x.wkt for x in centroid_df['centroid']]
 
-
         centroid_df = osgeo.ogr.Open(centroid_df.to_json())
 
         layer = centroid_df.GetLayer(0)
@@ -279,7 +280,7 @@ class InitSchema():
             # pop_values = self.centroid_df[pop_columns].loc[i]
 
             query_insert = """ INSERT into demand(%s) VALUES (%s, ST_Transform(ST_SetSRID(ST_GeomFromText(%s),%s),3347), ST_Transform(ST_SetSRID(ST_GeomFromText(%s),%s),3347), %s);
-            """ % (sql_col_string, req_values, "'" + geometry + "'", self.config.demand_geo_crs, "'" + centroid + "'", self.config.demand_geo_crs, pop_values)
+            """ % (sql_col_string, req_values, "'" + centroid + "'", self.config.demand_geo_crs, "'" + geometry + "'", self.config.demand_geo_crs, pop_values)
            
             self.execute_query(query_insert, "updated demand")
 
