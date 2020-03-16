@@ -1,7 +1,7 @@
 {
 	"files": {
 		"demand_geo": {
-			"file":"D:/Projects/geo/Data/Census 2016 Boundaries/lda_000b16a_e (da)/lda_000b16a_e.shp",
+			"file":"C:/Code/pos-accessibility/pos-accessibility-app/data/lda_000b16a_e.shp",
 			"type":"shape",
 			"crs": "3347",
 			"columns": {
@@ -23,7 +23,7 @@
 				}
 			},
 		"demand_pop": {
-			"file":"D:/Projects/geo/Data/Census 2016 Demographics (DA and DB Levels)/da_merge.csv",
+			"file":"C:/Code/pos-accessibility/pos-accessibility-app/data/da_merge.csv",
 			"type":"demand",
 			"encoding":"latin-1",
 			"columns": {
@@ -31,27 +31,27 @@
 					"name":"ID",
 					"type":"geouid",
 					"unit": "int"
-					}, 
+					},
 				"demand": {
 					"name":"pop_total",
 					"type": "pop",
 					"unit": "int"
-					}, 
+					},
 				"old_pop": {
-					"name": "pop_60yrs", 
-					"type": "Elderly Population", 
+					"name": "pop_60yrs",
+					"type": "Elderly Population",
 					"unit": "int"
-					}, 
+					},
 				"aboriginal": {
-					"name": "pop_aboriginal", 
-					"type": "Aboriginal Population", 
+					"name": "pop_aboriginal",
+					"type": "Aboriginal Population",
 					"unit": "int"
 					}
 
 			}
 		},
 		"supply": {
-			"file":"D:/Projects/geo/Data/Service Canada Office Locations/Sites_Jun2019.csv",
+			"file":"C:/Code/pos-accessibility/pos-accessibility-app/data/Sites_Jun2019.csv",
 			"type":"supply",
 			"encoding":"latin-1",
 			"crs":"4326",

@@ -25,7 +25,7 @@ def init_logger():
 	LOG_DEFAULT_LEVEL = os.environ.get('LOG_DEFAULT_LEVEL')
 
 	# initialize logging
-	logging.basicConfig(format='%(asctime)s: %(levelname)s: %(message)s') # to save as log file: filename=os.environ.get('LOG_FILE_PATH'), filemode='a',level=logging.DEBUG)
+	logging.basicConfig(format='%(asctime)s: %(levelname)s: %(message)s',filename=os.environ.get('LOG_FILE_PATH'), filemode='a',level=logging.DEBUG) # to save as log file: filename=os.environ.get('LOG_FILE_PATH'), filemode='a',level=logging.DEBUG)
 	logger = logging.getLogger(__name__)
 	logger.setLevel(log_levels.get(LOG_DEFAULT_LEVEL, logging.INFO))
 
