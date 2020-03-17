@@ -95,7 +95,7 @@ function addChoropleth(features, map, layerGroup) {
   // function for styling choropleth
   function style(features) {
     return {
-        fillColor: getColor(features.properties.pop),
+        fillColor: getColor(features.properties.score),
         weight: 0.5,
         opacity: 1,
         color: 'white',

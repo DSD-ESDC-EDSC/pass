@@ -49,7 +49,7 @@ def index():
 @app.route('/model',methods=['POST'])
 def run_model():
     req = request.get_json()
-    beta = float(req['beta']) # decimal.Decimal(req['beta'])
+    beta = float(req['beta'])
     transportation = req['transportation']
     threshold = int(req['threshold'])
     bounds = req['bounds']
