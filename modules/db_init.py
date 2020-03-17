@@ -9,7 +9,7 @@ This module manages initializes the PostgreSQL database
 
 from psycopg2 import pool
 import csv
-import sys 
+import sys
 import json
 import osgeo.ogr
 import geopandas as gp
@@ -19,7 +19,7 @@ from Centroid import Centroid
 from DistanceMatrix import DistanceMatrix
 from db import init_logger
 import pandas as pd
-import utils 
+import utils
 
 logger = init_logger()
 
@@ -38,14 +38,14 @@ class InitSchema():
 
             self.poi = utils.read_file(self.config.supply_file, self.config.supply_type, self.config.supply_columns, self.config.required_cols['supply'], self.config.supply_encode)
             self.demand_geo = utils.read_file(self.config.demand_geo_file, self.config.demand_geo_type, self.config.demand_geo_columns, self.config.required_cols[self.config.demand_geo_type], self.config.demand_geo_crs)
-            try: 
+            try:
                 self.centroid = 'weighted'
                 self.demand_geo_weight = utils.read_file(self.config.demand_geo_weight_file, self.config.demand_geo_weight_type, self.config.demand_geo_weight_columns, self.config.required_cols[self.config.demand_geo_weight_type], self.config.demand_geo_weight_crs )
             except:
                 self.centroid = 'geographic'
 
             self.demand_pop = utils.read_file(self.config.demand_pop_file, self.config.demand_pop_type, self.config.demand_pop_columns, self.config.required_cols[self.config.demand_pop_type], self.config.demand_pop_encode)
-            
+
             logger.info('Data successfully read')
         except Exception as e:
             logger.error(f'Data unsuccessful read: {e}')
@@ -154,9 +154,9 @@ class InitSchema():
             id serial PRIMARY KEY,
             geouid text,
             LRG_ID text,
-            supply float, 
+            supply float,
             point geometry(POINT,3347)
-        """ 
+        """
 
         # TO DO: is (POINT, 3347) converting point to 3347 crs or assuming that it's already 3347 crs?
 
@@ -168,7 +168,7 @@ class InitSchema():
         self.poi.reset_index(inplace = True)
         self.poi.rename(columns = {'index': 'id'}, inplace = True)
 
-        if 'supply' not in self.poi.columns: 
+        if 'supply' not in self.poi.columns:
             self.poi['supply'] = 1
 
         self.poi.supply = self.poi['supply'].astype(float)
@@ -176,7 +176,7 @@ class InitSchema():
         for col in [col for col in self.poi if col.startswith('info')]:
             if self.poi[col].dtype == 'O':
                 unit = 'text'
-            else: 
+            else:
                 unit = 'numeric'
             sql_columns.append(col)
             query_create = query_create + """,  %s %s""" % ('"' + col + '"', unit)
@@ -197,9 +197,9 @@ class InitSchema():
             lng = values['longitude']
             vals_info = "'" + "', '".join(values[info_columns].astype(str).values.flatten().tolist()) + "'"
 
-            query_insert = """ INSERT into poi(%s) VALUES (%s, ST_SetSRID(ST_MakePoint(%s, %s),3347),%s);
-            """ % (sql_col_string, vals_default, lng, lat, vals_info)
-           
+            query_insert = """ INSERT into poi(%s) VALUES (%s, ST_Transform(ST_SetSRID(ST_MakePoint(%s, %s),%s),3347),%s);
+            """ % (sql_col_string, vals_default, lng, lat, self.config.supply_crs, vals_info)
+
             self.execute_query(query_insert, "updated poi")
 
         # create index for poi table
@@ -241,19 +241,19 @@ class InitSchema():
         	CREATE TABLE demand(
         	id serial PRIMARY KEY,
         	geoUID int,
-            pop float, 
+            pop float,
         	centroid geometry,
         	boundary geometry
         """
         req_columns = ['id', 'geouid', 'pop']
         geo_columns = ['centroid', 'boundary']
-        
+
 
         pop_columns = []
         for col in [col for col in self.centroid_df if col.startswith('pop_')]:
             if self.centroid_df[col].dtype == 'O':
                 unit = 'text'
-            else: 
+            else:
                 unit = 'float'
 
             pop_columns.append(col)
