@@ -84,7 +84,7 @@ function addPopupContent(properties) {
 function addChoropleth(features, map, layerGroup) {
   // remove existing legend and choropleth
   $(".legend").remove()
-  $("#strong").remove()
+  
   layerGroup.eachLayer(function(layer) {
     map.removeLayer(layer)
   })

@@ -11,6 +11,8 @@ $(document).ready(function (){
   //addBoundary(region[0], map);
   $("#model").on("click", function(){
     $("#download").remove();
+    $("#strong").remove();
+    $("#popup-error-model").remove();
     runModel(map, layerGroup);
   })
 });
@@ -42,6 +44,8 @@ function runModel(map, layerGroup){
       $("#menu").append("<strong id='score'></strong>");
     },
     error: function (err){
+      $("#model").append("<span class='popuptext' id='popup-error-model'>Oops... Cannot calculate index for selected area, likely because it is too unpopulated. Please focus on areas more populated</span>");
+      $(".popup .popuptext").css("visibility","visible");
       console.log(err);
     }
   });

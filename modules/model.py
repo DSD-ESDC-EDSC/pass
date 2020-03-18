@@ -93,6 +93,7 @@ def accessibility(bounds, beta, transportation, threshold):
         logger.info(f'Successfully calculated accessibility scores')
     except Exception as e:
         logger.error(f'Unsuccessfully calculated accessibility scores: {e}')
+        return e
 
     demand['scores'] = demand['scores'].apply(lambda x: x * 100000)
 
