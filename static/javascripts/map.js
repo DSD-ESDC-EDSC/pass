@@ -2,6 +2,11 @@ function initMap(){
   var map = L.map('map').setView([45.5833,-73.6510], 10);
   var tiles = 'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}';
 
+  // TO COMPLETE: https://github.com/stefanocudini/leaflet-search/blob/master/examples/geocoding-nominatim.html
+  // map.addControl( new L.Control.Search({
+  //
+  // }) );
+
   L.tileLayer(tiles, {
       attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
       maxZoom: 18,
@@ -84,7 +89,7 @@ function addPopupContent(properties) {
 function addChoropleth(features, map, layerGroup) {
   // remove existing legend and choropleth
   $(".legend").remove()
-  
+
   layerGroup.eachLayer(function(layer) {
     map.removeLayer(layer)
   })

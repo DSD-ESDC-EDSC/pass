@@ -3,7 +3,7 @@ $(document).ready(function (){
   var layerGroup = new L.LayerGroup();
   var choropleth;
 
-  layerGroup.addTo(map)
+  layerGroup.addTo(map);
   addMarker(poi, map, "marker");
   slider();
   //addMarker(demand_point, map, "circle");
