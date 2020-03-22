@@ -1,6 +1,6 @@
-# POI Potential Spatial Accessibility Web App
+# Potential Spatial Accessibility Software Service (PASS)
 
-This repository of code provides scripts for calculating potential spatial accessibility from population demand locations (e.g., Dissemination Area population-weighted centroids) to points of interest (POS). Accessibility, that is the ability to get from location A to B, is a multi-dimensional construct that can account for various components, like social and geographic. Moreover, access can be measured based on `potential` (i.e., based on who could access a given service) and/or `actual` demand (i.e., based on a given services' actual clients/users of the service). **Potential spatial accessibility looks at the availability (i.e., supply and capacity of services) and accessibility (i.e., barriers) of potential demand (e.g., Census demographics) to a given service.**
+This repository of code provides scripts for calculating potential spatial accessibility from population demand locations (e.g., Dissemination Area population-weighted centroids) to points of interest (POI).
 
 # Installation
 
@@ -17,7 +17,7 @@ This repository of code provides scripts for calculating potential spatial acces
 2. To make Anaconda run from Git Bash, you will have to change your Environment Variables on your user account:
 	- Open the application "Edit environment variables for your account"
 	- Add a new variable PATH if it doesn't exist, otherwise add the following to the PATH variable: `C:\ProgramData\Anaconda3; C:\ProgramData\Anaconda3\Scripts`
-3. Now in Git Bash, clone the repo: `git clone https://gccode.ssc-spc.gc.ca/DSCV/projects/pos-accessibility/pass`
+3. Now in Git Bash, clone the repo: `git clone [remote repo url]`
 4. Still in Git Bash, change directory to the folder: `cd pass`
 5. Then in Git Bash clone the Anaconda environment from the environment.yml file: `conda env create -f environment.yml`
 6. Once you have all the dependencies installed, activate the environment: `source activate pass`
@@ -54,4 +54,4 @@ Once you completed the Installation step, which you only need to complete once, 
 - Create new branch related to that issue
 - Pull from master branch (this might get updated eventually to dev once a first version is stable)
 - Work on your branch, when you have completed the code and tested it, you can then push the branch to the remote repository
-- Make a merge request in GCCode, @Noznoc will review and merge into master
+- Make a merge request, @Noznoc will review and merge into master
