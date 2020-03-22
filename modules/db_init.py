@@ -195,10 +195,13 @@ class InitSchema():
             vals_default = "'" + "', '".join(values[req_columns].astype(str).values.flatten().tolist()) + "'"
             lat = values['latitude']
             lng = values['longitude']
-            vals_info = "'" + "', '".join(values[info_columns].astype(str).values.flatten().tolist()) + "'"
-
-            query_insert = """ INSERT into poi(%s) VALUES (%s, ST_Transform(ST_SetSRID(ST_MakePoint(%s, %s),%s),3347),%s);
+            if len(info_columns) > 0:
+                vals_info = "'" + "', '".join(values[info_columns].astype(str).values.flatten().tolist()) + "'"
+                query_insert = """ INSERT into poi(%s) VALUES (%s, ST_Transform(ST_SetSRID(ST_MakePoint(%s, %s),%s),3347),%s);
             """ % (sql_col_string, vals_default, lng, lat, self.config.supply_crs, vals_info)
+            else:
+                query_insert = """ INSERT into poi(%s) VALUES (%s, ST_Transform(ST_SetSRID(ST_MakePoint(%s, %s),%s),3347));
+                """ % (sql_col_string, vals_default, lng, lat, self.config.supply_crs)
 
             self.execute_query(query_insert, "updated poi")
 
