@@ -1,5 +1,5 @@
 body {
-  font-size: 2em;
+  font-size: 1.2vw;
 }
 
 #map {
@@ -13,15 +13,15 @@ body {
 }
 
 .legend {
-    line-height: 18px;
-    color: #555;
+  line-height: 18px;
+  color: #555;
 }
 .legend i {
-    width: 18px;
-    height: 18px;
-    float: left;
-    margin-right: 8px;
-    opacity: 0.7;
+  width: 18px;
+  height: 18px;
+  float: left;
+  margin-right: 8px;
+  opacity: 0.7;
 }
 
 #navbar {
@@ -29,14 +29,13 @@ body {
   background-color: #3F729B;
   color: white;
   height: 70px;
-  font-size: 1.5em;
   padding-top: 7px;
   position: fixed;
   z-index: 1000;
 }
 
 #navbar a:last-child, #navbar a:nth-last-child(2) {
-  padding: 5px;
+  padding: 15px;
   margin-right: 5px;
   float: right;
   color: white;
@@ -44,6 +43,7 @@ body {
 
 #logo {
   font-weight: 1000;
+  font-size: 30px;
 }
 
 #menu {
@@ -114,7 +114,7 @@ select:hover {
   font-weight: 700;
   color: #ad1457;
   padding-right: 10px;
-  font-size: 2em;
+  font-size: 1vw;
 }
 
 /* Popup container - can be anything you want */
