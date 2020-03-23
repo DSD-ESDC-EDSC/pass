@@ -3,9 +3,18 @@ function initMap(){
   var tiles = 'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}';
 
   // TO COMPLETE: https://github.com/stefanocudini/leaflet-search/blob/master/examples/geocoding-nominatim.html
-  // map.addControl( new L.Control.Search({
-  //
-  // }) );
+  map.addControl( new L.Control.Search({
+		url: 'https://nominatim.openstreetmap.org/search?format=json&q={s}',
+		jsonpParam: 'json_callback',
+		propertyName: 'display_name',
+		propertyLoc: ['lat','lon'],
+		marker: false,
+		collapsed: false,
+    autoCollapse: true,
+		autoType: false,
+		minLength: 2,
+    textPlaceholder: "Search area of interest..."
+	}) );
 
   L.tileLayer(tiles, {
       attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',

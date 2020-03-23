@@ -105,6 +105,7 @@ body {
 
 .btn {
   margin: 5px !important;
+  font-size: 1vw !important;
 }
 
 select:hover {
@@ -118,7 +119,6 @@ select:hover {
   font-size: 1vw;
 }
 
-/* Popup container - can be anything you want */
 .popup {
   position: relative;
   display: inline-block;
@@ -129,7 +129,6 @@ select:hover {
   user-select: none;
 }
 
-/* The actual popup */
 .popup .popuptext {
   visibility: hidden;
   width: 250px;
@@ -140,7 +139,7 @@ select:hover {
   padding: 8px;
   position: absolute;
   z-index: 2000;
-  bottom: -140%;
+  bottom: -200%;
   right: 102%;
 }
 
