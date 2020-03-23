@@ -47,6 +47,7 @@ body {
 }
 
 #menu {
+  line-height: 1.2vw;
   position: absolute;
   top: 80px;
   right: 10px;
@@ -170,4 +171,23 @@ select:hover {
 @keyframes fadeIn {
   from {opacity: 0;}
   to {opacity:1 ;}
+}
+
+#loader div {
+  display: inline-block;
+}
+
+.loader {
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #3498db;
+  border-radius: 50%;
+  margin-right: 10px;
+  width: 15px;
+  height: 15px;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
