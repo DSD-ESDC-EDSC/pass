@@ -62,8 +62,8 @@
        <label>Travel Time Threshold: <label id="threshold-value">60</label> minutes</label>
        <div class="slidecontainer">
           <label>0</label>
-          <label>120</label>
-          <input type="range" min="0" max="120" value="60" class="slider" id="threshold">
+          <label>60</label>
+          <input type="range" min="0" max="60" value="60" class="slider" id="threshold">
        </div>
     </p>
     <p>
@@ -76,8 +76,9 @@
     <p>
        <label>Willingness to Commute</label>
        <select id="beta" class="single-selects selectize-input items full has-options has-items">
-         <option value="1.0">Less</option>
-         <option value="1.3">More</option>
+         <option value="1.5">Less</option>
+         <option value="1.0">Medium</option>
+         <option value="0.5">More</option>
        </select>
     </p>
      <button id="model" class="btn popup">Calculate Score</button>
