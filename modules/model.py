@@ -19,7 +19,7 @@ def accessibility(bounds, beta, transportation, threshold):
 
     # store in an array the geouids that are contained within the client's window view (bounding box)
     demand_query = """
-        SELECT geouid, ST_AsText(ST_Transform(boundary, 4326)) as boundary, pop::float
+        SELECT geouid, ST_AsText(ST_Transform(boundary, 4326)) as boundary, pop
         FROM demand
         WHERE ST_Contains(
             ST_Transform(
@@ -54,40 +54,60 @@ def accessibility(bounds, beta, transportation, threshold):
         supply_array = np.array(poi['supply'])
 
     # TO DO: INSTEAD OF THIS UPDATE db_init's init_distance_matrix to store as float, not numeric
-    floats = [col + "::float" for col in poi_array]
-    cols = ", poiuid_".join(floats)
+    # floats = [col + "::float" for col in poi_array]
+    cols = ", poiuid_".join(poi_array)
     ids = ", ".join(map(str, geouid_array))
+    dist = ["poiuid_" + col + " <= " + str(threshold) for col in poi_array]
+    where = " OR ".join(dist)
 
     # create data frame of distance matrix by first subsetting it based on the geouids and poiuids
     dm_query = """
-        SELECT poiuid_%s
+        SELECT geouid, poiuid_%s
         FROM distance_matrix_%s
-        WHERE geouid = ANY(ARRAY[%s])
+        WHERE geouid = ANY(ARRAY[%s]) AND (%s) 
         ORDER BY geouid;
-    """ % (cols, transportation, ids)
+    """ % (cols, transportation, ids, where)
 
     with db.DbConnect() as db_conn:
         db_conn.cur.execute(dm_query)
         distance_matrix = pd.DataFrame(db_conn.cur.fetchall(), columns=[desc[0] for desc in db_conn.cur.description])
-
+        geouid_filtered_array = np.array(distance_matrix['geouid'])
+        distance_matrix = distance_matrix.drop('geouid', axis=1)
+        
+    ids_filtered = ", ".join(map(str, geouid_filtered_array))
+    
+    demand_filtered_query = """
+        SELECT geouid, ST_AsText(ST_Transform(boundary, 4326)) as boundary, pop
+        FROM demand
+        WHERE geouid = ANY(ARRAY[%s]) 
+        ORDER BY geouid;
+    """ % (ids_filtered)
+    
+    with db.DbConnect() as db_conn:
+        db_conn.cur.execute(demand_filtered_query)
+        demand_filtered = pd.DataFrame(db_conn.cur.fetchall(), columns=[desc[0] for desc in db_conn.cur.description])
+        demand_filtered_array = np.array(demand_filtered['pop'])
+    
     geouid_array_len = str(len(geouid_array))
-    demand_array_len = str(len(demand_array))
+    demand_array_len = str(len(demand_filtered_array))
     poi_array_len = str(len(poi_array))
     supply_array_len = str(len(supply_array))
-    distance_matrix_len = str(list(distance_matrix.columns.values))
+    distance_matrix_col_len = str(list(distance_matrix.columns.values))
+    distance_matrix_row_len = str(len(distance_matrix.index))
 
     # for now just to confirm subsetting is correct and lengths match what is in the distance matrix
     logger.info(f'ARRAY LENGTH OF DEMAND CENTROID COUNTS: {geouid_array_len}')
-    logger.info(f'ARRAY LENGTH OF DEMAND POPULATION COUNTS: {demand_array_len}')
+    logger.info(f'ARRAY LENGTH OF DEMAND POPULATION COUNTS BASED ON FILTERED DISTANCE THRESHOLD: {demand_array_len}')
     logger.info(f'ARRAY LENGTH OF SUPPLY SITE COUNTS: {poi_array_len}')
     logger.info(f'ARRAY LENGTH OF SUPPLY COUNTS: {supply_array_len}')
-    logger.info(f'COLUMNS OF DISTANCE MATRIX: {distance_matrix_len}')
+    logger.info(f'COLUMNS OF DISTANCE MATRIX: {distance_matrix_col_len}')
+    logger.info(f'ROWS OF DISTANCE MATRIX: {distance_matrix_row_len}')
 
     try:
-        model = aceso.ThreeStepFCA(decay_function="negative_power", decay_params={"beta": beta})
-        demand["scores"] = model.calculate_accessibility_scores(
+        model = aceso.ThreeStepFCA(decay_function='negative_power', decay_params={'beta': beta})
+        demand_filtered['scores'] = model.calculate_accessibility_scores(
             distance_matrix=distance_matrix,
-            demand_array=demand_array,
+            demand_array=demand_filtered_array,
             supply_array=supply_array
         )
         logger.info(f'Successfully calculated accessibility scores')
@@ -95,6 +115,6 @@ def accessibility(bounds, beta, transportation, threshold):
         logger.error(f'Unsuccessfully calculated accessibility scores: {e}')
         return e
 
-    demand['scores'] = demand['scores'].apply(lambda x: x * 100000)
-
-    return demand
+    demand_filtered['scores'] = demand_filtered['scores'].apply(lambda x: x * 10000)
+    
+    return demand_filtered
