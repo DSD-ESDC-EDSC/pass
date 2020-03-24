@@ -59,11 +59,11 @@
    <div id="menu">
      <p>Welcome to the <strong>P</strong>otential <strong>A</strong>ccessibility <strong>S</strong>oftware <strong>S</strong>ervice, <strong>PASS</strong>, a tool that measures potential spatial accessibility. Pan and zoom to your area of interest, change the parameters below, and submit to calculate accessibility scores. To learn more about the methodology, checkout <a class="wb-lbx" href="#popup-modal-about" aria-controls="popup-modal" role="button">About</a></p>
      <p>
-       <label>Travel Time Threshold: <label id="threshold-value">60</label> minutes</label>
+       <label>Distance Travel Threshold: <label id="threshold-value">10</label> km</label>
        <div class="slidecontainer">
-          <label>5</label>
-          <label>60</label>
-          <input type="range" min="5" max="60" value="60" class="slider" id="threshold">
+          <label>0</label>
+          <label>70</label>
+          <input type="range" min="0" max="70" value="10" class="slider" id="threshold">
        </div>
     </p>
     <p>
@@ -81,6 +81,21 @@
          <option value="0.5">More</option>
        </select>
     </p>
+    <p>
+       <label>Population Demand</label>
+       <select id="beta" class="single-selects selectize-input items full has-options has-items">
+         <option value="temp">Total Population</option>
+         <option value="temp">Total Female Population</option>
+         <option value="temp">Total Male Population</option>
+       </select>
+    </p>
+    <p>
+       <label>POI Supply</label>
+       <select id="beta" class="single-selects selectize-input items full has-options has-items">
+         <option value="temp">Uniform</option>
+         <option value="temp">Number of Services Offered</option>
+       </select>
+    </p>
      <button id="model" class="btn popup">Calculate Spatial Accessibility Index</button>
    </div>
 
@@ -90,9 +105,7 @@
       </header>
       <div class="modal-body">
         <h3>Methodology</h3>
-        <p>
-          TO COMPLETE
-        </p>
+        <iframe src="static/docs/pass_doc.html"></iframe> 
         <h3>Developers</h3>
         <ul>
           <li>Julia Conzon</li>

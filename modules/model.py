@@ -112,7 +112,7 @@ def accessibility(bounds, beta, transportation, threshold):
             demand_array=demand_filtered_array,
             supply_array=supply_array
         )
-        logger.info(f'Successfully calculated accessibility scores')
+        logger.info(f'Successfully calculated accessibility scores with beta: {beta}, transport: {transportation}, threshold: {threshold}')
     except Exception as e:
         logger.error(f'Unsuccessfully calculated accessibility scores: {e}')
         return e

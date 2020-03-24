@@ -1,5 +1,5 @@
 function initMap(){
-  var map = L.map('map').setView([45.5833,-73.6510], 10);
+  var map = L.map('map').setView([49.2573,-123.1241], 10);
   var tiles = 'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}';
 
   // TO COMPLETE: https://github.com/stefanocudini/leaflet-search/blob/master/examples/geocoding-nominatim.html
@@ -104,7 +104,7 @@ function addChoropleth(features, map, layerGroup) {
   })
 
   // set color scale, current static, but can be dynamic based on range
-  var getColor = chroma.scale(['#9e0142', '#5e4fa2']).domain([0, 1]);
+  var getColor = chroma.scale(['#d73027', '#4575b4']).domain([0, 1]);
 
   // function for styling choropleth
   function style(features) {
