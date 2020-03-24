@@ -25,6 +25,7 @@ function runModel(map, layerGroup){
 
   var values = $.extend(beta, transportation, bounds, threshold);
   values = JSON.stringify(values);
+  $('#model').html('<div id="loader"><div class="loader"></div><div>Loading Scores...</div></div>');
 
   $.ajax({
     type: "POST",
@@ -36,6 +37,7 @@ function runModel(map, layerGroup){
     cache: false,
     success: function(scores) {
       layer = addChoropleth(scores, map, layerGroup);
+      $('#model').html('Calculate Spatial Accessibility Index');
       //map.removeLayer(layer)
       $("#menu").append("<button id='download' class='btn'>Download Scores as CSV</button>");
       $("#download").on("click", function(){
@@ -44,6 +46,7 @@ function runModel(map, layerGroup){
       $("#menu").append("<strong id='score'></strong>");
     },
     error: function (err){
+      $('#model').html('Calculate Spatial Accessibility Index');
       $("#model").append("<span class='popuptext' id='popup-error-model'>Oops... Cannot calculate index for selected area, likely because it is too unpopulated. Please focus on areas more populated</span>");
       $(".popup .popuptext").css("visibility","visible");
       console.log(err);
