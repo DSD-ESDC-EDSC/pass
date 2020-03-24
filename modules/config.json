@@ -1,7 +1,7 @@
 {
 	"files": {
 		"demand_geo": {
-			"file":"C:/Code/pos-accessibility/pos-accessibility-app/data/lda_000b16a_e.shp",
+			"file":"C:/Code/pos-accessibility/pass/data/lda_000b16a_e.shp",
 			"type":"shape",
 			"crs": "3347",
 			"columns": {
@@ -23,35 +23,35 @@
 				}
 			},
 		"demand_pop": {
-			"file":"C:/Code/pos-accessibility/pos-accessibility-app/data/da_merge.csv",
+			"file":"C:/Code/pos-accessibility/pass/data/da_pop.csv",
 			"type":"demand",
 			"encoding":"latin-1",
 			"columns": {
 				"ID": {
-					"name":"ID",
+					"name":"geouid",
 					"type":"geouid",
 					"unit": "int"
 					},
 				"demand": {
-					"name":"pop_total",
+					"name":"total_pop",
 					"type": "pop",
 					"unit": "int"
 					},
-				"old_pop": {
-					"name": "pop_60yrs",
-					"type": "Elderly Population",
+				"demand_male": {
+					"name": "total_male",
+					"type": "pop_male",
 					"unit": "int"
 					},
-				"aboriginal": {
-					"name": "pop_aboriginal",
-					"type": "Aboriginal Population",
+				"demand_female": {
+					"name": "total_female",
+					"type": "pop_female",
 					"unit": "int"
 					}
 
 			}
 		},
 		"supply": {
-			"file":"C:/Code/pos-accessibility/pos-accessibility-app/data/Sites_Jun2019.csv",
+			"file":"C:/Code/pos-accessibility/pass/data/Sites_Jun2019.csv",
 			"type":"supply",
 			"encoding":"latin-1",
 			"crs":"4326",
@@ -76,11 +76,6 @@
 					"type":"lrg_id",
 					"unit": "str"
 				},
-				"address": {
-					"name":"Address",
-					"type": "Address",
-					"unit": "text"
-				},
 				"city": {
 					"name":"CSDNAME",
 					"type": "CDA",
@@ -100,7 +95,7 @@
 			"timeout": 500
 		},
 		"isochrones": {
-			"catchment_range": 500,
+			"catchment_range": 3600,
 			"catchment_range_type": "time",
 			"profile": "driving-car",
 			"sleep_time": 0

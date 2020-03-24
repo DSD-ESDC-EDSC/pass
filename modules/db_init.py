@@ -80,9 +80,9 @@ class InitSchema():
 
     def create_schema(self):
         "Create each PostgreSQL database table"
-        self.init_demand()
+        #self.init_demand()
         self.init_poi()
-        self.init_distance_matrix()
+        #self.init_distance_matrix()
 
     def init_distance_matrix(self, profiles=["car"]):
         "Create distance_matrix database table"
@@ -278,16 +278,16 @@ class InitSchema():
             geometry = feature.GetGeometryRef().ExportToWkt()
             centroid = feature.GetGeometryRef().Centroid().ExportToWkt()
 
-            if len(pop_columns) == 0: 
+            if len(pop_columns) == 0:
                 query_insert = """ INSERT into demand(%s) VALUES (%s, ST_Transform(ST_SetSRID(ST_GeomFromText(%s),%s),3347), ST_Transform(ST_SetSRID(ST_GeomFromText(%s),%s),3347));
                 """ % (sql_col_string, req_values, "'" + centroid + "'", self.config.demand_geo_crs, "'" + geometry + "'", self.config.demand_geo_crs)
-            
+
             else:
                 pop_values = "'" + "', '".join(values[pop_columns].astype(str).values.flatten().tolist()) + "'"
-            
+
                 query_insert = """ INSERT into demand(%s) VALUES (%s, ST_Transform(ST_SetSRID(ST_GeomFromText(%s),%s),3347), ST_Transform(ST_SetSRID(ST_GeomFromText(%s),%s),3347), %s);
                 """ % (sql_col_string, req_values, "'" + centroid + "'", self.config.demand_geo_crs, "'" + geometry + "'", self.config.demand_geo_crs, pop_values)
-           
+
             self.execute_query(query_insert, "updated demand")
 
         # (fuid,ST_Transform(ST_SetSRID(ST_GeomFromText(wkt),self.config.demand_geo_crs),3347),ST_Transform(ST_SetSRID(ST_GeomFromText(centroid),self.config.demand_geo_crs),3347),pop)
