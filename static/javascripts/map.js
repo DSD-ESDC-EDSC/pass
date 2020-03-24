@@ -104,7 +104,8 @@ function addChoropleth(features, map, layerGroup) {
   })
 
   // set color scale, current static, but can be dynamic based on range
-  var getColor = chroma.scale(['#d73027', '#4575b4']).domain([0, 1]);
+  var getColor = chroma.scale(['#d73027','#4575b4']).domain([0, 1]);
+  console.log(getColor)
 
   // function for styling choropleth
   function style(features) {
@@ -147,23 +148,24 @@ function addChoropleth(features, map, layerGroup) {
   var choropleth = L.geoJson(features, {style: style, onEachFeature: onEachFeature}).addTo(map);
   layerGroup.addLayer(choropleth)
 
-  // leaflet legend
-  var legend = L.control({position: 'bottomright'});
-  legend.onAdd = function (map) {
-
-      var div = L.DomUtil.create('div', 'info legend'),
-          grades = [0, 1],
-          labels = [];
-
-      for (var i = 0; i < grades.length; i++) {
-          div.innerHTML +=
-              '<i style="background:' + getColor(grades[i] + 1) + '"></i> ' +
-              grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
-      }
-      return div;
-  };
-
-  legend.addTo(map);
+  var s = '';
+  var dom = getColor.domain ? getColor.domain() : [0,1],
+      dmin = Math.min(dom[0], dom[dom.length-1]),
+      dmax = Math.max(dom[dom.length-1], dom[0]);
+  
+  s = '<span class="domain domain-min">'+dmin+'</span>';
+  for (var i=0;i<=100;i++) {
+    if (i != 50){
+      s += '<span class="grad-step" style="background-color:'+getColor(dmin + i/100 * (dmax - dmin))+'"></span>';
+    } else {
+      s += '<span class="domain domain-med">'+((dmin + dmax)*0.5)+'</span>';
+    }
+  }
+  
+  s += '<span class="domain domain-max">'+dmax+'</span>';
+  legend = '<div class="gradient">'+s+'</div>';
+  
+  $("#legend").append(legend)
 
   // add controller to present the model results
   var info = L.control();

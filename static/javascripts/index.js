@@ -12,6 +12,7 @@ $(document).ready(function (){
   $("#model").on("click", function(){
     $("#download").remove();
     $("#strong").remove();
+    $(".gradient").remove();
     $("#popup-error-model").remove();
     runModel(map, layerGroup);
   })
