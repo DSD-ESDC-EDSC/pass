@@ -51,7 +51,7 @@ def run_model():
     req = request.get_json()
     beta = float(req['beta'])
     transportation = req['transportation']
-    threshold = int(req['threshold']) * 60 # multiply to get the minute threshold to match distance matrix time unit (ms)
+    threshold = int(req['threshold']) * 60 * 60 # multiply to get the minute threshold to match distance matrix time unit (ms)
     bounds = req['bounds']
 
     scores = model.accessibility(bounds, beta, transportation, threshold)
