@@ -19,7 +19,7 @@ def accessibility(bounds, beta, transportation, threshold):
 
     # store in an array the geouids that are contained within the client's window view (bounding box)
     demand_query = """
-        SELECT geouid, ST_AsText(ST_Transform(boundary, 4326)) as boundary, pop
+        SELECT geouid, ST_AsText(ST_Transform(ST_Simplify(boundary,0.5), 4326)) as boundary, pop
         FROM demand
         WHERE ST_Contains(
             ST_Transform(
@@ -79,7 +79,7 @@ def accessibility(bounds, beta, transportation, threshold):
     
     # get the population demand data now with the filtered geouids
     demand_filtered_query = """
-        SELECT geouid, ST_AsText(ST_Transform(boundary, 4326)) as boundary, pop
+        SELECT geouid, ST_AsText(ST_Transform(ST_Simplify(boundary,0.5), 4326)) as boundary, pop
         FROM demand
         WHERE geouid = ANY(ARRAY[%s]) 
         ORDER BY geouid;

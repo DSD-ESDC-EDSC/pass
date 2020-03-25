@@ -60,19 +60,26 @@ def run_model():
         bounds = req['bounds']
         logger.info(f'User parameters include beta: {beta}, transport: {transportation}, threshold: {threshold}')
     except Exception as e:
-        logger.error(f'Error: {e}')
+        logger.error(f'Parameters provided are incorrect: {e}')
         return e
 
     scores = model.accessibility(bounds, beta, transportation, threshold)
-    scores['boundary'] = scores['boundary'].apply(wkt.loads)
-    features = scores.apply(
-        lambda row: Feature(geometry=row['boundary'], properties={'geouid':row['geouid'], 'score':row['scores']}),
-        axis=1).tolist()
-
-    feature_collection = FeatureCollection(features=features)
-    feature_collection = json.dumps(feature_collection)
-
-    return feature_collection
+    scores_col = str(list(scores.columns.values))
+    scores_row = str(scores.index)
+    
+    try:
+        scores['boundary'] = scores['boundary'].apply(wkt.loads)
+        features = scores.apply(
+            lambda row: Feature(geometry=row['boundary'], properties={'geouid':row['geouid'], 'score':row['scores']}),
+            axis=1).tolist()
+        feature_collection = FeatureCollection(features=features)
+        feature_collection = json.dumps(feature_collection)
+        return feature_collection
+    except Exception as e:
+        logger.error(f'{scores_row}')
+        logger.error(f'{scores_col}')
+        logger.error(f'Could not return results as geojson: {e}')
+        return e
 
 # route for bad HTTP requests
 @app.errorhandler(400)
