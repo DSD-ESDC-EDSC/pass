@@ -47,6 +47,7 @@
       <script>
         var poi = JSON.parse({{ poi | tojson }});
         console.log(poi)
+
       </script>
   </head>
   <body>
@@ -81,6 +82,23 @@
          <option value="0.5">More</option>
        </select>
     </p>
+    <p>
+      <label>Population Group</label>
+      <select id="demand" class="single-selects selectize-input items full has-options has-items">
+        {% for val in demand_cols %}
+        <option value="{{val[0]}}">{{val[0]}}</option>
+        {% endfor %}
+      </select>
+    </p>
+    <p>
+      <label>Supply</label>
+      <select id="supply" class="single-selects selectize-input items full has-options has-items">
+        {% for val in supply_cols %}
+        <option value="{{val[0]}}">{{val[0]}}</option>
+        {% endfor %}
+      </select>
+    </p>
+
      <button id="model" class="btn popup">Calculate Spatial Accessibility Index</button>
    </div>
 

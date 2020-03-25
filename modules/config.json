@@ -39,12 +39,12 @@
 					},
 				"demand_male": {
 					"name": "total_male",
-					"type": "pop_male",
+					"type": "Male Population",
 					"unit": "int"
 					},
 				"demand_female": {
 					"name": "total_female",
-					"type": "pop_female",
+					"type": "Female Population",
 					"unit": "int"
 					}
 

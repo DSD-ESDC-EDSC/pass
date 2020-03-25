@@ -40,10 +40,15 @@ app.secret_key = APP_SECRET_KEY
 @app.route('/')
 def index():
     poi = json.dumps(db.get_poi())
+    #supply_cols = json.dumps(db.get_supply_columns())
+    #demand_cols = json.dumps(db.get_demand_columns())
+    demand_cols = db.get_demand_columns()
+    supply_cols = db.get_supply_columns()
+
     #region = json.dumps(db.get_region())
     #demand_point = json.dumps(db.get_demand('point'))
     #demand_boundary = json.dumps(db.get_demand('boundary'))
-    return render_template('index.html', poi=poi)
+    return render_template('index.html', poi=poi, supply_cols=supply_cols, demand_cols=demand_cols)
 
 # route for retreiving data for the calculator tool
 @app.route('/model',methods=['POST'])
@@ -54,7 +59,10 @@ def run_model():
     threshold = int(req['threshold']) * 60 * 60 # multiply to get the minute threshold to match distance matrix time unit (ms)
     bounds = req['bounds']
 
-    scores = model.accessibility(bounds, beta, transportation, threshold)
+    supply = req['supply']
+    demand = req['demand']
+
+    scores = model.accessibility(bounds, beta, transportation, threshold, demand, supply)
     scores['boundary'] = scores['boundary'].apply(wkt.loads)
     features = scores.apply(
         lambda row: Feature(geometry=row['boundary'], properties={'geouid':row['geouid'], 'score':row['scores']}),
