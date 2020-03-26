@@ -117,11 +117,7 @@ def accessibility(bounds, beta, transportation, threshold):
         logger.error(f'Unsuccessfully calculated accessibility scores: {e}')
         return e
     
-    supply_total = np.sum(supply_array.astype(float))
-    demand_filtered['scores'] = demand_filtered['scores'].apply(lambda x: (x * supply_total))
-    logger.info(f'Supply total: {supply_total}')
-    
     # TO DO: MAKE SCORE MORE INTERPRETABLE
-    demand_filtered['scores'] = demand_filtered['scores'].apply(lambda x: x * 100000)
+    # demand_filtered['scores'] = demand_filtered['scores'].apply(lambda x: (x * 10000))
     
     return demand_filtered

@@ -13,13 +13,17 @@ body {
 }
 
 #legend {
-  line-height: 18px;
   color: #555;
   position: absolute;
+  background-color: rgba(255,255,255,0.7);
   z-index: 1000;
-  width: 100px;
+  border: 1px solid white;
+  border-radius: 15px;
+  padding: 5px;
   bottom: 1%;
   left: 1%;
+  width: 10%;
+  font-size: 1vw;
 }
 
 /* #legend i {
@@ -29,6 +33,10 @@ body {
   margin-right: 8px;
   opacity: 0.7;
 } */
+
+#legend span {
+  padding: 5px;
+}
 
 .grad-step {
   padding: 1%;

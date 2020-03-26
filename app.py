@@ -66,13 +66,14 @@ def run_model():
     scores = model.accessibility(bounds, beta, transportation, threshold)
     scores_col = str(list(scores.columns.values))
     scores_row = str(scores.index)
+    max = scores['scores'].max()
     
     try:
         scores['boundary'] = scores['boundary'].apply(wkt.loads)
         features = scores.apply(
             lambda row: Feature(geometry=row['boundary'], properties={'geouid':row['geouid'], 'score':row['scores']}),
             axis=1).tolist()
-        feature_collection = FeatureCollection(features=features)
+        feature_collection = FeatureCollection(score_vals=scores['scores'].tolist(), max=max, features=features)
         feature_collection = json.dumps(feature_collection)
         return feature_collection
     except Exception as e:

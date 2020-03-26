@@ -41,7 +41,7 @@ function addMarker(markers, map, type) {
     // className: 'marker-cluster'
   };
 
-  var getColor = chroma.scale(['#9e0142', '#5e4fa2']).domain([0, 1000]);
+  var getColour = chroma.scale(['#9e0142', '#5e4fa2']).domain([0, 1000]);
 
   // var icon = L.ExtraMarkers.icon({
   //   icon: 'fa-coffee',
@@ -84,7 +84,7 @@ function addPopupContent(properties) {
   return content;
 }
 
-// function getColor(d, int) {
+// function getColour(d, int) {
 //     return d > 1000 ? '#5e4fa2' :
 //            d > 500  ? '#3288bd' :
 //            d > 200  ? '#66c2a5' :
@@ -102,15 +102,17 @@ function addChoropleth(features, map, layerGroup) {
   layerGroup.eachLayer(function(layer) {
     map.removeLayer(layer)
   })
-
-  // set color scale, current static, but can be dynamic based on range
-  var getColor = chroma.scale(['#d73027','#4575b4']).domain([0, 1]);
-  console.log(getColor)
+  
+  var max = features.max,choroplethStats = new geostats(features.score_vals),
+      classes = choroplethStats.getQuantile(5),
+      names = ['Least Accessible', 'Less Accessible', 'Accessible', 'More Accessible', 'Most Accessible'],
+      getColour = chroma.scale(['#93003a','#00429d']).domain([0,max]).classes(classes);
+      
 
   // function for styling choropleth
   function style(features) {
     return {
-        fillColor: getColor(features.properties.score),
+        fillColor: getColour(features.properties.score),
         weight: 0.5,
         opacity: 1,
         color: 'white',
@@ -128,7 +130,6 @@ function addChoropleth(features, map, layerGroup) {
         dashArray: '',
         fillOpacity: 0.7
     });
-    console.log(layer.feature);
     info.update(layer.feature.properties);
   }
 
@@ -147,25 +148,8 @@ function addChoropleth(features, map, layerGroup) {
   // create choropleth map layer and add to layerGroup
   var choropleth = L.geoJson(features, {style: style, onEachFeature: onEachFeature}).addTo(map);
   layerGroup.addLayer(choropleth)
-
-  var s = '';
-  var dom = getColor.domain ? getColor.domain() : [0,1],
-      dmin = Math.min(dom[0], dom[dom.length-1]),
-      dmax = Math.max(dom[dom.length-1], dom[0]);
   
-  s = '<span class="domain domain-min">'+dmin+'</span>';
-  for (var i=0;i<=100;i++) {
-    if (i != 50){
-      s += '<span class="grad-step" style="background-color:'+getColor(dmin + i/100 * (dmax - dmin))+'"></span>';
-    } else {
-      s += '<span class="domain domain-med">'+((dmin + dmax)*0.5)+'</span>';
-    }
-  }
-  
-  s += '<span class="domain domain-max">'+dmax+'</span>';
-  legend = '<div class="gradient">'+s+'</div>';
-  
-  $("#legend").append(legend)
+  $("#legend").append(buildLegend(classes, getColour, names))
 
   // add controller to present the model results
   var info = L.control();
@@ -187,3 +171,36 @@ function addChoropleth(features, map, layerGroup) {
 
   return choropleth;
 }
+
+function buildLegend(classes, getColour, names) {
+    
+    var legend = '<div class="legend-title"><strong>Accessibility Index Classes</strong></div>';
+    
+    // legend for class scale
+    for (var i in classes){
+      if (names[i]){
+        legend += '<div><span style="background-color:'+getColour(classes[i]).hex()+'"></span>'+names[i]+'</div>';
+      }
+    }
+    legend += '<div><span style="background-color:transparent"></span>No Data</div>';
+    
+    // legend for gradient scale
+    // var s = '';
+    // var dom = getColour.domain ? getColour.domain() : [0,max],
+    //     dmin = Math.min(dom[0], dom[dom.length-1]),
+    //     dmax = Math.max(dom[dom.length-1], dom[0]);
+    // 
+    // s = '<span class="domain domain-min">'+dmin+'</span>';
+    // for (var i=0;i<=100;i++) {
+    //   if (i != 50){
+    //     s += '<span class="grad-step" style="background-color:'+getColour(dmin + i/100 * (dmax - dmin))+'"></span>';
+    //   } else {
+    //     s += '<span class="domain domain-med">'+((dmin + dmax)*0.5)+'</span>';
+    //   }
+    // }
+    // 
+    // s += '<span class="domain domain-max">'+dmax+'</span>';
+    // legend = '<div class="gradient">'+s+'</div>';
+    
+    return legend;
+  }
