@@ -62,7 +62,14 @@
    <div id="menu">
      <p>Welcome to the <strong>P</strong>otential <strong>A</strong>ccessibility <strong>S</strong>oftware <strong>S</strong>ervice, <strong>PASS</strong>, a tool that measures potential spatial accessibility. Pan and zoom to your area of interest, change the parameters below, and submit to calculate accessibility scores. To learn more about the methodology, checkout <a class="wb-lbx" href="#popup-modal-about" aria-controls="popup-modal" role="button">About</a></p>
      <p>
-       <label>Distance Travel Threshold: <label id="threshold-value">10</label> km</label>
+        <label><i class="fa fa-info-circle" title="Select the commute method."></i> Mode of transportation</label>
+        <select id="transportation" class="single-selects selectize-input items full has-options has-items">
+          <option value="car">Car</option>
+          <option value="public transit">Public Transit</option>
+        </select>
+     </p>
+     <p>
+       <label><i class="fa fa-info-circle" title="Select the max distance clients are willing to travel to the service. Consider mode of transportation."></i> Distance Travel Threshold: <label id="threshold-value">10</label> km</label>
        <div class="slidecontainer">
           <label>0</label>
           <label>70</label>
@@ -70,14 +77,7 @@
        </div>
     </p>
     <p>
-       <label>Mode of transportation</label>
-       <select id="transportation" class="single-selects selectize-input items full has-options has-items">
-         <option value="car">Car</option>
-         <option value="public transit">Public Transit</option>
-       </select>
-    </p>
-    <p>
-       <label>Willingness to Commute</label>
+       <label><i class="fa fa-info-circle" title="Select how willing clients are willing to travel further distance."></i> Willingness to Commute</label>
        <select id="beta" class="single-selects selectize-input items full has-options has-items">
          <option value="1.5">Less</option>
          <option value="1.0">Medium</option>

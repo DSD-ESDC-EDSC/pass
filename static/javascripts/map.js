@@ -71,7 +71,6 @@ function addBoundary(boundary, map) {
 }
 
 function addPopupContent(properties) {
-
   var rows = "";
   for (var property in properties) {
     var key = property,
@@ -84,20 +83,9 @@ function addPopupContent(properties) {
   return content;
 }
 
-// function getColour(d, int) {
-//     return d > 1000 ? '#5e4fa2' :
-//            d > 500  ? '#3288bd' :
-//            d > 200  ? '#66c2a5' :
-//            d > 100  ? '#e6f598' :
-//            d > 50   ? '#fdae61' :
-//            d > 20   ? '#f46d43' :
-//            d > 10   ? '#d53e4f' :
-//                       '#9e0142';
-// }
-
 function addChoropleth(features, map, layerGroup) {
   // remove existing legend and choropleth
-  $(".legend").remove()
+  $("#legend").html('');
 
   layerGroup.eachLayer(function(layer) {
     map.removeLayer(layer)
@@ -174,7 +162,8 @@ function addChoropleth(features, map, layerGroup) {
 
 function buildLegend(classes, getColour, names) {
     
-    var legend = '<div class="legend-title"><strong>Accessibility Index Classes</strong></div>';
+    $('#legend').show();
+    var legend = '<div class="legend-title"><i class="fa fa-info-circle" title="Classes defined by quintiles"></i></a><strong>Accessibility Index Classes</strong></div>';
     
     // legend for class scale
     for (var i in classes){

@@ -13,6 +13,7 @@ body {
 }
 
 #legend {
+  display: none;
   color: #555;
   position: absolute;
   background-color: rgba(255,255,255,0.7);
@@ -26,19 +27,19 @@ body {
   font-size: 1vw;
 }
 
-/* #legend i {
-  width: 18px;
-  height: 18px;
-  float: left;
-  margin-right: 8px;
-  opacity: 0.7;
-} */
-
 #legend span {
   padding: 5px;
 }
 
-.grad-step {
+svg:hover {
+  cursor: pointer;
+}
+
+svg {
+  font-size: 1.vw;
+}
+
+/* .grad-step {
   padding: 1%;
 }
 
@@ -50,7 +51,7 @@ body {
   line-height: 32px;
   padding-left: 2px;
   padding-bottom: 17px;
-}
+} */
 
 #navbar {
   width: 100%;
