@@ -100,7 +100,13 @@ def get_demand_columns():
 			""")
 
 		columns = db_conn.cur.fetchall()
-		return columns
+
+		col_dict = {}
+
+		for col in columns: 
+			col_dict[col[0]] = col[0][4:]
+
+		return col_dict
 
 def get_supply_columns():
 	with DbConnect() as db_conn: 
@@ -111,8 +117,13 @@ def get_supply_columns():
 			""")
 
 		columns = db_conn.cur.fetchall()
-		columns.append(('uniform',))
-		return columns
+		
+		col_dict = {}
+
+		for col in columns:
+			col_dict[col[0]] = col[0][7:]
+
+		return col_dict
 
 
 

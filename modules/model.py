@@ -9,6 +9,9 @@ logger = db.init_logger()
 
 def accessibility(bounds, beta, transportation, threshold, demand_col, supply_col):
 
+    demand_col_sql = '"' + demand_col + '"'
+    supply_col_sql = '"' + supply_col + '"'
+ 
     try:
         xmin = float(bounds['_southWest']['lng'])
         ymin = float(bounds['_southWest']['lat'])
@@ -27,7 +30,7 @@ def accessibility(bounds, beta, transportation, threshold, demand_col, supply_co
                 , 3347)
             , demand.centroid)
         ORDER BY geouid;
-    """ % (demand_col, xmin, ymin, xmax, ymax)
+    """ % (demand_col_sql, xmin, ymin, xmax, ymax)
 
     with db.DbConnect() as db_conn:
         db_conn.cur.execute(demand_query)
@@ -45,7 +48,7 @@ def accessibility(bounds, beta, transportation, threshold, demand_col, supply_co
                 , 3347)
             , poi.point)
         ORDER BY geouid;
-    """ % (supply_col, xmin, ymin, xmax, ymax)
+    """ % (supply_col_sql, xmin, ymin, xmax, ymax)
 
     with db.DbConnect() as db_conn:
         db_conn.cur.execute(supply_query)
@@ -83,9 +86,6 @@ def accessibility(bounds, beta, transportation, threshold, demand_col, supply_co
         distance_matrix = distance_matrix[distance_matrix.geouid.isin(geouid_array)]
         geouid_filtered_array = np.array(distance_matrix['geouid'])
         distance_matrix = distance_matrix.drop('geouid', axis=1)
-
-    
-    
     
     # store the population demand geouids that are within the threshold
     ids_filtered = ", ".join(map(str, geouid_filtered_array))
