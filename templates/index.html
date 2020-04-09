@@ -33,7 +33,10 @@
       <!-- Leaflet Search -->
       <link rel="stylesheet" href="static/javascripts/external/leaflet-search/src/leaflet-search.css">
       <script src="static/javascripts/external/leaflet-search/src/leaflet-search.js"></script>
-      
+      <!-- Leaflet Cluster -->
+      <link rel="stylesheet" href="static/javascripts/external/leaflet-search/dist/MarkerCluster.css">
+      <link rel="stylesheet" href="static/javascripts/external/leaflet-search/dist/MarkerCluster.Default.css">
+      <script src="static/javascripts/external/Leaflet.markercluster-1.4.1/dist/leaflet.markercluster-src.js"></script>
       <!-- <link rel="stylesheet" href="static/javascripts/external/Leaflet.ExtraMarkers/dist/css/leaflet.extra-markers.min.css">  -->
       <!-- <script src="static/javascripts/external/Leaflet.ExtraMarkers/dist/js/leaflet.extra-markers.min.js"></script> -->
       <!-- Chroma.js -->
@@ -52,20 +55,23 @@
       </script>
   </head>
   <body>
-   <div id="navbar">
+    <div id="navbar">
      <a id="logo" class="col-lg-5">PASS</a>
      <a id="guide" class="wb-lbx" href="#popup-modal-guide" aria-controls="popup-modal" role="button">Guide</a>
      <a id="about" class="wb-lbx" href="#popup-modal-about" aria-controls="popup-modal" role="button">About</a>
-   </div>
-   <div id="map"></div>
-   <div id="legend"></div>
-   <div id="menu">
+     <a id="menu-toggle-navbar" class="wb-lbx" aria-controls="popup-modal" role="button">Menu</a>
+    </div>
+    <div id="map"></div>
+    <div id="legend"></div>
+    <div id="map-tools" class="col-lg-12"></div>
+    <div id="menu">
+     <div id="menu-toggle"><i class="fa fa-times"></i></div>
      <p>Welcome to the <strong>P</strong>otential <strong>A</strong>ccessibility <strong>S</strong>oftware <strong>S</strong>ervice, <strong>PASS</strong>, a tool that measures potential spatial accessibility. Pan and zoom to your area of interest, change the parameters below, and submit to calculate accessibility scores. To learn more about the methodology, checkout <a class="wb-lbx" href="#popup-modal-about" aria-controls="popup-modal" role="button">About</a></p>
      <p>
         <label><i class="fa fa-info-circle" title="Select the commute method."></i> Mode of transportation</label>
         <select id="transportation" class="single-selects selectize-input items full has-options has-items">
           <option value="car">Car</option>
-          <option value="public transit">Public Transit</option>
+          <option value="public transit" disabled>Public Transit</option>
         </select>
      </p>
      <p>
@@ -75,33 +81,33 @@
           <label>70</label>
           <input type="range" min="0" max="70" value="10" class="slider" id="threshold">
        </div>
-    </p>
-    <p>
-       <label><i class="fa fa-info-circle" title="Select how willing clients are willing to travel further distance."></i> Willingness to Commute</label>
-       <select id="beta" class="single-selects selectize-input items full has-options has-items">
-         <option value="1.5">Less</option>
-         <option value="1.0">Medium</option>
-         <option value="0.5">More</option>
-       </select>
-    </p>
-    <p>
-       <label>Population Demand</label>
-       <select id="beta" class="single-selects selectize-input items full has-options has-items">
-         <option value="temp">Total Population</option>
-         <option value="temp">Total Female Population</option>
-         <option value="temp">Total Male Population</option>
-       </select>
-    </p>
-    <p>
-       <label>POI Supply</label>
-       <select id="beta" class="single-selects selectize-input items full has-options has-items">
-         <option value="temp">Uniform</option>
-         <option value="temp">Number of Services Offered</option>
-       </select>
-    </p>
-     <button id="model" class="btn popup">Calculate Spatial Accessibility Index</button>
-   </div>
-
+      </p>
+      <p>
+         <label><i class="fa fa-info-circle" title="Select how willing clients are willing to travel further distance."></i> Willingness to Commute</label>
+         <select id="beta" class="single-selects selectize-input items full has-options has-items">
+           <option value="1.5">Less</option>
+           <option value="1.0">Medium</option>
+           <option value="0.5">More</option>
+         </select>
+      </p>
+      <p>
+         <label>Population Demand</label>
+         <select id="demand" class="single-selects selectize-input items full has-options has-items">
+           <option value="temp">Total Population</option>
+           <option value="temp">Total Female Population</option>
+           <option value="temp">Total Male Population</option>
+         </select>
+      </p>
+      <p>
+         <label>POI Supply</label>
+         <select id="supply" class="single-selects selectize-input items full has-options has-items">
+           <option value="temp">Uniform</option>
+           <option value="temp">Number of Services Offered</option>
+         </select>
+      </p>
+      <button id="model" class="btn popup col-lg-12">Calculate Spatial Accessibility Index</button>
+    </div>
+    <div id="toolbar"></div>
     <section class="mfp-hide modal-content modal-dialog overlay-def" id="popup-modal-about">
       <header class="modal-header">
         <h2 class="modal-title">About PASS</h2>

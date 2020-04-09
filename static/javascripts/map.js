@@ -53,16 +53,21 @@ function addMarker(markers, map, type) {
     iconSize: [40,40]
   })
 
-  for (i = 0; i < markers[0].features.length; i++) {
-    var lng = markers[0].features[i].geometry.coordinates[1],
-      ltd = markers[0].features[i].geometry.coordinates[0],
-      popupContent = addPopupContent(markers[0].features[i].properties);
-
-    if (type == "marker") {
+  for (i = 0; i < markers.features.length; i++) {
+    var lng = markers.features[i].geometry.coordinates[1],
+      ltd = markers.features[i].geometry.coordinates[0],
+      popupContent = addPopupContent(markers.features[i].properties);
+    if (type == "marker" && markers.features.length <= 700) {
       L.marker([lng, ltd], {icon:icon}).bindPopup(popupContent).addTo(map);
+    } else if (type == "marker" && markers.features.length > 700) {
+      var clusters = new L.MarkerClusterGroup();
+      clusters.addLayer(L.marker([lng, ltd], {icon:icon}).bindPopup(popupContent));
     } else {
       L.circleMarker([lng, ltd], options).bindPopup(popupContent).addTo(map);
     }
+  }
+  if (clusters) {
+    clusters.addTo(map)
   }
 }
 
@@ -73,11 +78,10 @@ function addBoundary(boundary, map) {
 function addPopupContent(properties) {
   var rows = "";
   for (var property in properties) {
+    console.log(property)
     var key = property,
       value = properties[property];
-    if (key.indexOf('info_') >= 0) {
-      rows += "<tr><td class='tbl-var'>" + key.slice(5,key.length) + ":</td><td>" + value + "</td></tr>";
-    }
+      rows += "<tr><td class='tbl-var'>" + key + ":</td><td>" + value + "</td></tr>";
   }
   var content = "<table>" + rows + "</table>";
   return content;
@@ -94,7 +98,7 @@ function addChoropleth(features, map, layerGroup) {
   var max = features.max,choroplethStats = new geostats(features.score_vals),
       classes = choroplethStats.getQuantile(5),
       names = ['Least Accessible', 'Less Accessible', 'Accessible', 'More Accessible', 'Most Accessible'],
-      getColour = chroma.scale(['#93003a','#00429d']).domain([0,max]).classes(classes);
+      getColour = chroma.scale(['#d7191c','#ffffbf','#1a9641']).domain([0,max]).classes(classes);
       
 
   // function for styling choropleth
@@ -118,6 +122,9 @@ function addChoropleth(features, map, layerGroup) {
         dashArray: '',
         fillOpacity: 0.7
     });
+    
+    var popupContent = addPopupContent(layer.feature.properties);
+    layer.bindPopup(popupContent);
     info.update(layer.feature.properties);
   }
 
@@ -135,27 +142,9 @@ function addChoropleth(features, map, layerGroup) {
 
   // create choropleth map layer and add to layerGroup
   var choropleth = L.geoJson(features, {style: style, onEachFeature: onEachFeature}).addTo(map);
-  layerGroup.addLayer(choropleth)
+  layerGroup.addLayer(choropleth);
   
-  $("#legend").append(buildLegend(classes, getColour, names))
-
-  // add controller to present the model results
-  var info = L.control();
-
-  info.onAdd = function (map) {
-      this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
-      this.update();
-      return this._div;
-  };
-
-  // method that we will use to update the control based on feature properties passed
-  info.update = function (props) {
-     $('#score').html('<h4>Accessibility score</h4>' +  (props ?
-         '<b> GEOUID: ' + props.geouid + '</b><br /> Score: ' + props.score
-         : 'Hover over a boundary'));
-  };
-
-  info.addTo(map);
+  $("#legend").append(buildLegend(classes, getColour, names));
 
   return choropleth;
 }
@@ -163,6 +152,7 @@ function addChoropleth(features, map, layerGroup) {
 function buildLegend(classes, getColour, names) {
     
     $('#legend').show();
+    $("#map-toggle button").show();
     var legend = '<div class="legend-title"><i class="fa fa-info-circle" title="Classes defined by quintiles"></i></a><strong>Accessibility Index Classes</strong></div>';
     
     // legend for class scale
@@ -172,6 +162,7 @@ function buildLegend(classes, getColour, names) {
       }
     }
     legend += '<div><span style="background-color:transparent"></span>No Data</div>';
+    legend += '<div id="legend-score"></div>';
     
     // legend for gradient scale
     // var s = '';

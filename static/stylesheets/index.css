@@ -8,6 +8,23 @@ body {
   position: absolute;
 }
 
+#map-tools {
+  display: none;
+  color: #555;
+  position: absolute;
+  background-color: transparent;
+  z-index: 1000;
+  padding: 5px;
+  bottom: 25%;
+  left: 1%;
+  width: 10%;
+  font-size: 1vw;
+}
+
+.map-icon {
+  border-top: 1px solid #555;
+}
+
 .leaflet-top.leaflet-left {
   margin-top: 80px
 }
@@ -19,7 +36,7 @@ body {
   background-color: rgba(255,255,255,0.7);
   z-index: 1000;
   border: 1px solid white;
-  border-radius: 15px;
+  border-radius: 10px;
   padding: 5px;
   bottom: 1%;
   left: 1%;
@@ -61,9 +78,12 @@ svg {
   padding-top: 7px;
   position: fixed;
   z-index: 1000;
+  -webkit-box-shadow: 0 0 25px 0 black;
+  -moz-box-shadow: 0 0 25px 0 black;
+  box-shadow: 0 0 5px 0 black;
 }
 
-#navbar a:last-child, #navbar a:nth-last-child(2) {
+#navbar a:last-child, #navbar a:nth-last-child(2), #navbar a:nth-last-child(3) {
   padding: 15px;
   margin-right: 5px;
   float: right;
@@ -83,15 +103,48 @@ svg {
   background-color: rgba(255,255,255,0.7);
   z-index: 1000;
   border: 1px solid white;
-  border-radius: 15px;
+  border-radius: 10px;
   padding: 10px;
   max-width: 30%;
 }
 
 #menu button {
-  width: 100%;
   background-color: #15866a;
   color: white;
+}
+
+#menu-toggle {
+  float: right;
+}
+
+#toolbar, #menu-toggle-navbar {
+  display: none;
+}
+
+#menu-toggle-navbar {
+  text-decoration: underline;
+}
+
+#toolbar {
+  line-height: 1.2vw;
+  position: absolute;
+  top: 80px;
+  right: 10px;
+  background-color: rgba(255,255,255,0);
+  z-index: 1000;
+  max-width: 70%;
+}
+
+.label-param {
+  display: inline-block;
+  background-color: #15866a;
+  border: 1px solid white;
+  border-radius: 10px;
+  padding: 5px;
+  color: white;
+  font-weight: 700;
+  font-size: 0.75vw;
+  line-height: 0.8vw;
 }
 
 .slider {
@@ -132,8 +185,17 @@ svg {
   float: right;
 }
 
+select {
+  border: 0px;
+  border-bottom: 2px solid #15866a;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  text-indent: 1px;
+  text-overflow: '';
+}
+
 .btn {
-  margin: 5px !important;
+  border: 1px solid transparent;
   font-size: 1vw !important;
 }
 
