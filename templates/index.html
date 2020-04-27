@@ -57,7 +57,7 @@
   <body>
     <div id="navbar">
      <a id="logo" class="col-lg-5">PASS</a>
-     <a id="guide" class="wb-lbx" href="#popup-modal-guide" aria-controls="popup-modal" role="button">Guide</a>
+     <a id="help" class="wb-lbx" href="#popup-modal-help" aria-controls="popup-modal" role="button">Help</a>
      <a id="about" class="wb-lbx" href="#popup-modal-about" aria-controls="popup-modal" role="button">About</a>
      <a id="menu-toggle-navbar" class="wb-lbx" aria-controls="popup-modal" role="button">Menu</a>
     </div>
@@ -66,7 +66,7 @@
     <div id="map-tools" class="col-lg-12"></div>
     <div id="menu">
      <div id="menu-toggle"><i class="fa fa-times"></i></div>
-     <p>Welcome to the <strong>P</strong>otential <strong>A</strong>ccessibility <strong>S</strong>oftware <strong>S</strong>ervice, <strong>PASS</strong>, a tool that measures potential spatial accessibility. Pan and zoom to your area of interest, change the parameters below, and submit to calculate accessibility scores. To learn more about the methodology, checkout <a class="wb-lbx" href="#popup-modal-about" aria-controls="popup-modal" role="button">About</a></p>
+     <p>Welcome to the <strong>P</strong>otential <strong>A</strong>ccessibility <strong>S</strong>oftware <strong>S</strong>ervice, <strong>PASS</strong>, a tool that measures spatial accessibility. Pan and zoom to your area of interest, change the parameters below, and submit to calculate accessibility scores. To learn more about the methodology, checkout <a class="wb-lbx" href="#popup-modal-about" aria-controls="popup-modal" role="button">About</a></p>
      <p>
         <label><i class="fa fa-info-circle" title="Select the commute method."></i> Mode of transportation</label>
         <select id="transportation" class="single-selects selectize-input items full has-options has-items">
@@ -108,13 +108,15 @@
       <button id="model" class="btn popup col-lg-12">Calculate Spatial Accessibility Index</button>
     </div>
     <div id="toolbar"></div>
-    <section class="mfp-hide modal-content modal-dialog overlay-def" id="popup-modal-about">
+    <section class="mfp-hide modal-content modal-dialog overlay-def modal-width" id="popup-modal-about">
       <header class="modal-header">
         <h2 class="modal-title">About PASS</h2>
       </header>
       <div class="modal-body">
         <h3>Methodology</h3>
-        <iframe src="static/docs/pass_doc.html"></iframe> 
+        <p> The CDO Data Science team developed a geographic information system, Potential Accessibility Software Service (PASS). PASS offers an advanced quantitative approach to measure how spatially accessible population demand is to a given service. </p>
+        <p> Spatial accessibility is the consideration of how physical and social space and place affect how a population can traverse through it to access a given service. Though abstract in nature, it can be measured through considerations like where potential population demand is located, the geographic distance to get from the population location to the service locations offered, the supply at the service locations, as well as the probability of a population going to one service location over another based on the capacity. PASS uses the enhanced 3-step floating catchment methodology to accomplish this, which is further explained <a href="static/docs/brief.html" target="_blank">here</a>.</p>
+        <p>PASS lets you select a geographic area of interest by panning and zooming on the interactive map, and lets you define the parameters to model spatial accessibility to better reflect Canada's diverse society. For example, individuals living in urban areas versus rural areas, have different assumptions and considerations for how to access a service.</p>
         <h3>Developers</h3>
         <ul>
           <li>Julia Conzon</li>
@@ -123,14 +125,16 @@
       </div>
     </section>
 
-    <section class="mfp-hide modal-content modal-dialog overlay-def" id="popup-modal-guide">
+    <section class="mfp-hide modal-content modal-dialog overlay-def modal-width" id="popup-modal-help">
       <header class="modal-header">
-        <h2 class="modal-title">Guide</h2>
+        <h2 class="modal-title">Help</h2>
       </header>
       <div class="modal-body">
-        <h3>PASS Guide</h3>
-        <p> CDO
+        <h3>Why when I zoom in/out the accessibility scores have a different geographic area?</h3>
+        <p> 
+          The methodology used to measure spatial accessibility considers the network of both the services and the surrounding population demand, thus when you zoom in/out of a location, PASS takes all data points within the window of your screen and measures scores based on that network. When you zoom in/out the number of service locations and demand locations change!
         </p>
+        <h3></h3>
       </div>
     </section>
     <!-- WET JS part -->
