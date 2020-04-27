@@ -282,6 +282,10 @@ select:hover {
   100% { transform: rotate(360deg); }
 }
 
+.modal-width {
+  width: 50%;
+}
+
 .modal-body iframe {
   width: 100%;
   height: 300px;
