@@ -36,6 +36,9 @@ app = Flask(__name__)
 app.debug = True
 app.secret_key = APP_SECRET_KEY
 
+# logger
+logger = db.init_logger()
+
 # route for NILFA hub / landing page
 @app.route('/')
 def index():
@@ -49,21 +52,35 @@ def index():
 @app.route('/model',methods=['POST'])
 def run_model():
     req = request.get_json()
-    beta = float(req['beta'])
-    transportation = req['transportation']
-    threshold = int(req['threshold']) * 60 * 60 # multiply to get the minute threshold to match distance matrix time unit (ms)
-    bounds = req['bounds']
+    
+    try:
+        beta = float(req['beta'])
+        transportation = req['transportation']
+        threshold = int(req['threshold']) * 1000 # multiply to get the minute threshold to match distance matrix time unit (ms)
+        bounds = req['bounds']
+        logger.info(f'User parameters include beta: {beta}, transport: {transportation}, threshold: {threshold}')
+    except Exception as e:
+        logger.error(f'Parameters provided are incorrect: {e}')
+        return e
 
     scores = model.accessibility(bounds, beta, transportation, threshold)
-    scores['boundary'] = scores['boundary'].apply(wkt.loads)
-    features = scores.apply(
-        lambda row: Feature(geometry=row['boundary'], properties={'geouid':row['geouid'], 'score':row['scores']}),
-        axis=1).tolist()
-
-    feature_collection = FeatureCollection(features=features)
-    feature_collection = json.dumps(feature_collection)
-
-    return feature_collection
+    scores_col = str(list(scores.columns.values))
+    scores_row = str(scores.index)
+    max = scores['scores'].max()
+    
+    try:
+        scores['boundary'] = scores['boundary'].apply(wkt.loads)
+        features = scores.apply(
+            lambda row: Feature(geometry=row['boundary'], properties={'geouid':row['geouid'], 'score':row['scores']}),
+            axis=1).tolist()
+        feature_collection = FeatureCollection(score_vals=scores['scores'].tolist(), max=max, features=features)
+        feature_collection = json.dumps(feature_collection)
+        return feature_collection
+    except Exception as e:
+        logger.error(f'{scores_row}')
+        logger.error(f'{scores_col}')
+        logger.error(f'Could not return results as geojson: {e}')
+        return e
 
 # route for bad HTTP requests
 @app.errorhandler(400)

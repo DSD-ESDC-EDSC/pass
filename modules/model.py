@@ -19,7 +19,7 @@ def accessibility(bounds, beta, transportation, threshold):
 
     # store in an array the geouids that are contained within the client's window view (bounding box)
     demand_query = """
-        SELECT geouid, ST_AsText(ST_Transform(boundary, 4326)) as boundary, pop
+        SELECT geouid, ST_AsText(ST_Transform(ST_Simplify(boundary,0.5), 4326)) as boundary, pop
         FROM demand
         WHERE ST_Contains(
             ST_Transform(
@@ -79,7 +79,7 @@ def accessibility(bounds, beta, transportation, threshold):
     
     # get the population demand data now with the filtered geouids
     demand_filtered_query = """
-        SELECT geouid, ST_AsText(ST_Transform(boundary, 4326)) as boundary, pop
+        SELECT geouid, ST_AsText(ST_Transform(ST_Simplify(boundary,0.5), 4326)) as boundary, pop
         FROM demand
         WHERE geouid = ANY(ARRAY[%s]) 
         ORDER BY geouid;
@@ -112,12 +112,12 @@ def accessibility(bounds, beta, transportation, threshold):
             demand_array=demand_filtered_array,
             supply_array=supply_array
         )
-        logger.info(f'Successfully calculated accessibility scores')
+        logger.info(f'Successfully calculated accessibility scores with beta: {beta}, transport: {transportation}, threshold: {threshold}')
     except Exception as e:
         logger.error(f'Unsuccessfully calculated accessibility scores: {e}')
         return e
     
     # TO DO: MAKE SCORE MORE INTERPRETABLE
-    demand_filtered['scores'] = demand_filtered['scores'].apply(lambda x: x * 100000)
+    # demand_filtered['scores'] = demand_filtered['scores'].apply(lambda x: (x * 10000))
     
     return demand_filtered
