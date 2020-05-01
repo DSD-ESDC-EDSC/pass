@@ -163,25 +163,25 @@ class InitSchema():
         sql_columns = ['id', 'geouid', 'lrg_id', 'supply', 'point']
 
         req_columns = ['id', 'geouid', 'lrg_id', 'supply']
-        info_columns = [col for col in self.poi if col.startswith('info')]
+        info_columns = [col for col in self.poi if col.startswith('info') or col.startswith('capacity') or col.startswith('supply')]
 
         self.poi.reset_index(inplace = True)
         self.poi.rename(columns = {'index': 'id'}, inplace = True)
 
-        if 'supply' not in self.poi.columns:
-            self.poi['supply'] = 1
-
-        self.poi.supply = self.poi['supply'].astype(float)
-
-        for col in [col for col in self.poi if col.startswith('info')]:
+        for col in [col for col in self.poi if col.startswith('info') or col.startswith('capacity') or col.startswith('supply')]:
             if self.poi[col].dtype == 'O':
                 unit = 'text'
             else:
                 unit = 'numeric'
             sql_columns.append(col)
             query_create = query_create + """,  %s %s""" % ('"' + col + '"', unit)
-
+        
         query_create = query_create + """)"""
+        
+        if 'supply' not in self.poi.columns:
+            self.poi['supply'] = 1
+
+        self.poi.supply = self.poi['supply'].astype(float)
 
         self.execute_query(query_create, "created poi")
 

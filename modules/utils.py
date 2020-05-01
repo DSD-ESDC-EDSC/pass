@@ -15,7 +15,6 @@ def read_file(filename, filetype, columns, req_columns, encoding):
 		# read in csv file 
 		df = pd.read_csv(filename, encoding = encoding)
 
-
 	# rename all (required) columns to be their types 
 	df = init_columns(df, filetype, columns, req_columns)
 	# columns_torename_info = init_open_columns(df, columns, req_columns)
@@ -39,8 +38,13 @@ def init_columns(df, df_type, columns, req_columns):
 			else:
 				if df_type == 'demand':
 					preffix = 'pop_'
-				elif df_type == 'supply':
-					preffix = 'info_'
+				if df_type == 'supply':
+					if columns[col]['desc'] == 'info':
+						preffix = 'info_'
+					if columns[col]['desc'] == 'capacity':
+						preffix = 'capacity_'
+					if columns[col]['desc'] == 'supply':
+						preffix = 'supply_'
 				opt_columns_torename[columns[col]['name']] = preffix + columns[col]['type']
 
 			df[columns[col]['name']] = conform_col_units(df[columns[col]['name']], columns[col])
