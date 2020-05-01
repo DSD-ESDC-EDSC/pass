@@ -1,4 +1,5 @@
 import modules.aceso as aceso
+from flask import abort
 import modules.db as db
 import pandas as pd
 import numpy as np
@@ -69,7 +70,12 @@ def accessibility(bounds, beta, transportation, threshold):
     """ % (cols, transportation, ids, where)
 
     with db.DbConnect() as db_conn:
-        db_conn.cur.execute(dm_query)
+        try:   
+            db_conn.cur.execute(dm_query)
+        except Exception as e:
+            # TO DO: Improve error call for when pouid's don't exist in distance matrix
+            pouid = str(e).split('"')[1]
+            abort(500, f'Access could not be measured because {pouid} is not accessible via the selected mode of transporation (likely a remote community or no data). Please pan to a different view to remove {pouid} from view')
         distance_matrix = pd.DataFrame(db_conn.cur.fetchall(), columns=[desc[0] for desc in db_conn.cur.description])
         geouid_filtered_array = np.array(distance_matrix['geouid'])
         distance_matrix = distance_matrix.drop('geouid', axis=1)

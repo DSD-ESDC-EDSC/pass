@@ -78,7 +78,6 @@ function addBoundary(boundary, map) {
 function addPopupContent(properties) {
   var rows = "";
   for (var property in properties) {
-    console.log(property)
     var key = property,
       value = properties[property];
       rows += "<tr><td class='tbl-var'>" + key + ":</td><td>" + value + "</td></tr>";

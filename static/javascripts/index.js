@@ -90,11 +90,11 @@ function runModel(map, layerGroup){
       });
       $("#menu").append("<strong id='score'></strong>");
     },
-    error: function (err){
+    error: function (request, status, message){
       $('#model').html('Calculate Spatial Accessibility Index');
-      $("#model").append("<span class='popuptext' id='popup-error-model'>Oops... Cannot calculate index for selected area, likely because it is too unpopulated. Please focus on areas more populated</span>");
+      console.log($(request.responseText)[5].innerHTML)
+      $("#model").append("<span class='popuptext' id='popup-error-model'>"+$(request.responseText)[5].innerHTML+"</span>");
       $(".popup .popuptext").css("visibility","visible");
-      console.log(err);
     }
   });
 }
