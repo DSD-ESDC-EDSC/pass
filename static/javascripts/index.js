@@ -4,18 +4,49 @@ $(document).ready(function (){
   var choropleth;
 
   layerGroup.addTo(map);
-  addMarker(poi, map, "marker");
+  addMarker(poi[0], map, "marker");
   slider();
   //addMarker(demand_point, map, "circle");
   // addBoundary(demand, map);
   //addBoundary(region[0], map);
   $("#model").on("click", function(){
-    $("#download").remove();
+    $("#map-tools").hide();
     $("#strong").remove();
+    $(".gradient").remove();
     $("#popup-error-model").remove();
     runModel(map, layerGroup);
   })
+  
+  $('#menu-toggle').on('click', function () {
+    toggleMenu(false);
+  });
+  
 });
+
+function toggleMenu(toolbar){
+  
+  if (!toolbar) {
+    selections = "<div class='label-param'>"+$("#transportation option:selected").text()+"</div>"
+    selections += "<div class='label-param'>"+$("#threshold").val()+" km</div>"
+    selections += "<div class='label-param'>"+$("#beta option:selected").text()+"</div>"
+    selections += "<div class='label-param'>"+$("#supply option:selected").text()+"</div>"
+    selections += "<div class='label-param'>"+$("#demand option:selected").text()+"</div>"
+    
+    $("#menu").hide();
+    $("#toolbar").html(selections).show();
+    $("#menu-toggle-navbar").show();
+  } else {
+    $("#menu").show();
+    $("#toolbar").hide();
+    $("#menu-toggle-navbar").hide();
+  }
+  
+  $("#menu-toggle-navbar").on("click", function(){
+    toggleMenu(true);
+  });
+  
+  console.log('test')
+}
 
 function runModel(map, layerGroup){
   var beta = {'beta': $('#beta').val()},
@@ -38,20 +69,34 @@ function runModel(map, layerGroup){
     async: false,
     cache: false,
     success: function(scores) {
-      layer = addChoropleth(scores, map, layerGroup);
+      choropleth = addChoropleth(scores, map, layerGroup);
+      
+      var downloadIcon = '<div class="map-icon col-lg-6" id="download"><i class="fas fa-file-download"></i></div>',
+      toggleIcon = '<div class="map-icon col-lg-6" id="map-toggle"><i class="fas fa-eye-slash"></i></div>';
+
       $('#model').html('Calculate Spatial Accessibility Index');
-      //map.removeLayer(layer)
-      $("#menu").append("<button id='download' class='btn'>Download Scores as CSV</button>");
+      $("#legend").append(downloadIcon + toggleIcon);
+      $("#map-tools").show();
       $("#download").on("click", function(){
         downloadData(scores)
       });
+      $("#map-toggle").on("click", function(e) {
+          e.preventDefault();
+          if(map.hasLayer(choropleth)) {
+              $(this).html('<i class="fas fa-eye"></i>');
+              map.removeLayer(choropleth);
+          } else {
+              map.addLayer(choropleth);  
+              $(this).html('<i class="fas fa-eye-slash"></i>');
+         }
+      });
       $("#menu").append("<strong id='score'></strong>");
     },
-    error: function (err){
+    error: function (request, status, message){
       $('#model').html('Calculate Spatial Accessibility Index');
-      $("#model").append("<span class='popuptext' id='popup-error-model'>Oops... Cannot calculate index for selected area, likely because it is too unpopulated. Please focus on areas more populated</span>");
+      console.log($(request.responseText)[5].innerHTML)
+      $("#model").append("<span class='popuptext' id='popup-error-model'>"+$(request.responseText)[5].innerHTML+"</span>");
       $(".popup .popuptext").css("visibility","visible");
-      console.log(err);
     }
   });
 }

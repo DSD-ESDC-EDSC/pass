@@ -1,4 +1,5 @@
 import modules.aceso as aceso
+from flask import abort
 import modules.db as db
 import pandas as pd
 import numpy as np
@@ -22,7 +23,7 @@ def accessibility(bounds, beta, transportation, threshold, demand_col, supply_co
 
     # store in an array the geouids that are contained within the client's window view (bounding box)
     demand_query = """
-        SELECT geouid, ST_AsText(ST_Transform(boundary, 4326)) as boundary, %s
+        SELECT geouid, ST_AsText(ST_Transform(ST_Simplify(boundary,0.5), 4326)) as boundary, %s
         FROM demand
         WHERE ST_Contains(
             ST_Transform(
@@ -80,7 +81,12 @@ def accessibility(bounds, beta, transportation, threshold, demand_col, supply_co
     """ % (cols, transportation, where)   
 
     with db.DbConnect() as db_conn:
-        db_conn.cur.execute(dm_query)
+        try:   
+            db_conn.cur.execute(dm_query)
+        except Exception as e:
+            # TO DO: Improve error call for when pouid's don't exist in distance matrix
+            pouid = str(e).split('"')[1]
+            abort(500, f'Access could not be measured because {pouid} is not accessible via the selected mode of transporation (likely a remote community or no data). Please pan to a different view to remove {pouid} from view')
         distance_matrix = pd.DataFrame(db_conn.cur.fetchall(), columns=[desc[0] for desc in db_conn.cur.description])
         # filtering in pandas because db call is giving strange error - FOR CHELSEA 
         distance_matrix = distance_matrix[distance_matrix.geouid.isin(geouid_array)]
@@ -93,7 +99,7 @@ def accessibility(bounds, beta, transportation, threshold, demand_col, supply_co
     # get the population demand data now with the filtered geouids
     '''
     demand_filtered_query = """
-        SELECT geouid, ST_AsText(ST_Transform(boundary, 4326)) as boundary, pop
+        SELECT geouid, ST_AsText(ST_Transform(ST_Simplify(boundary,0.5), 4326)) as boundary, pop
         FROM demand
         WHERE geouid = ANY(ARRAY[%s]) 
         ORDER BY geouid;
@@ -138,12 +144,12 @@ def accessibility(bounds, beta, transportation, threshold, demand_col, supply_co
             demand_array=demand_filtered_array,
             supply_array=supply_array
         )
-        logger.info(f'Successfully calculated accessibility scores')
+        logger.info(f'Successfully calculated accessibility scores with beta: {beta}, transport: {transportation}, threshold: {threshold}')
     except Exception as e:
         logger.error(f'Unsuccessfully calculated accessibility scores: {e}')
         return e
     
     # TO DO: MAKE SCORE MORE INTERPRETABLE
-    demand_filtered['scores'] = demand_filtered['scores'].apply(lambda x: x * 100000)
+    # demand_filtered['scores'] = demand_filtered['scores'].apply(lambda x: (x * 10000))
     
     return demand_filtered
