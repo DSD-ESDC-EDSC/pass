@@ -11,6 +11,7 @@ import os
 import re
 import time
 import logging
+
 load_dotenv()
 
 def init_logger():
@@ -89,3 +90,37 @@ def get_demand(type):
 
 		records = [r[0] for r in db_conn.cur.fetchall()]
 		return records
+
+def get_demand_columns():
+	with DbConnect() as db_conn: 
+		db_conn.cur.execute(""" 
+			SELECT COLUMN_NAME FROM information_schema.columns
+			WHERE TABLE_NAME = 'demand'
+			AND COLUMN_NAME LIKE 'pop%';
+			""")
+
+		columns = db_conn.cur.fetchall()
+
+		col_dict = {}
+
+		for col in columns: 
+			col_dict[col[0]] = col[0][4:]
+
+		return col_dict
+
+def get_supply_columns():
+	with DbConnect() as db_conn: 
+		db_conn.cur.execute(""" 
+			SELECT COLUMN_NAME FROM information_schema.columns
+			WHERE TABLE_NAME = 'poi'
+			AND COLUMN_NAME LIKE 'supply%';
+			""")
+
+		columns = db_conn.cur.fetchall()
+		
+		col_dict = {}
+
+		for col in columns:
+			col_dict[col[0]] = col[0][7:]
+
+		return col_dict

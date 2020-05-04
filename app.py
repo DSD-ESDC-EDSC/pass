@@ -43,10 +43,15 @@ logger = db.init_logger()
 @app.route('/')
 def index():
     poi = json.dumps(db.get_poi())
+    #supply_cols = json.dumps(db.get_supply_columns())
+    #demand_cols = json.dumps(db.get_demand_columns())
+    demand_cols = db.get_demand_columns()
+    supply_cols = db.get_supply_columns()
+
     #region = json.dumps(db.get_region())
     #demand_point = json.dumps(db.get_demand('point'))
     #demand_boundary = json.dumps(db.get_demand('boundary'))
-    return render_template('index.html', poi=poi)
+    return render_template('index.html', poi=poi, supply_cols=supply_cols, demand_cols=demand_cols)
 
 # route for retreiving data for the calculator tool
 @app.route('/model',methods=['POST'])
@@ -63,7 +68,10 @@ def run_model():
         logger.error(f'Parameters provided are incorrect: {e}')
         return e
 
-    scores = model.accessibility(bounds, beta, transportation, threshold)
+    supply = req['supply']
+    demand = req['demand']
+
+    scores = model.accessibility(bounds, beta, transportation, threshold, demand, supply)
     scores_col = str(list(scores.columns.values))
     scores_row = str(scores.index)
     max = scores['scores'].max()

@@ -52,9 +52,11 @@ function runModel(map, layerGroup){
   var beta = {'beta': $('#beta').val()},
       transportation = {'transportation': $('#transportation').val()},
       bounds = {'bounds': map.getBounds()},
-      threshold = {'threshold': $("#threshold").val()};
+      threshold = {'threshold': $("#threshold").val()},
+      supply = {'supply': $("#supply").val()}, 
+      demand = {'demand': $("#demand").val()};
 
-  var values = $.extend(beta, transportation, bounds, threshold);
+  var values = $.extend(beta, transportation, bounds, threshold, supply, demand);
   values = JSON.stringify(values);
   $('#model').html('<div id="loader"><div class="loader"></div><div>Loading Scores...</div></div>');
 
