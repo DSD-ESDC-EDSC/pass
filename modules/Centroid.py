@@ -26,9 +26,11 @@ class Centroid():
 
 		# calculating geographic centroids for smallest geography
 		self.demand_geo_weight['centroid'] = self.demand_geo_weight['geometry'].centroid
+		
+		print(list(self.demand_geo_weight))
 
 		# creating lambda function to calculate weighted centroid average
-		wm = lambda x: np.ma.average(x, weights = self.demand_geo_weight.loc[x.index, 'pop'])
+		wm = lambda x: np.ma.average(x, weights = self.demand_geo_weight.loc[x.index, 'pop_Total'])
 
 		weighted_cent = pd.DataFrame()
 
@@ -40,27 +42,27 @@ class Centroid():
 			else:
 				self.demand_geo_weight[colname] = self.demand_geo_weight.centroid.apply(lambda p:p.y)
 
-			f = {'pop': 'sum', colname: wm}
+			f = {'pop_Total': 'sum', colname: wm}
 
 			temp = self.demand_geo_weight.groupby('lrg_id').agg(f)
 
 			if weighted_cent.empty:
 				weighted_cent = temp
 			else:
-				weighted_cent = pd.merge(weighted_cent.drop('pop', axis = 1), temp, left_index = True, right_index = True)
+				weighted_cent = pd.merge(weighted_cent.drop('pop_Total', axis = 1), temp, left_index = True, right_index = True)
 
 		# zipping weighted lat / lon
 		weighted_cent['centroid'] = utils.create_point(weighted_cent.wtd_lng, weighted_cent.wtd_ltd)
 
-		weighted_cent = weighted_cent[['pop', 'centroid']].reset_index()
+		weighted_cent = weighted_cent[['pop_Total', 'centroid']].reset_index()
 
 		# merging weighted centroid back into boundary_lg
-		self.demand_geo = pd.merge(self.demand_geo, weighted_cent[['lrg_id', 'pop', 'centroid']], left_on = 'geouid', right_on = 'lrg_id')
+		self.demand_geo = pd.merge(self.demand_geo, weighted_cent[['lrg_id', 'pop_Total', 'centroid']], left_on = 'geouid', right_on = 'lrg_id')
 		self.demand_geo.drop('lrg_id_y', axis = 1, inplace = True)
 		self.demand_geo.rename(columns = {'lrg_id_x':'lrg_id'}, inplace = True)
 
 		# imputing missing values with geographic centroid
-		self.demand_geo['centroid'] = np.where(self.demand_geo.pop == 0, self.demand_geo.geometry.centroid, self.demand_geo.centroid)
+		self.demand_geo['centroid'] = np.where(self.demand_geo.pop_Total == 0, self.demand_geo.geometry.centroid, self.demand_geo.centroid)
 		# self.boundary_lg.df['weighted_centroid'] = [x.wkt for x in self.boundary_lg.df.weighted_centroid]
 
 		return self.demand_geo

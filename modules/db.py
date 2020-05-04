@@ -124,7 +124,3 @@ def get_supply_columns():
 			col_dict[col[0]] = col[0][7:]
 
 		return col_dict
-
-
-
-

@@ -80,8 +80,8 @@ class InitSchema():
 
     def create_schema(self):
         "Create each PostgreSQL database table"
-        #self.init_demand()
-        self.init_poi()
+        self.init_demand()
+        #self.init_poi()
         #self.init_distance_matrix()
 
     def init_distance_matrix(self, profiles=["car"]):
@@ -182,7 +182,7 @@ class InitSchema():
             self.poi['supply_Uniform'] = 1
 
         self.poi.supply = self.poi['supply_Uniform'].astype(float)
-        print(query_create)
+
         self.execute_query(query_create, "created poi")
 
         # self.poi = self.poi[sql_columns]
@@ -214,17 +214,16 @@ class InitSchema():
         if self.centroid == 'weighted':
 
             self.demand_geo_weight = self.demand_geo_weight.merge(self.demand_pop, on = 'geouid')
-
+            print(list(self.demand_geo_weight))
             centroid = Centroid(self.demand_geo, self.demand_geo_weight)
             self.centroid_df = centroid.calculate_weighted_centroid()
 
         else:
             self.demand_geo = self.demand_geo.merge(self.demand_pop, on = 'geouid')
-
             centroid = Centroid(self.demand_geo)
             self.centroid_df = centroid.calculate_geographic_centroid()
 
-        self.centroid_df.pop = self.centroid_df['pop'].astype(float)
+        self.centroid_df.pop = self.centroid_df['pop_Total'].astype(float)
         self.centroid_df.geouid = self.centroid_df['geouid'].astype(int)
 
         self.centroid_df.reset_index(inplace = True)
@@ -244,11 +243,10 @@ class InitSchema():
         	CREATE TABLE demand(
         	id serial PRIMARY KEY,
         	geoUID int,
-            pop float,
         	centroid geometry,
         	boundary geometry
         """
-        req_columns = ['id', 'geouid', 'pop']
+        req_columns = ['id', 'geouid']
         geo_columns = ['centroid', 'boundary']
 
 

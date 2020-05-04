@@ -46,8 +46,9 @@ def init_columns(df, df_type, columns, req_columns):
 					if columns[col]['desc'] == 'supply':
 						preffix = 'supply_'
 				opt_columns_torename[columns[col]['name']] = preffix + columns[col]['type']
-
+			
 			df[columns[col]['name']] = conform_col_units(df[columns[col]['name']], columns[col])
+			
 	else:
 		print('Please ensure you have all required columns in config file.')
 		sys.exit(1)
