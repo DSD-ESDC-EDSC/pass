@@ -154,15 +154,15 @@ class InitSchema():
             id serial PRIMARY KEY,
             geouid text,
             LRG_ID text,
-            supply float,
+            "supply_Uniform" float,
             point geometry(POINT,3347)
         """
 
         # TO DO: is (POINT, 3347) converting point to 3347 crs or assuming that it's already 3347 crs?
 
-        sql_columns = ['id', 'geouid', 'lrg_id', 'supply', 'point']
+        sql_columns = ['id', 'geouid', 'lrg_id', 'supply_Uniform', 'point']
 
-        req_columns = ['id', 'geouid', 'lrg_id', 'supply']
+        req_columns = ['id', 'geouid', 'lrg_id', 'supply_Uniform']
         info_columns = [col for col in self.poi if col.startswith('info') or col.startswith('capacity') or col.startswith('supply')]
 
         self.poi.reset_index(inplace = True)
@@ -178,11 +178,11 @@ class InitSchema():
         
         query_create = query_create + """)"""
         
-        if 'supply' not in self.poi.columns:
-            self.poi['supply'] = 1
+        if 'supply_Uniform' not in self.poi.columns:
+            self.poi['supply_Uniform'] = 1
 
-        self.poi.supply = self.poi['supply'].astype(float)
-
+        self.poi.supply = self.poi['supply_Uniform'].astype(float)
+        print(query_create)
         self.execute_query(query_create, "created poi")
 
         # self.poi = self.poi[sql_columns]
