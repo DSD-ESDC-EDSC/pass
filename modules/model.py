@@ -8,10 +8,11 @@ logger = db.init_logger()
 
 # TO DO: USE query_execute() in db_init... or migrate that function in db.py for other use cases... TBD
 
-def accessibility(bounds, beta, transportation, threshold, demand_col, supply_col):
+def accessibility(bounds, beta, transportation, threshold, demand_col, supply_col, capacity_col):
 
     demand_col_sql = '"' + demand_col + '"'
     supply_col_sql = '"' + supply_col + '"'
+    capacity_col_sql = '"' + capacity_col + '"'
  
     try:
         xmin = float(bounds['_southWest']['lng'])
@@ -41,7 +42,7 @@ def accessibility(bounds, beta, transportation, threshold, demand_col, supply_co
 
     # store in an array the demand population counts that are contained within the client's window view (bounding box)
     supply_query = """
-        SELECT geouid, %s::float
+        SELECT geouid, %s::float, %s::float
         FROM poi
         WHERE ST_Contains(
             ST_Transform(
@@ -49,13 +50,14 @@ def accessibility(bounds, beta, transportation, threshold, demand_col, supply_co
                 , 3347)
             , poi.point)
         ORDER BY geouid;
-    """ % (supply_col_sql, xmin, ymin, xmax, ymax)
+    """ % (supply_col_sql, capacity_col_sql, xmin, ymin, xmax, ymax)
 
     with db.DbConnect() as db_conn:
         db_conn.cur.execute(supply_query)
         poi = pd.DataFrame(db_conn.cur.fetchall(), columns=[desc[0] for desc in db_conn.cur.description])
         poi_array = np.array(poi['geouid'])
         supply_array = np.array(poi[supply_col])
+        capacity_array = np.array(poi[capacity_col])
 
     # script to derive column and population demand geouids that need to be in data frame
     cols = ", poiuid_".join(poi_array)
@@ -142,7 +144,8 @@ def accessibility(bounds, beta, transportation, threshold, demand_col, supply_co
         demand_filtered['scores'] = model.calculate_accessibility_scores(
             distance_matrix=distance_matrix,
             demand_array=demand_filtered_array,
-            supply_array=supply_array
+            supply_array=supply_array,
+            capacity_array=capacity_array
         )
         logger.info(f'Successfully calculated accessibility scores with beta: {beta}, transport: {transportation}, threshold: {threshold}')
     except Exception as e:

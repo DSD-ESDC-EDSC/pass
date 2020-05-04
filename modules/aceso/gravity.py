@@ -129,7 +129,8 @@ class GravityModel(object):
         self,
         distance_matrix,
         demand_array=None,
-        supply_array=None
+        supply_array=None,
+        capacity_array=None
     ):
         """Calculate accessibility scores from a 2D distance matrix.
 
@@ -144,7 +145,9 @@ class GravityModel(object):
         supply_array : np.array(float) or None
             A one-dimensional array containing supply multipliers for each supply location.
             The length of the array must match the number of columns in distance_matrix.
-
+        capacity_array : np.array(float) or None
+            A one-dimensional array containing capacity multiplies for each supply location. The length of the array must match the number of columns in the distance_matrix. Capacity is used for the Huff normalization.
+            
         Returns
         -------
         array
@@ -155,6 +158,8 @@ class GravityModel(object):
             demand_array = np.ones(distance_matrix.shape[0])
         if supply_array is None: # if no Points of Service 'attractiveness' data (e.g., number of workers at each location) is specified, weight them all equally
             supply_array = np.ones(distance_matrix.shape[1])
+        if capacity_array is None:
+            capacity_array = np.ones(distance_matrix.shape[1])
 
         ######### Step 2 (part 1/2) in 3SFCA: Calculating Denominator of Equation #########
         # Prob * P * W
@@ -162,6 +167,7 @@ class GravityModel(object):
         demand_potentials = self._calculate_demand_potentials(
             distance_matrix=distance_matrix,
             demand_array=demand_array,
+            capacity_array=capacity_array
         )
 
         inverse_demands = np.reciprocal(demand_potentials) # inverting the demand potential to be able to multiply the service capacity/supply
@@ -181,7 +187,7 @@ class GravityModel(object):
         ######### Step 3 (part 2/3) in 3SFCA: Multiplying (PPR and Distance Decays) and Selection Weights #########
         # Prob * R * W
         if self.huff_normalization: # huff normalization is always true with the 3SFCA method
-            access_ratio_matrix *= self._calculate_interaction_probabilities(distance_matrix)
+            access_ratio_matrix *= self._calculate_interaction_probabilities(distance_matrix, capacity_array)
 
         ######### Step 3 (part 3/3) in 3SFCA: Summing over population centroid #########
         # sum(Prob * R * W)
@@ -189,7 +195,7 @@ class GravityModel(object):
 
 
     # Step 2
-    def _calculate_demand_potentials(self, distance_matrix, demand_array):
+    def _calculate_demand_potentials(self, distance_matrix, demand_array, capacity_array):
         """Calculate the demand potential at each input location.
 
         Returns
@@ -198,15 +204,16 @@ class GravityModel(object):
             An array of demand at each supply location.
         """
         demand_matrix = demand_array.reshape(-1, 1) * self.decay_function(distance_matrix) # applying decay scores to populations
-                                                                                           # (the farther away a location is, the smaller the decay score and, consequently, the smaller the weighted population)
+        # (the farther away a location is, the smaller the decay score and, consequently, the smaller the weighted population)
         if self.huff_normalization:
-            demand_matrix *= self._calculate_interaction_probabilities(distance_matrix) # if normalizing, apply the selection weights as well
+            demand_matrix *= self._calculate_interaction_probabilities(distance_matrix, capacity_array) # if normalizing, apply the selection weights as well
         return np.nansum(demand_matrix, axis=0) # sum over columns, will give us one value for each POS
 
     ######### Step 1 in 3SFCA: Calculating Selection Weights #########
-    # Prob = Cd^B / sum(Cd^B) (in our case C is an array of 1s)
+    # AKA Huff model
+    # Prob = Cd^B / sum(Cd^B) (C = capacity)
     # interaction probabilities = selection weights
-    def _calculate_interaction_probabilities(self, distance_matrix):
+    def _calculate_interaction_probabilities(self, distance_matrix, capacity_array):
         """Calculate the demand potential at each input location.
 
         Parameters
@@ -224,6 +231,7 @@ class GravityModel(object):
         # To improve how the selection weights are calculated, the below code has been modfied by Employment and Social Development Canada's CDO
 
         distance_impedance = self.decay_function(distance_matrix)
+        distance_impedance *= capacity_array
         selection_weights = np.divide(distance_impedance, np.nansum(distance_impedance, axis=1)[:, np.newaxis])
 
         return selection_weights

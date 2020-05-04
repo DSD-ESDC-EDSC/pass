@@ -124,3 +124,20 @@ def get_supply_columns():
 			col_dict[col[0]] = col[0][7:]
 
 		return col_dict
+		
+def get_capacity_columns():
+	with DbConnect() as db_conn: 
+		db_conn.cur.execute(""" 
+			SELECT COLUMN_NAME FROM information_schema.columns
+			WHERE TABLE_NAME = 'poi'
+			AND COLUMN_NAME LIKE 'capacity%';
+			""")
+
+		columns = db_conn.cur.fetchall()
+		
+		col_dict = {}
+
+		for col in columns:
+			col_dict[col[0]] = col[0][9:]
+
+		return col_dict

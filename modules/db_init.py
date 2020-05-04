@@ -80,8 +80,8 @@ class InitSchema():
 
     def create_schema(self):
         "Create each PostgreSQL database table"
-        self.init_demand()
-        #self.init_poi()
+        #self.init_demand()
+        self.init_poi()
         #self.init_distance_matrix()
 
     def init_distance_matrix(self, profiles=["car"]):
@@ -155,14 +155,15 @@ class InitSchema():
             geouid text,
             LRG_ID text,
             "supply_Uniform" float,
+            "capacity_Uniform" float,
             point geometry(POINT,3347)
         """
 
         # TO DO: is (POINT, 3347) converting point to 3347 crs or assuming that it's already 3347 crs?
 
-        sql_columns = ['id', 'geouid', 'lrg_id', 'supply_Uniform', 'point']
+        sql_columns = ['id', 'geouid', 'lrg_id', 'supply_Uniform', 'capacity_Uniform', 'point']
 
-        req_columns = ['id', 'geouid', 'lrg_id', 'supply_Uniform']
+        req_columns = ['id', 'geouid', 'lrg_id', 'supply_Uniform', 'capacity_Uniform']
         info_columns = [col for col in self.poi if col.startswith('info') or col.startswith('capacity') or col.startswith('supply')]
 
         self.poi.reset_index(inplace = True)
@@ -177,22 +178,26 @@ class InitSchema():
             query_create = query_create + """,  %s %s""" % ('"' + col + '"', unit)
         
         query_create = query_create + """)"""
+        print(query_create)
+        self.execute_query(query_create, "created poi")
         
         if 'supply_Uniform' not in self.poi.columns:
             self.poi['supply_Uniform'] = 1
-
-        self.poi.supply = self.poi['supply_Uniform'].astype(float)
-
-        self.execute_query(query_create, "created poi")
-
+            
+        if 'capacity_Uniform' not in self.poi.columns:
+            self.poi['capacity_Uniform'] = 1
+            
+        #self.poi.supply = self.poi['supply_Uniform'].astype(float)
+        #self.poi.capacity = self.poi['capacity_Uniform'].astype(float)
+        
         # self.poi = self.poi[sql_columns]
 
         sql_col_string = '"' + '", "'.join(sql_columns) + '"'
 
         for i in self.poi.index:
             values = self.poi.loc[i] # .astype(str).values.flatten().tolist()
-
             vals_default = "'" + "', '".join(values[req_columns].astype(str).values.flatten().tolist()) + "'"
+            print(vals_default)
             lat = values['latitude']
             lng = values['longitude']
             if len(info_columns) > 0:
