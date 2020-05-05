@@ -26,11 +26,12 @@ $(document).ready(function (){
 function toggleMenu(toolbar){
   
   if (!toolbar) {
-    selections = "<div class='label-param'>"+$("#transportation option:selected").text()+"</div>"
-    selections += "<div class='label-param'>"+$("#threshold").val()+" km</div>"
-    selections += "<div class='label-param'>"+$("#beta option:selected").text()+"</div>"
-    selections += "<div class='label-param'>"+$("#supply option:selected").text()+"</div>"
-    selections += "<div class='label-param'>"+$("#demand option:selected").text()+"</div>"
+    selections = "<div class='label-param'>Transit: "+$("#transportation option:selected").text()+"</div>"
+    selections += "<div class='label-param'>Distance Threshold: "+$("#threshold").val()+" km</div>"
+    selections += "<div class='label-param'>Willingness to Drive: "+$("#beta option:selected").text()+"</div>"
+    selections += "<div class='label-param'>POI Supply: "+$("#supply option:selected").text()+"</div>"
+    selections += "<div class='label-param'>POI Capacity: "+$("#capacity option:selected").text()+"</div>"
+    selections += "<div class='label-param'>Population: "+$("#demand option:selected").text()+"</div>"
     
     $("#menu").hide();
     $("#toolbar").html(selections).show();
@@ -75,7 +76,7 @@ function runModel(map, layerGroup){
       var downloadIcon = '<div class="map-icon col-lg-6" id="download"><i class="fas fa-file-download"></i></div>',
       toggleIcon = '<div class="map-icon col-lg-6" id="map-toggle"><i class="fas fa-eye-slash"></i></div>';
 
-      $('#model').html('Calculate Spatial Accessibility Index');
+      $('#model').html('Measure Spatial Accessibility');
       $("#legend").append(downloadIcon + toggleIcon);
       $("#map-tools").show();
       $("#download").on("click", function(){
@@ -94,7 +95,7 @@ function runModel(map, layerGroup){
       $("#menu").append("<strong id='score'></strong>");
     },
     error: function (request, status, message){
-      $('#model').html('Calculate Spatial Accessibility Index');
+      $('#model').html('Measure Spatial Accessibility');
       console.log($(request.responseText)[5].innerHTML)
       $("#model").append("<span class='popuptext' id='popup-error-model'>"+$(request.responseText)[5].innerHTML+"</span>");
       $(".popup .popuptext").css("visibility","visible");
@@ -103,6 +104,7 @@ function runModel(map, layerGroup){
 }
 
 function slider(){
+  $("#threshold-value").html($("#threshold").val());
   $("#threshold").on("change", function(){
     var threshold = $(this).val();
     $("#threshold-value").html(threshold);
