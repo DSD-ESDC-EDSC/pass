@@ -52,9 +52,12 @@ function runModel(map, layerGroup){
   var beta = {'beta': $('#beta').val()},
       transportation = {'transportation': $('#transportation').val()},
       bounds = {'bounds': map.getBounds()},
-      threshold = {'threshold': $("#threshold").val()};
+      threshold = {'threshold': $("#threshold").val()},
+      supply = {'supply': $("#supply").val()},
+      capacity = {'capacity': $("#capacity").val()}, 
+      demand = {'demand': $("#demand").val()};
 
-  var values = $.extend(beta, transportation, bounds, threshold);
+  var values = $.extend(beta, transportation, bounds, threshold, supply, demand, capacity);
   values = JSON.stringify(values);
   $('#model').html('<div id="loader"><div class="loader"></div><div>Loading Scores...</div></div>');
 
@@ -90,11 +93,11 @@ function runModel(map, layerGroup){
       });
       $("#menu").append("<strong id='score'></strong>");
     },
-    error: function (err){
+    error: function (request, status, message){
       $('#model').html('Calculate Spatial Accessibility Index');
-      $("#model").append("<span class='popuptext' id='popup-error-model'>Oops... Cannot calculate index for selected area, likely because it is too unpopulated. Please focus on areas more populated</span>");
+      console.log($(request.responseText)[5].innerHTML)
+      $("#model").append("<span class='popuptext' id='popup-error-model'>"+$(request.responseText)[5].innerHTML+"</span>");
       $(".popup .popuptext").css("visibility","visible");
-      console.log(err);
     }
   });
 }

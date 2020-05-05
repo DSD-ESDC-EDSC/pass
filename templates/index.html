@@ -52,6 +52,8 @@
       <script>
         var poi = JSON.parse({{ poi | tojson }});
         console.log(poi)
+
+
       </script>
   </head>
   <body>
@@ -81,41 +83,51 @@
           <label>70</label>
           <input type="range" min="0" max="70" value="10" class="slider" id="threshold">
        </div>
-      </p>
-      <p>
-         <label><i class="fa fa-info-circle" title="Select how willing clients are willing to travel further distance."></i> Willingness to Commute</label>
-         <select id="beta" class="single-selects selectize-input items full has-options has-items">
-           <option value="1.5">Less</option>
-           <option value="1.0">Medium</option>
-           <option value="0.5">More</option>
-         </select>
-      </p>
-      <p>
-         <label>Population Demand</label>
-         <select id="demand" class="single-selects selectize-input items full has-options has-items">
-           <option value="temp">Total Population</option>
-           <option value="temp">Total Female Population</option>
-           <option value="temp">Total Male Population</option>
-         </select>
-      </p>
-      <p>
-         <label>POI Supply</label>
-         <select id="supply" class="single-selects selectize-input items full has-options has-items">
-           <option value="temp">Uniform</option>
-           <option value="temp">Number of Services Offered</option>
-         </select>
-      </p>
-      <button id="model" class="btn popup col-lg-12">Calculate Spatial Accessibility Index</button>
-    </div>
-    <div id="toolbar"></div>
-    <section class="mfp-hide modal-content modal-dialog overlay-def modal-width" id="popup-modal-about">
+    </p>
+    <p>
+       <label><i class="fa fa-info-circle" title="Select how willing clients are willing to travel further distance."></i> Willingness to Commute</label>
+       <select id="beta" class="single-selects selectize-input items full has-options has-items">
+         <option value="1.5">Less</option>
+         <option value="1.0">Medium</option>
+         <option value="0.5">More</option>
+       </select>
+    </p>
+    <p>
+      <label>Population Group</label>
+      <select id="demand" class="single-selects selectize-input items full has-options has-items">
+        {% for key, val in demand_cols.items() %}
+        <option value="{{key}}">{{val}}</option>
+        {% endfor %}
+      </select>
+    </p>
+    <p>
+      <label>Supply</label>
+      <select id="supply" class="single-selects selectize-input items full has-options has-items">
+        {% for key, val in supply_cols.items() %}
+        <option value="{{key}}">{{val}}</option>
+        {% endfor %}
+      </select>
+    </p>
+    <p>
+      <label>Capacity</label>
+      <select id="capacity" class="single-selects selectize-input items full has-options has-items">
+        {% for key, val in capacity_cols.items() %}
+        <option value="{{key}}">{{val}}</option>
+        {% endfor %}
+      </select>
+    </p>
+
+  <button id="model" class="btn popup col-lg-12">Calculate Spatial Accessibility Index</button>
+  </div>
+  <div id="toolbar"></div>
+  <section class="mfp-hide modal-content modal-dialog overlay-def modal-width" id="popup-modal-about">
       <header class="modal-header">
         <h2 class="modal-title">About PASS</h2>
       </header>
       <div class="modal-body">
         <h3>Methodology</h3>
         <p> The CDO Data Science team developed a geographic information system, Potential Accessibility Software Service (PASS). PASS offers an advanced quantitative approach to measure how spatially accessible population demand is to a given service. </p>
-        <p> Spatial accessibility is the consideration of how physical and social space and place affect how a population can traverse through it to access a given service. Though abstract in nature, it can be measured through considerations like where potential population demand is located, the geographic distance to get from the population location to the service locations offered, the supply at the service locations, as well as the probability of a population going to one service location over another based on the capacity. PASS uses the enhanced 3-step floating catchment methodology to accomplish this, which is further explained <a href="static/docs/brief.html" target="_blank">here</a>.</p>
+        <p> Spatial accessibility is the consideration of how physical and social space and place affect how a population can traverse through it to access a given service. Though abstract in nature, it can be measured through considerations like where potential population demand is located, the geographic distance to get from the population location to the service locations offered, the supply at the service locations, as well as the probability of a population going to one service location over another based on the capacity. PASS uses the enhanced 3-step floating catchment methodology to accomplish this, which is further explained <a href="static/docs/pass_report_20200422.html" target="_blank">here</a>.</p>
         <p>PASS lets you select a geographic area of interest by panning and zooming on the interactive map, and lets you define the parameters to model spatial accessibility to better reflect Canada's diverse society. For example, individuals living in urban areas versus rural areas, have different assumptions and considerations for how to access a service.</p>
         <h3>Developers</h3>
         <ul>

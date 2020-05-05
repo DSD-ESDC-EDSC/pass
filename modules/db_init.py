@@ -154,45 +154,50 @@ class InitSchema():
             id serial PRIMARY KEY,
             geouid text,
             LRG_ID text,
-            supply float,
+            "supply_Uniform" float,
+            "capacity_Uniform" float,
             point geometry(POINT,3347)
         """
 
         # TO DO: is (POINT, 3347) converting point to 3347 crs or assuming that it's already 3347 crs?
 
-        sql_columns = ['id', 'geouid', 'lrg_id', 'supply', 'point']
+        sql_columns = ['id', 'geouid', 'lrg_id', 'supply_Uniform', 'capacity_Uniform', 'point']
 
-        req_columns = ['id', 'geouid', 'lrg_id', 'supply']
-        info_columns = [col for col in self.poi if col.startswith('info')]
+        req_columns = ['id', 'geouid', 'lrg_id', 'supply_Uniform', 'capacity_Uniform']
+        info_columns = [col for col in self.poi if col.startswith('info') or col.startswith('capacity') or col.startswith('supply')]
 
         self.poi.reset_index(inplace = True)
         self.poi.rename(columns = {'index': 'id'}, inplace = True)
 
-        if 'supply' not in self.poi.columns:
-            self.poi['supply'] = 1
-
-        self.poi.supply = self.poi['supply'].astype(float)
-
-        for col in [col for col in self.poi if col.startswith('info')]:
+        for col in [col for col in self.poi if col.startswith('info') or col.startswith('capacity') or col.startswith('supply')]:
             if self.poi[col].dtype == 'O':
                 unit = 'text'
             else:
                 unit = 'numeric'
             sql_columns.append(col)
             query_create = query_create + """,  %s %s""" % ('"' + col + '"', unit)
-
+        
         query_create = query_create + """)"""
-
+        print(query_create)
         self.execute_query(query_create, "created poi")
-
+        
+        if 'supply_Uniform' not in self.poi.columns:
+            self.poi['supply_Uniform'] = 1
+            
+        if 'capacity_Uniform' not in self.poi.columns:
+            self.poi['capacity_Uniform'] = 1
+            
+        #self.poi.supply = self.poi['supply_Uniform'].astype(float)
+        #self.poi.capacity = self.poi['capacity_Uniform'].astype(float)
+        
         # self.poi = self.poi[sql_columns]
 
         sql_col_string = '"' + '", "'.join(sql_columns) + '"'
 
         for i in self.poi.index:
             values = self.poi.loc[i] # .astype(str).values.flatten().tolist()
-
             vals_default = "'" + "', '".join(values[req_columns].astype(str).values.flatten().tolist()) + "'"
+            print(vals_default)
             lat = values['latitude']
             lng = values['longitude']
             if len(info_columns) > 0:
@@ -214,17 +219,16 @@ class InitSchema():
         if self.centroid == 'weighted':
 
             self.demand_geo_weight = self.demand_geo_weight.merge(self.demand_pop, on = 'geouid')
-
+            print(list(self.demand_geo_weight))
             centroid = Centroid(self.demand_geo, self.demand_geo_weight)
             self.centroid_df = centroid.calculate_weighted_centroid()
 
         else:
             self.demand_geo = self.demand_geo.merge(self.demand_pop, on = 'geouid')
-
             centroid = Centroid(self.demand_geo)
             self.centroid_df = centroid.calculate_geographic_centroid()
 
-        self.centroid_df.pop = self.centroid_df['pop'].astype(float)
+        self.centroid_df.pop = self.centroid_df['pop_Total'].astype(float)
         self.centroid_df.geouid = self.centroid_df['geouid'].astype(int)
 
         self.centroid_df.reset_index(inplace = True)
@@ -244,11 +248,10 @@ class InitSchema():
         	CREATE TABLE demand(
         	id serial PRIMARY KEY,
         	geoUID int,
-            pop float,
         	centroid geometry,
         	boundary geometry
         """
-        req_columns = ['id', 'geouid', 'pop']
+        req_columns = ['id', 'geouid']
         geo_columns = ['centroid', 'boundary']
 
 
