@@ -62,7 +62,7 @@ def run_model():
     try:
         beta = float(req['beta'])
         transportation = req['transportation']
-        threshold = int(req['threshold']) * 1000 # multiply to get the minute threshold to match distance matrix time unit (ms)
+        threshold = int(req['threshold']) * 1000 # multiply to get the minute threshold to match distance matrix meter units
         bounds = req['bounds']
         logger.info(f'User parameters include beta: {beta}, transport: {transportation}, threshold: {threshold}')
     except Exception as e:

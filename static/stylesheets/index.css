@@ -48,6 +48,16 @@ body {
   padding: 5px;
 }
 
+#legend svg {
+  float: left;
+}
+
+#legend-title {
+  line-height: 1;
+  padding-bottom: 10px;
+  text-align: center;
+}
+
 svg:hover {
   cursor: pointer;
 }

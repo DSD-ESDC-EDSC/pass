@@ -80,7 +80,9 @@ function addPopupContent(properties) {
   for (var property in properties) {
     var key = property,
       value = properties[property];
-      rows += "<tr><td class='tbl-var'>" + key + ":</td><td>" + value + "</td></tr>";
+      if ((key == "geouid" || key == "score" || key.indexOf("supply") >= 0 || key.indexOf("capacity") >= 0 || key.indexOf("info") >= 0) && key.indexOf("Uniform") < 0) {
+        rows += "<tr><td class='tbl-var'>" + key.substring(key.indexOf("_") + 1) + ":</td><td>" + value + "</td></tr>";
+      }
   }
   var content = "<table>" + rows + "</table>";
   return content;
@@ -152,7 +154,7 @@ function buildLegend(classes, getColour, names) {
     
     $('#legend').show();
     $("#map-toggle button").show();
-    var legend = '<div class="legend-title"><i class="fa fa-info-circle" title="Classes defined by quintiles"></i></a><strong>Accessibility Index Classes</strong></div>';
+    var legend = '<div id="legend-title"><i class="fa fa-info-circle" title="Classes defined by quintiles"></i></a><strong> Accessibility Classes</strong></div>';
     
     // legend for class scale
     for (var i in classes){

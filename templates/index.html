@@ -85,7 +85,7 @@
        </div>
     </p>
     <p>
-       <label><i class="fa fa-info-circle" title="Select how willing clients are willing to travel further distance."></i> Willingness to Commute</label>
+       <label><i class="fa fa-info-circle" title="Select how willing clients are to travel further distance."></i> Willingness to Commute</label>
        <select id="beta" class="single-selects selectize-input items full has-options has-items">
          <option value="1.5">Less</option>
          <option value="1.0">Medium</option>
@@ -93,7 +93,7 @@
        </select>
     </p>
     <p>
-      <label>Population Group</label>
+      <label><i class="fa fa-info-circle" title="Select the variable to represent the population demand."></i> Population Group</label>
       <select id="demand" class="single-selects selectize-input items full has-options has-items">
         {% for key, val in demand_cols.items() %}
         <option value="{{key}}">{{val}}</option>
@@ -101,7 +101,7 @@
       </select>
     </p>
     <p>
-      <label>Supply</label>
+      <label><i class="fa fa-info-circle" title="Select the variable to represent the supply of the service locations (POIs) that meets the demand."></i> POI Supply</label>
       <select id="supply" class="single-selects selectize-input items full has-options has-items">
         {% for key, val in supply_cols.items() %}
         <option value="{{key}}">{{val}}</option>
@@ -109,7 +109,7 @@
       </select>
     </p>
     <p>
-      <label>Capacity</label>
+      <label><i class="fa fa-info-circle" title="Select the variable to represent the capacity of the service locations (POIs) that would influences the likelihood of demand going to the POI."></i> POI Capacity</label>
       <select id="capacity" class="single-selects selectize-input items full has-options has-items">
         {% for key, val in capacity_cols.items() %}
         <option value="{{key}}">{{val}}</option>
@@ -117,7 +117,7 @@
       </select>
     </p>
 
-  <button id="model" class="btn popup col-lg-12">Calculate Spatial Accessibility Index</button>
+  <button id="model" class="btn popup col-lg-12">Measure Spatial Accessibility</button>
   </div>
   <div id="toolbar"></div>
   <section class="mfp-hide modal-content modal-dialog overlay-def modal-width" id="popup-modal-about">
