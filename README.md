@@ -1,6 +1,10 @@
 # Potential Spatial Accessibility Software Service (PASS)
 
-This repository of code provides scripts for calculating potential spatial accessibility from population demand locations (e.g., Dissemination Area population-weighted centroids) to points of interest (POI). To learn more about the methodology used, checkout docs/pass_doc.html.
+The CDO Data Science team developed a geographic information system, Potential Accessibility Software Service (PASS). PASS offers an advanced quantitative approach to measure how spatially accessible population demand is to a given service.
+
+Spatial accessibility is the consideration of how physical and social space and place affect how a population can traverse through it to access a given service. Though abstract in nature, it can be measured through considerations like where potential population demand is located, the geographic distance to get from the population location to the service locations offered, the supply at the service locations, as well as the probability of a population going to one service location over another based on the capacity. PASS uses the enhanced 3-step floating catchment methodology to accomplish this, which is further explained [in this html (best to download and open in browser)](static/docs/pass_report_20200422.html).
+
+PASS lets you select a geographic area of interest by panning and zooming on the interactive map, and lets you define the parameters to model spatial accessibility to better reflect Canada's diverse society. For example, individuals living in urban areas versus rural areas, have different assumptions and considerations for how to access a service.
 
 # Installation
 
@@ -10,6 +14,7 @@ This repository of code provides scripts for calculating potential spatial acces
 - PostgreSQL > 11
 - PostGIS (PostgreSQL extension) > 2.5
 - Docker
+- Java Run Time
 - Git Bash (optional)
 - Anaconda > 4.0 (optional)
 
@@ -31,6 +36,8 @@ DB_PORT=
 DB_NAME=
 DB_PASSWORD=
 DB_USER=
+
+GTFS_API_KEY=
 
 LOG_DEFAULT_LEVEL=debug
 LOG_FILE_PATH=
