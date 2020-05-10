@@ -19,27 +19,26 @@ page_number = json.loads(requests.get(url_pages).content)['results']['numPages']
 for page in range(page_number):
     # page starts at 1, not 0
     page += 1
-    
+
     # retrieves feeds based on location specified (currently all GTFS feeds in Canada)
-    url_feeds = 'https://api.transitfeeds.com/v1/getFeeds?key='+key+'&location='+location+'&descendants=1&page='+page+'&limit=100'
+    url_feeds = 'https://api.transitfeeds.com/v1/getFeeds?key='+key+'&location='+location+'&descendants=1&page='+str(page)+'&limit=100'
 
     # store GTFS feeds within Canada
     feeds = json.loads(requests.get(url_feeds).content)
 
     # get zipped feed GTFS data per each feed
     for feed in feeds['results']['feeds']:
-        
+
         # store feed id
         feed_id = feed['id']
-        
+
         # create url to get specific feed from API
         url_get = 'https://api.transitfeeds.com/v1/getLatestFeedVersion?key='+key+'&feed='+feed_id
-        
+
         # save downloaded feed into a data/gtfs folder
         with open('../data/gtfs/'+feed_id.replace('/','_')+'.zip', 'wb') as f:
             f.write(requests.get(url_get).content)
             f.close()
 
-# TO DO: come up with a method for updating existing data files using the /getLatestFeedVersion
-    
-    
+    total = json.loads(requests.get(url_pages).content)['results']['total']
+    print(f'Completed {total}')
