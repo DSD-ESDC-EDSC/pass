@@ -15,8 +15,8 @@ PASS lets you select a geographic area of interest by panning and zooming on the
 - PostGIS (PostgreSQL extension) > 2.5
 - Docker
 - Java Run Time
-- Git Bash (optional)
-- Anaconda > 4.0 (optional)
+- Git Bash (optional, but required if following installation steps)
+- Anaconda > 4.0 (optional, but required if following installation steps)
 
 ### Steps to Install
 
@@ -70,4 +70,4 @@ Once you completed the Installation step, which you only need to complete once, 
 - Create new branch related to that issue
 - Pull from master branch (this might get updated eventually to dev once a first version is stable)
 - Work on your branch, when you have completed the code and tested it, you can then push the branch to the remote repository
-- Make a merge/pull request, @Noznoc will review and merge into master
+- Make a merge/pull request, admin will review and merge into master

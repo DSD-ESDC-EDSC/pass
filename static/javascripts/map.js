@@ -43,24 +43,22 @@ function addMarker(markers, map, type) {
 
   var getColour = chroma.scale(['#9e0142', '#5e4fa2']).domain([0, 1000]);
 
-  // var icon = L.ExtraMarkers.icon({
-  //   icon: 'fa-coffee',
-  //   prefix: 'fa'
-  // });
-
   var icon = L.icon({
     iconUrl: 'https://cdn4.iconfinder.com/data/icons/flags-of-the-world-set-1/100/.svg-5-512.png',
     iconSize: [40,40]
   })
-
+  
+  if (type == "marker" && markers.features.length > 500){
+    var clusters = new L.MarkerClusterGroup();
+  }
+  
   for (i = 0; i < markers.features.length; i++) {
     var lng = markers.features[i].geometry.coordinates[1],
       ltd = markers.features[i].geometry.coordinates[0],
       popupContent = addPopupContent(markers.features[i].properties);
-    if (type == "marker" && markers.features.length <= 700) {
+    if (type == "marker" && markers.features.length <= 500) {
       L.marker([lng, ltd], {icon:icon}).bindPopup(popupContent).addTo(map);
-    } else if (type == "marker" && markers.features.length > 700) {
-      var clusters = new L.MarkerClusterGroup();
+    } else if (type == "marker" && markers.features.length > 500) {
       clusters.addLayer(L.marker([lng, ltd], {icon:icon}).bindPopup(popupContent));
     } else {
       L.circleMarker([lng, ltd], options).bindPopup(popupContent).addTo(map);
@@ -164,24 +162,6 @@ function buildLegend(classes, getColour, names) {
     }
     legend += '<div><span style="background-color:transparent"></span>No Data</div>';
     legend += '<div id="legend-score"></div>';
-    
-    // legend for gradient scale
-    // var s = '';
-    // var dom = getColour.domain ? getColour.domain() : [0,max],
-    //     dmin = Math.min(dom[0], dom[dom.length-1]),
-    //     dmax = Math.max(dom[dom.length-1], dom[0]);
-    // 
-    // s = '<span class="domain domain-min">'+dmin+'</span>';
-    // for (var i=0;i<=100;i++) {
-    //   if (i != 50){
-    //     s += '<span class="grad-step" style="background-color:'+getColour(dmin + i/100 * (dmax - dmin))+'"></span>';
-    //   } else {
-    //     s += '<span class="domain domain-med">'+((dmin + dmax)*0.5)+'</span>';
-    //   }
-    // }
-    // 
-    // s += '<span class="domain domain-max">'+dmax+'</span>';
-    // legend = '<div class="gradient">'+s+'</div>';
     
     return legend;
   }

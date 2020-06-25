@@ -152,7 +152,4 @@ def accessibility(bounds, beta, transportation, threshold, demand_col, supply_co
         logger.error(f'Unsuccessfully calculated accessibility scores: {e}')
         return e
     
-    # TO DO: MAKE SCORE MORE INTERPRETABLE
-    # demand_filtered['scores'] = demand_filtered['scores'].apply(lambda x: (x * 10000))
-    
     return demand_filtered

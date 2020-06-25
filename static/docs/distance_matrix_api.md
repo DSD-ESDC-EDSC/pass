@@ -5,7 +5,7 @@ The following document provides detailed instructions for how to set up the APIs
 1. Open Route Service API for cars
 2. Open Trip Planner API for public transit
 
-Both APIs are java based, the Open Route Service (ORS) API is initialized using Docker for the car distance calculations, while a Java file (.jar) is used by Open Trip Planner's API for calcualting public transit distances. 
+Both APIs are java based, the Open Route Service (ORS) API is initialized using Docker for the car distance calculations, while a Java file (.jar) runs a virtual machine for Open Trip Planner's API to calculate distances based on General Transit Feed Specification (GTFS) public transit data. 
 
 Both APIs depend on OpenStreetMap road network data, a reliable data source for road data in Canada (Zhang 2018; Jacobs 2017). You can download the OSM data for Canada from Geofabrik's server: [canada-latest.osm.pbf](https://download.geofabrik.de/north-america/canada-latest.osm.pbf). There are instructions below on how to reduce the size of this file. 
 
@@ -15,7 +15,7 @@ Depending on the geographic scope, you might have memory issues, especially for 
 # Car Distance Matrix
 
 ## Dependencies
-- Docker
+- [Docker](https://docs.docker.com/)
 - [Open Route Services (ORS) repo](https://github.com/GIScience/openrouteservice). Learn more about ORS via their [documentation](https://github.com/GIScience/openrouteservice-docs) and their [website](https://openrouteservice.org/)
 
 ## Data Source
@@ -34,6 +34,7 @@ Depending on the geographic scope, you might have memory issues, especially for 
 
 ## Data Source
 - Download GTFS feeds using [gtfs.py](/modules/gtfs.py) script
+- Download Geofabrik's latest OSM data for Canada, the ways (roads and paths) will be used as well as the GTFS data for calculating commute time: [canada-latest.osm.pbf](https://download.geofabrik.de/north-america/canada-latest.osm.pbf)
 
 ## Installation
 

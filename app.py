@@ -1,5 +1,5 @@
 from base64 import b64decode
-from flask import Flask, request, render_template, jsonify, redirect, url_for, abort, make_response
+from flask import Flask, request, render_template
 from waitress import serve
 import json
 import decimal
@@ -22,11 +22,6 @@ APP_HOST = os.environ.get('APP_HOST')
 APP_PORT = os.environ.get('APP_PORT')
 APP_THREADS = int(os.environ.get('APP_THREADS', 4))
 
-USER_NAME = os.environ.get('USER_NAME')
-USER_PASSWORD = os.environ.get('USER_PASSWORD')
-ADMIN_NAME = os.environ.get('ADMIN_NAME')
-ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD')
-
 HTTP_OK = 200
 HTTP_BAD_REQ = 400
 HTTP_FORBIDDEN = 403
@@ -39,22 +34,17 @@ app.secret_key = APP_SECRET_KEY
 # logger
 logger = db.init_logger()
 
-# route for NILFA hub / landing page
+# route for main page
 @app.route('/')
 def index():
     poi = json.dumps(db.get_poi())
-    #supply_cols = json.dumps(db.get_supply_columns())
-    #demand_cols = json.dumps(db.get_demand_columns())
     demand_cols = db.get_demand_columns()
     supply_cols = db.get_supply_columns()
     capacity_cols = db.get_capacity_columns()
 
-    #region = json.dumps(db.get_region())
-    #demand_point = json.dumps(db.get_demand('point'))
-    #demand_boundary = json.dumps(db.get_demand('boundary'))
     return render_template('index.html', poi=poi, supply_cols=supply_cols, demand_cols=demand_cols, capacity_cols=capacity_cols)
 
-# route for retreiving data for the calculator tool
+# route for running enhanced 3SFCA model
 @app.route('/model',methods=['POST'])
 def run_model():
     req = request.get_json()

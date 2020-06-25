@@ -1,4 +1,4 @@
 .env
 /data
 /modules/config.json
-/modules/__pycache__
+**/__pycache__
