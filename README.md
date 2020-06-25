@@ -2,7 +2,7 @@
 
 The CDO Data Science team developed a geographic information system, Potential Accessibility Software Service (PASS). PASS offers an advanced quantitative approach to measure how spatially accessible population demand is to a given service.
 
-Spatial accessibility is the consideration of how physical and social space and place affect how a population can traverse through it to access a given service. Though abstract in nature, it can be measured through considerations like where potential population demand is located, the geographic distance to get from the population location to the service locations offered, the supply at the service locations, as well as the probability of a population going to one service location over another based on the capacity. PASS uses the enhanced 3-step floating catchment methodology to accomplish this, which is further explained [in this html (best to download and open in browser)](static/docs/pass_report_20200422.html).
+Spatial accessibility is the consideration of how physical and social space and place affect how a population can traverse through it to access a given service. Though abstract in nature, it can be measured through considerations like where potential population demand is located, the geographic distance to get from the population location to the service locations offered, the supply at the service locations, as well as the probability of a population going to one service location over another based on the capacity. PASS uses the enhanced 3-step floating catchment methodology to accomplish this, which is further explained [in a report, which should be downloaded and viewed in your web browser](static/docs/pass_report_20200422.html).
 
 PASS lets you select a geographic area of interest by panning and zooming on the interactive map, and lets you define the parameters to model spatial accessibility to better reflect Canada's diverse society. For example, individuals living in urban areas versus rural areas, have different assumptions and considerations for how to access a service.
 
@@ -22,7 +22,7 @@ PASS lets you select a geographic area of interest by panning and zooming on the
 
 1. Make sure you have the above dependencies installed
 2. Clone repo
-3. Set up Python environment, such as with Anaconda: `conda env create -f environment.yml`
+3. Set up Python environment, such as with Anaconda: `conda env create -f environment.yml`. If you prefer not to use Anaconda, you can manually install the Python dependencies, refer to the [ATTRIBUTION markdown](/ATTRIBUTION.md) for what packages are necessary for installation and run
 4. Once you have all the dependencies installed, activate the environment, such as: `source activate pass`
 5. You will also need to create a `.env` file within the local repo's root directory. The following information should exist within the file, but add values specific for your use case:
 
@@ -51,7 +51,7 @@ LOG_FILE_PATH=
 - Optional: a more granular geographic data file + population for calculating mean-weighted centroids to represent the demand locations more precisely
 
 7. Modify `modules/config.json` so that it reflects your data. Please refer to the wiki to learn more on how to update the config.json ** TO COMPLETE **
-8. Refer to the wiki to learn about how set up APIs for calculating distance ... ** TO COMPLETE **
+8. Now you have to initialize and build the database based on your data, which can be accomplished by running `modules/db_init.py`; however, before running this Python script, you will need to initialize local or web-based API for calculating distance matrix.
 9. Run `modules/db_init.py` to initialize your database, this could take a while depending on how large your data is.
 
 
@@ -63,6 +63,12 @@ Once you completed the Installation step, which you only need to complete once, 
 3. Run `app.py`, such as in Git Bash: `python app.py`
 4. After running the command, go to your browser, and you can open the app with your provided `APP_HOST:APP_PORT`
 5. To close the app, in Git Bash press the Ctrl + C keys
+
+# Development
+
+Further information is provided in the  `static/docs` folder. Below is an image of PASS's architecture.
+
+
 
 # Contribute
 

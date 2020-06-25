@@ -8,6 +8,7 @@ import math
 
 import numpy as np
 
+# ADDED BY ESDC
 def negative_power_decay(distance_array, beta): 
     return distance_array ** -beta
 
