@@ -20,6 +20,7 @@ load_dotenv()
 APP_SECRET_KEY = os.environ.get('APP_SECRET_KEY')
 APP_HOST = os.environ.get('APP_HOST')
 APP_PORT = os.environ.get('APP_PORT')
+APP_THREADS = int(os.environ.get('APP_THREADS', 4))
 
 # create flask app
 app = Flask(__name__)

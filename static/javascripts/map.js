@@ -47,7 +47,7 @@ function addMarker(markers, map, type) {
     iconSize: [40,40]
   })
   
-  if (type == "marker" && markers.features.length > 500){
+  if (type == "marker" && markers.features.length > 700){
     var clusters = new L.MarkerClusterGroup();
   }
   
@@ -55,9 +55,9 @@ function addMarker(markers, map, type) {
     var lng = markers.features[i].geometry.coordinates[1],
       ltd = markers.features[i].geometry.coordinates[0],
       popupContent = addPopupContent(markers.features[i].properties);
-    if (type == "marker" && markers.features.length <= 500) {
+    if (type == "marker" && markers.features.length <= 700) {
       L.marker([lng, ltd], {icon:icon}).bindPopup(popupContent).addTo(map);
-    } else if (type == "marker" && markers.features.length > 500) {
+    } else if (type == "marker" && markers.features.length > 700) {
       clusters.addLayer(L.marker([lng, ltd], {icon:icon}).bindPopup(popupContent));
     } else {
       L.circleMarker([lng, ltd], options).bindPopup(popupContent).addTo(map);

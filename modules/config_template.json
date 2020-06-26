@@ -1,0 +1,141 @@
+{
+	"files": {
+		"demand_geo": {
+			"file":"ENTER FILE PATH TO DEMAND GEOGRAPHIC BOUNDARY SHAPEFILE",
+			"type":"shape",
+			"crs": "3347",
+			"columns": {
+				"ID" : {
+					"name": "ENTER DEMAND GEOGRAPHIC BOUNDARY ID VARIABLE NAME",
+					"type": "geouid",
+					"unit": "ENTER DATA TYPE (E.G., int)",
+					"desc": "ID"
+						},
+				"LRG_ID" : {
+					"name": "TO FOLLOW UP WITH CHELSEA ON THIS REQUIREMENT",
+					"type": "lrg_id",
+					"unit": "ENTER DATA TYPE (E.G., int)",
+					"desc": "ID"
+						},
+				"geometry": {
+					"name": "geometry",
+					"type": "geometry",
+					"unit": "geometry", 
+					"desc": "geometry"
+						}
+				}
+			},
+		"demand_pop": {
+			"file":"ENTER FILE PATH TO THE DEMAND GEOGRAPHIC BOUNDARY SHAPEFILES' POPULATION CSV",
+			"type":"demand",
+			"encoding":"latin-1",
+			"columns": {
+				"ID": {
+					"name":"ENTER DEMAND GEOGRAPHIC BOUNDARY ID VARIABLE NAME",
+					"type":"geouid",
+					"unit": "ENTER DATA TYPE (E.G., int)",
+					"desc": "ID"
+					},
+				"demand_total": {
+					"name":"TO FOLLOW UP WITH CHELSEA ON THIS REQUIREMENT",
+					"type": "pop_Total",
+					"unit": "int", 
+					"desc": "demand"
+					},
+				"demand_ENTER WORD THAT DESCRIBES POPULATION DEMAND VARIABLE OF INTEREST": {
+					"name": "ENTER THE VARIABLE NAME",
+					"type": "ENTER HOW YOU WANT THE VARIABLE NAME TO APPEAR ON THE UI",
+					"unit": "ENTER DATA TYPE", 
+					"desc": "demand"
+				  },
+			}
+		},
+    "demand_geo_weight": {
+      "file": "ENTER FILE PATH TO A SMALLER DEMAND GEOGRAPHIC BOUNDARY SHAPEFILES",
+      "type": "shape",
+      "crs":"3347",
+      "columns": {
+        "ID" : {
+          "name": "ENTER SMALLER DEMAND GEOGRAPHIC BOUNDARY ID VARIABLE NAME",
+          "type": "geouid",
+          "unit": "int"},
+        "LRG_ID" : {
+          "name": "ENTER DEMAND GEOGRAPHIC BOUNDARY ID VARIABLE NAME",
+          "type": "lrg_id",
+          "unit": "int"},
+        "geometry": {
+          "name": "geometry",
+          "type": "geometry",
+          "unit": "geometry"
+            }
+          }
+    },
+		"supply": {
+			"file":"ENTER FILE PATH TO THE SUPPLY CSV",
+			"type":"supply",
+			"encoding":"latin-1",
+			"crs":"4326",
+			"columns": {
+				"ID": {
+					"name":"ENTER SUPPLY ID VARIABLE NAME",
+					"type":"geouid",
+					"unit": "ENTER DATA TYPE", 
+					"desc": "ID"
+					},
+				"latitude" : {
+					"name":"ENTER LATITUDE VARIABLE NAME",
+					"type":"latitude",
+					"unit": "ENTER DATA TYPE OF LATITUDE (E.G., float)", 
+					"desc": "geometry"
+				},
+				"longitude" : {
+					"name":"ENTER LONGITUDE VARIABLE NAME",
+					"type":"longitude",
+					"unit": "ENTER DATA TYPE OF LONGITUDE (E.G., float)", 
+					"desc": "geometry"
+				},
+				"LRG_ID" : {
+					"name":"DISCUSS WITH CHELSEA",
+					"type":"lrg_id",
+					"unit": "str", 
+					"desc": "ID"
+				},
+				"ENTER DESCRIPTIVE WORD OF VARIALBLE TO INCLUDE IN DATABASE TABLE": {
+					"name":"ENTER VARIABLE NAME",
+					"type": "ENTER HOW YOU WANT THE VARIABLE NAME TO APPEAR ON THE UI",
+					"unit": "ENTER DATA TYPE OF VARIABLE", 
+					"desc": "info"
+				},
+				"supply_ENTER DESCRIPTIVE WORD OF VARIABLE TO INCLUDE IN DATABASE TO REPRESENT SUPPLY": {
+					"name": "ENTER VARIABLE NAME",
+					"type": "ENTER HOW YOU WANT THE VARIABLE NAME TO APPEAR ON THE UI",
+					"unit": "ENTER DATA TYPE OF VARIABLE", 
+					"desc": "supply"
+				},
+				"capcity_ENTER DESCRIPTIVE WORD OF VARIABLE TO INCLUDES IN DATABASE TO RERESENT CAPACITY": {
+					"name":"ENTER VARIABLE NAME",
+					"type": "ENTER HOW YOU WANT THE VARIABLE NAME TO APPEAR ON THE UI",
+					"unit": "ENTER DATA TYPE OF VARIABLE", 
+					"desc": "capacity"
+				}
+			}
+		}
+	},
+	"ORS_params": {
+		"connection": {
+			"client_url": "http://[ENTER HOST]:[ENTER PORT]/ors",
+			"timeout": 500
+		},
+		"isochrones": {
+			"catchment_range": 3600,
+			"catchment_range_type": "time",
+			"profile": "driving-car",
+			"sleep_time": 0
+		},
+		"distance_matrix": {
+			"metric": "distance",
+			"unit": "m" ,
+			"sleep_time": 0
+		}
+	}
+}
