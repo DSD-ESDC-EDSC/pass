@@ -50,10 +50,10 @@ LOG_FILE_PATH=
 - CSV file that stores your POIs, this file should at least have two columns for longitude and latitude, AKA 'supply'
 - Optional: a more granular geographic data file + population for calculating mean-weighted centroids to represent the demand locations more precisely
 
-7. Modify `modules/config.json` so that it reflects your data. Please refer to the wiki to learn more on how to update the config.json ** TO COMPLETE **
-8. Now you have to initialize and build the database based on your data, which can be accomplished by running `modules/db_init.py`; however, before running this Python script, you will need to initialize local or web-based API for calculating distance matrix.
-9. Run `modules/db_init.py` to initialize your database, this could take a while depending on how large your data is.
-
+7. Modify `modules/config.json` so that it reflects your data. Please refer to the [pass_config markdown](static/docs/pass_config) for more information on how to properly prepare `config.json`
+8. Now you have to initialize and build the database based on your data, which can be accomplished by running `modules/db_init.py`; however, before running this Python script, you will need to initialize local or web-based API for calculating distance matrix. To learn more about how to set up the API for calculating a distance matrix, refer to the [pass_distance_matrix_api markdown](static/docs/pass_distance_matrix_api.md)
+9. Run `modules/db_init.py` to initialize your database, this could take a while depending on how large your data is
+10. Confirm your database has three populated data tables: `demand`, `poi`, and `distance_matrix_car`
 
 # Run
 
@@ -68,7 +68,11 @@ Once you completed the Installation step, which you only need to complete once, 
 
 Further information is provided in the  `static/docs` folder. Below is an image of PASS's architecture.
 
+![PASS Architecture](static/docs/pass_architecture.png)
 
+The following are areas that could be further developed:
+
+- Incorporating a `distance_matrix_transit` database table that stores a distance matrix calculated by General Transit Feed Specification (GTFS) data to account for public transportation. Some work has been started for this. The `modules/gtfs.py` script collects all GTFS feeds and data in Canada and then can be used with the Open Transit Planner API that handles calculating distance matrix with GTFS and OpenStreeetMap (`*.osm.pbf`) road network data.
 
 # Contribute
 
