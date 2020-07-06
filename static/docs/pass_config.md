@@ -1,33 +1,35 @@
 # Database Initialization
 
-To set up the database for PASS, you will need to run `db_init.py`. For this Python script to successfully run, the following steps need to be complete prior.
+To set up the database for PASS, you will need to run `InitSchema` Python class. The `InitSchema.py` file runs several different modules to read, process and store the necessary data for PASS. **For this Python script to successfully run, the following steps must be completed prior**:
 
-1. Start up API for calculating distance matrix. For this tool, the OpenRouteService at the minimum must be running. Refer to the documentation within the [pass_distance_matrix_api markdown](/pass_distance_matrix_api.md) for more information on setting this up.
-2. Set up a `modules/config.json`. Refer to the section below on how to prepare this file for successful read.
+1. Set up a `config.json`. Refer to the section below on how to prepare this file for successful read.
+
+2. Connect to either a local or web version of the [OpenRouteService (ORS)](https://github.com/GIScience/openrouteservice) API for calculating a drive time/distance matrix.
+  - `InitSchema.py` runs the `DistanceMatrix` class that connects to this API to calculate drive time/distance isochrones and then a distance matrix file to be stored in the database. 
+  - `DistanceMatrix` depends on the `client_url` parameter, which can be provided in `config.json`. Either provide a web client URL (in which case you will need to [sign up for ORS web API](https://openrouteservice.org/plans/)) or set up a local version of the API through a virtual machine / container. If you are working with larger geographic extents (e.g., all of Canada), it is recommended to host locally to avoid dealing with API limits. **For information on how to install ORS locally, refer to the [Distance Matrix Calculation Set Up Instructions](/pass_distance_matrix_api.md)**.
+
+3. Assuming [PostgreSQL](https://www.postgresql.org/) is already installed, initialize a new database and add the [PostGIS](https://postgis.net/) database extension to store the geographic data. Make sure to add the PostgreSQL database connection information to `config.json`.
 
 ## config.json
 
-The `config.json` file is meant to describe your data sources for `db_init.py` to read, prepare and store the data sources into the PostgreSQL database. The `modules/config_template.json` file can be used to build a version of `config.json`. This section explains the necessary and optional objects that need to be present in the JSON.
+The `config.json` file is meant to describe your data sources for `InitSchema.py` to read, prepare and store into the PostgreSQL database (`files` key); moreover, it provides the following: (1) connection information for the database (`DB` key), (2) connection information for the `DistanceMatrix` local/web API (`ORS` key), (3) app configuration variables (`APP` key), and (4) variables for logging (`LOGGER` key). The `config_template.json` file can be used to build a version of `config.json`. This section explains the necessary and optional objects that need to be present in this JSON.
 
-TO DO: COMPLETE THIS!
+The `files` object and their key/values that **need** to be in `config.json` are the following:
 
-The main `file` objects and their key/values that **need** to be in `config.json` are the following:
-
-- `demand_geo`: the ***.shapefile** of the desired geographic unit to measure and visualize spatial accessibility.
+- `demand_geo`: the `*.shapefile` of the desired geographic unit to measure and visualize spatial accessibility.
   - `file`
   - `type`
   - `crs`
   - `columns`
   
-- `demand_pop`: the ***.csv** of `demand_geo` geographic unit's population.
+- `demand_pop`: the `*.csv` of `demand_geo` geographic unit's population.
   - `file`
   - `type`
   - `encoding`
   - `crs`
   - `columns` 
 
-
-- `supply`: the ***.csv** of the desired Points of Interest (POI) (i.e., service) location (latitude and longitude)
+- `supply`: the `*.csv` of the desired Points of Interest (POI) (i.e., service) location (latitude and longitude)
   - `file`
   - `type`
   - `encoding`
@@ -185,6 +187,24 @@ There is an *optional* object `demand_geo_weight` that you can also include to c
 			"unit": "m" ,
 			"sleep_time": 0
 		}
+	},
+	"DB": {
+		"HOST": "DB HOST",
+		"PORT": "DB PORT",
+		"NAME": "DB NAME",
+		"PASSWORD": "DB PASSWORD",
+		"USER": "DB USER"
+	},
+	"APP": {
+		"SECRET_KEY": "pass",
+		"HOST": "HOST",
+		"PORT": "PORT",
+		"THREADS": 4
+	},
+	"LOGGER": {
+		"DEFAULT_LEVEL": "debug",
+    "FILE": "False"
+		"FILE_PATH": "C:/Users/Name/Documents/Code/pass/pass.log"
 	}
 }
 

@@ -47,7 +47,7 @@
 					"type": "ENTER HOW YOU WANT THE VARIABLE NAME TO APPEAR ON THE UI",
 					"unit": "ENTER DATA TYPE", 
 					"desc": "demand"
-				  },
+				  }
 			}
 		},
     "demand_geo_weight": {
@@ -121,7 +121,7 @@
 			}
 		}
 	},
-	"ORS_params": {
+	"ORS": {
 		"connection": {
 			"client_url": "http://[ENTER HOST]:[ENTER PORT]/ors",
 			"timeout": 500
@@ -137,5 +137,24 @@
 			"unit": "m" ,
 			"sleep_time": 0
 		}
+	},
+	"DB": {
+		"HOST": "ENTER DATABASE HOST",
+		"PORT": "ENTER DATABASE PORT",
+		"NAME": "ENTER DATABASE NAME",
+		"PASSWORD": "ENTER DATABASE PASSWORD",
+		"USER": "ENTER DATABASE USER"
+	},
+	"APP": {
+		"SECRET_KEY": "ENTER APP SECRET KEY",
+		"HOST": "ENTER APP HOST",
+		"PORT": "ENTER APP KEY",
+		"THREADS": 4
+	},
+	"LOGGER": {
+		"DEFAULT_LEVEL": "debug",
+		"FILE": "ENTER true OR false TO SAVE LOG AS FILE",
+		"FILE_PATH": "ENTER A PATH AND FILE NAME (E.G., pass.log) TO SAVE FILE IN (IF FILE IS true)"
 	}
+	
 }

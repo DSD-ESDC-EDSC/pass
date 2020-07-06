@@ -3,8 +3,9 @@ from flask import abort
 import modules.db as db
 import pandas as pd
 import numpy as np
+import modules.logger as logger
 
-logger = db.init_logger()
+logger = logger.init()
 
 # TO DO: USE query_execute() in db_init... or migrate that function in db.py for other use cases... TBD
 

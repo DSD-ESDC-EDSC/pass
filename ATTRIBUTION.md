@@ -149,7 +149,11 @@ If the Work includes a "NOTICE" text file as part of its distribution, then any 
 *END OF TERMS AND CONDITIONS*
 ____
 
-The following software and code artificats are made available under the Apache 2.0 License.
+The following software and code artifacts are made available under the Apache 2.0 License.
+
+**Python**
+
+- [openrouteservice](https://pypi.org/project/openrouteservice/) - Copyright (c) 2018-2020 Nils Nolde
 
 **JavaScript/CSS**
 

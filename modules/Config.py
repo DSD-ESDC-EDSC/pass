@@ -1,61 +1,65 @@
 import json
 
+# when running app
+try:
+	with open('../config.json') as json_data_file:
+		config = json.load(json_data_file)
+
+# when running InitSchema
+except:
+	with open('config.json') as json_data_file:
+		config = json.load(json_data_file)
 
 JSON_ERROR = 'JSON Error. Unable to read config for file '
 
-class Config:
+class Data():
 
-	def __init__(self, config_file):
-		self.config_file = config_file
-
-		with open('config.json') as json_data_file:
-			data = json.load(json_data_file)
-
-
+	def __init__(self):
+	
 		# files
 		try:
-			self.demand_geo_weight_file = data['files']['demand_geo_weight']['file']
+			self.demand_geo_weight_file = config['files']['demand_geo_weight']['file']
 		except(KeyError):
 			print(JSON_ERROR + 'demand_geo_weight')
 
 		try:
-			self.demand_geo_file = data['files']['demand_geo']['file']
+			self.demand_geo_file = config['files']['demand_geo']['file']
 		except(KeyError):
 			print(JSON_ERROR + 'demand_geo')
 
 		try:
-			self.demand_pop_file = data['files']['demand_pop']['file']
+			self.demand_pop_file = config['files']['demand_pop']['file']
 		except(KeyError):
 			print(JSON_ERROR + 'demand_pop')
 
 		try:
-			self.supply_file = data['files']['supply']['file']
+			self.supply_file = config['files']['supply']['file']
 		except(KeyError):
 			print(JSON_ERROR + 'supply')
 
 		try:
-			self.supply_crs = data['files']['supply']['crs']
+			self.supply_crs = config['files']['supply']['crs']
 		except(KeyError):
 			print(JSON_ERROR + 'supply')
 
 		# file types
 		try:
-			self.demand_geo_weight_type = data['files']['demand_geo_weight']['type']
+			self.demand_geo_weight_type = config['files']['demand_geo_weight']['type']
 		except(KeyError):
 			print(JSON_ERROR + 'demand_geo_weight')
 
 		try:
-			self.demand_geo_type = data['files']['demand_geo']['type']
+			self.demand_geo_type = config['files']['demand_geo']['type']
 		except(KeyError):
 			print(JSON_ERROR + 'demand_geo')
 
 		try:
-			self.demand_pop_type = data['files']['demand_pop']['type']
+			self.demand_pop_type = config['files']['demand_pop']['type']
 		except(KeyError):
 			print(JSON_ERROR + 'demand_pop')
 
 		try:
-			self.supply_type = data['files']['supply']['type']
+			self.supply_type = config['files']['supply']['type']
 		except(KeyError):
 			print(JSON_ERROR + 'supply')
 
@@ -63,7 +67,7 @@ class Config:
 		# encoding
 
 		try:
-			self.demand_pop_encode = data['files']['demand_pop']['encoding']
+			self.demand_pop_encode = config['files']['demand_pop']['encoding']
 		except(KeyError):
 			print(JSON_ERROR + 'demand_pop')
 
@@ -73,56 +77,57 @@ class Config:
 			print(JSON_ERROR)
 
 		try:
-			self.supply_encode = data['files']['supply']['encoding']
+			self.supply_encode = config['files']['supply']['encoding']
 		except(KeyError):
 			print(JSON_ERROR + 'supply')
 
 		# projection
 		try:
-			self.demand_geo_weight_crs = data['files']['demand_geo_weight']['crs']
+			self.demand_geo_weight_crs = config['files']['demand_geo_weight']['crs']
 		except(KeyError):
 			print(JSON_ERROR + 'demand_geo_weight')
 
 		try:
-			self.demand_geo_crs = data['files']['demand_geo']['crs']
+			self.demand_geo_crs = config['files']['demand_geo']['crs']
 		except(KeyError):
 			print(JSON_ERROR + 'demand_geo')
 
 		# columns
 		try:
-			self.demand_geo_weight_columns = data['files']['demand_geo_weight']['columns']
+			self.demand_geo_weight_columns = config['files']['demand_geo_weight']['columns']
 		except(KeyError):
 			print(JSON_ERROR + 'demand_geo_weight')
 
 		try:
-			self.demand_geo_columns = data['files']['demand_geo']['columns']
+			self.demand_geo_columns = config['files']['demand_geo']['columns']
 		except(KeyError):
 			print(JSON_ERROR + 'demand_geo')
 
 		try:
-			self.demand_pop_columns = data['files']['demand_pop']['columns']
+			self.demand_pop_columns = config['files']['demand_pop']['columns']
 		except(KeyError):
 			print(JSON_ERROR + 'demand_pop')
 
 		try:
-			self.supply_columns = data['files']['supply']['columns']
+			self.supply_columns = config['files']['supply']['columns']
 		except(KeyError):
 			print(JSON_ERROR + 'supply')
 
 		## ORS stuff
 
 		try:
-			self.ORS_client = data['ORS_params']['connection']['client_url']
-			self.ORS_timeout = data['ORS_params']['connection']['timeout']
+			self.ORS_client = config['ORS']['connection']['client_url']
+			self.ORS_timeout = config['ORS']['connection']['timeout']
 
-			self.iso_catchment_range = data['ORS_params']['isochrones']['catchment_range']
-			self.iso_catchment_type = data['ORS_params']['isochrones']['catchment_range_type']
-			self.iso_profile = data['ORS_params']['isochrones']['profile']
-			self.iso_sleep_time = data['ORS_params']['isochrones']['sleep_time']
+			self.iso_catchment_range = config['ORS']['isochrones']['catchment_range']
+			self.iso_catchment_type = config['ORS']['isochrones']['catchment_range_type']
+			self.iso_profile = config['ORS']['isochrones']['profile']
+			self.iso_sleep_time = config['ORS']['isochrones']['sleep_time']
 
-			self.dm_metric = data['ORS_params']['distance_matrix']['metric']
-			self.dm_unit = data['ORS_params']['distance_matrix']['unit']
-			self.dm_sleep_time = data['ORS_params']['distance_matrix']['sleep_time']
+			self.dm_metric = config['ORS']['distance_matrix']['metric']
+			self.dm_unit = config['ORS']['distance_matrix']['unit']
+			self.dm_sleep_time = config['ORS']['distance_matrix']['sleep_time']
+			
 		except(KeyError):
 			print(JSON_ERROR)
 
@@ -130,6 +135,30 @@ class Config:
 		self.required_cols = {}
 		self.required_cols['shape'] = ['ID', 'LRG_ID', 'geometry']
 		self.required_cols['demand'] = ['ID', 'demand_total']
-		self.required_cols['supply'] = ['ID', 'LRG_ID', 'latitude', 'longitude']
+		self.required_cols['supply'] = ['ID', 'latitude', 'longitude']
 
 		self.types_dict = {'str': [str, 'O'], 'int': [float, int]}
+	
+class Database():	
+	def __init__(self):
+
+		self.NAME = config['DB']['NAME']
+		self.HOST = config['DB']['HOST']
+		self.PASSWORD = config['DB']['PASSWORD']
+		self.USER = config['DB']['USER']
+
+class Logger():
+	def __init__(self):
+		
+		self.DEFAULT_LEVEL = config['LOGGER']['DEFAULT_LEVEL']
+		self.FILE = config['LOGGER']['FILE']
+		self.FILE_PATH = config['LOGGER']['FILE_PATH']
+
+class App():
+	def __init__(self):
+
+		self.SECRET_KEY = config['APP']['SECRET_KEY']
+		self.HOST = config['APP']['HOST']
+		self.PORT = config['APP']['PORT']
+		self.THREADS = config['APP']['THREADS']
+		

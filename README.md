@@ -24,38 +24,19 @@ PASS lets you select a geographic area of interest by panning and zooming on the
 1. Make sure you have the above dependencies installed.
 2. Clone repo.
 3. Set up Python environment, such as with Anaconda: `conda env create -f environment.yml`. If you prefer not to use Anaconda, you can manually install the Python dependencies, refer to the [ATTRIBUTION markdown](/ATTRIBUTION.md) for what packages are necessary for installation and run.
-4. You will also need to create a `.env` file within the local repo's root directory. The following information should exist within the file, but add values specific for your use case:
-
-```
-APP_SECRET_KEY=
-APP_HOST=
-APP_PORT=
-
-DB_HOST=
-DB_PORT=
-DB_NAME=
-DB_PASSWORD=
-DB_USER=
-
-GTFS_API_KEY=
-
-LOG_DEFAULT_LEVEL=debug
-LOG_FILE_PATH=
-```
-
-5. Create a `data` folder within the local repo's root directory. In that folder you should have the following data:
+4. Create a `data` folder within the local repo's root directory. In that folder you should have the following types of data:
 
 - `demand_geo`: Geographic data file representing your demand (e.g., shapefile of postal code polygons).
 - `demand_pop`: CSV file that at least has the demand geographic data file IDs and a variable to represent the population counts for the demand geographic data file.
 - `supply`: CSV file that stores your POIs, this file should at least have a variable to represent the POI IDs and two variables for longitude and latitude.
 - `demand_geo_weight` (optional): a more granular geographic data file + population for calculating mean-weighted centroids to represent the demand locations more precisely.
 
-Requirements for these data files are further detailed in the [pass_config markdown](static/docs/pass_config.md)
+  Requirements for these data files are further detailed in the [pass_config markdown](static/docs/pass_config.md), and there are demonstrations of the data within the data folder.
 
-6. Modify `modules/config.json` so that it reflects your data. Please refer to the [pass_config markdown](static/docs/pass_config.md) for more information on how to properly prepare `config.json`.
-7. Now you have to initialize and build the database based on your data, which can be accomplished by running `modules/db_init.py`; however, before running this Python script, you will need to initialize a local or web-based API for calculating distance matrix. To learn more about how to set up the API for calculating a distance matrix, refer to the [pass_distance_matrix_api markdown](static/docs/pass_distance_matrix_api.md).
-9. Run `modules/db_init.py` to initialize your database, this could take a while depending on the data size.
-10. Confirm your database has three populated data tables: `demand`, `poi`, and `distance_matrix_car`.
+5. Modify `config.json` so that it reflects your data. Please refer to the [pass_config markdown](static/docs/pass_config.md) for more information on how to properly prepare `config.json`.
+6. Now you have to initialize and build the database based on your data, which can be accomplished by running `modules/db_init.py`; however, before running this Python script, you will need to initialize a local or web-based API for calculating distance matrix. To learn more about how to set up the API for calculating a distance matrix, refer to the [pass_distance_matrix_api markdown](static/docs/pass_distance_matrix_api.md).
+7. Run `modules/InitSchema.py` to initialize your database, this could take a while depending on the data size.
+8. Confirm your database has three populated data tables: `demand`, `poi`, and `distance_matrix_car`.
 
 # Run
 
@@ -63,7 +44,7 @@ Once you completed the Installation step, which you only need to complete once, 
 
 1. Activate your Python environment, e.g., `source activate pass`
 3. Run `app.py`, such as in Git Bash: `python app.py`
-4. After running the command, go to your browser, and you can open the app with your provided `APP_HOST:APP_PORT`
+4. After running the command, go to your browser, and you can open the app with your provided `HOST:PORT`
 5. To close the app, in Git Bash press the Ctrl + C keys
 
 # Development

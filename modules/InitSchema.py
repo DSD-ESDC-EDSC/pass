@@ -14,26 +14,23 @@ import json
 import osgeo.ogr
 import geopandas as gp
 import numpy as np
-from Config import Config
+from config import Data
+import logger
 from Centroid import Centroid
 from DistanceMatrix import DistanceMatrix
-from db import init_logger
 import pandas as pd
 import utils
 
-logger = init_logger()
+logger = logger.init()
 
 class InitSchema():
     "Create the PostgreSQL database tables"
 
-    def __init__(self, config):
-        """Read data files
-
-        Arguments:
-            config (object): configuration of files for creating database tables
-        """
+    def __init__(self):
+        """Read data files"""
 
         try:
+            config = Data()
             self.config = config # configuration file
 
             self.poi = utils.read_file(self.config.supply_file, self.config.supply_type, self.config.supply_columns, self.config.required_cols['supply'], self.config.supply_encode)
@@ -81,8 +78,8 @@ class InitSchema():
     def create_schema(self):
         "Create each PostgreSQL database table"
         #self.init_demand()
-        self.init_poi()
-        #self.init_distance_matrix()
+        #self.init_poi()
+        self.init_distance_matrix()
 
     def init_distance_matrix(self, profiles=["car"]):
         "Create distance_matrix database table"
@@ -153,7 +150,6 @@ class InitSchema():
             CREATE TABLE poi(
             id serial PRIMARY KEY,
             geouid text,
-            LRG_ID text,
             "supply_Uniform" float,
             "capacity_Uniform" float,
             point geometry(POINT,3347)
@@ -161,9 +157,9 @@ class InitSchema():
 
         # TO DO: is (POINT, 3347) converting point to 3347 crs or assuming that it's already 3347 crs?
 
-        sql_columns = ['id', 'geouid', 'lrg_id', 'supply_Uniform', 'capacity_Uniform', 'point']
+        sql_columns = ['id', 'geouid', 'supply_Uniform', 'capacity_Uniform', 'point']
 
-        req_columns = ['id', 'geouid', 'lrg_id', 'supply_Uniform', 'capacity_Uniform']
+        req_columns = ['id', 'geouid', 'supply_Uniform', 'capacity_Uniform']
         info_columns = [col for col in self.poi if col.startswith('info') or col.startswith('capacity') or col.startswith('supply')]
 
         self.poi.reset_index(inplace = True)
@@ -178,7 +174,7 @@ class InitSchema():
             query_create = query_create + """,  %s %s""" % ('"' + col + '"', unit)
         
         query_create = query_create + """)"""
-        print(query_create)
+
         self.execute_query(query_create, "created poi")
         
         if 'supply_Uniform' not in self.poi.columns:
@@ -197,9 +193,10 @@ class InitSchema():
         for i in self.poi.index:
             values = self.poi.loc[i] # .astype(str).values.flatten().tolist()
             vals_default = "'" + "', '".join(values[req_columns].astype(str).values.flatten().tolist()) + "'"
-            print(vals_default)
+            
             lat = values['latitude']
             lng = values['longitude']
+
             if len(info_columns) > 0:
                 vals_info = "'" + "', '".join(values[info_columns].astype(str).values.flatten().tolist()) + "'"
                 query_insert = """ INSERT into poi(%s) VALUES (%s, ST_Transform(ST_SetSRID(ST_MakePoint(%s, %s),%s),3347),%s);
@@ -207,7 +204,7 @@ class InitSchema():
             else:
                 query_insert = """ INSERT into poi(%s) VALUES (%s, ST_Transform(ST_SetSRID(ST_MakePoint(%s, %s),%s),3347));
                 """ % (sql_col_string, vals_default, lng, lat, self.config.supply_crs)
-
+            
             self.execute_query(query_insert, "updated poi")
 
         # create index for poi table
@@ -316,6 +313,4 @@ class InitSchema():
         self.execute_query("CREATE INDEX idx_demand ON demand USING GIST(centroid, boundary);", "indexed demand")
 
 if __name__ == "__main__":
-   config = Config('config.json')
-
-   db_schema = InitSchema(config)
+   InitSchema()

@@ -7,37 +7,25 @@ import osgeo.ogr
 import shutil
 import geopandas as gp
 from dotenv import load_dotenv
-import os
 import re
 import time
-import logging
 
-load_dotenv()
+# when running app
+try:
+	from modules import config, logger
 
-def init_logger():
-	log_levels = {
-		'debug': logging.DEBUG,
-		'info': logging.INFO,
-		'warning': logging.WARNING,
-		'error': logging.ERROR,
-		'critical': logging.CRITICAL,
-	}
+# when running InitSchema
+except:
+	import config
+	import logger
 
-	LOG_DEFAULT_LEVEL = os.environ.get('LOG_DEFAULT_LEVEL')
-
-	# initialize logging
-	logging.basicConfig(format='%(asctime)s: %(levelname)s: %(message)s', level=logging.DEBUG) # to save as log file: filename=os.environ.get('LOG_FILE_PATH'), filemode='a',level=logging.DEBUG)
-	logger = logging.getLogger(__name__)
-	logger.setLevel(log_levels.get(LOG_DEFAULT_LEVEL, logging.INFO))
-
-	return logger
-
-logger = init_logger()
+DB = config.Database()
+logger = logger.init()
 
 class DbConnect:
 	def __init__(self):
 		try:
-			self.pg_pool = pool.SimpleConnectionPool(1, 5, user=os.environ.get('DB_USER'), password=os.environ.get('DB_PASSWORD'), host=os.environ.get('DB_HOST'), database=os.environ.get('DB_NAME'))
+			self.pg_pool = pool.SimpleConnectionPool(1, 5, user=DB.USER, password=DB.PASSWORD, host=DB.HOST, database=DB.NAME)
 			self.conn = self.pg_pool.getconn()
 			self.cur = self.conn.cursor()
 			logger.info('Connection to database succeeded')

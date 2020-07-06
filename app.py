@@ -4,9 +4,7 @@ from waitress import serve
 import json
 import decimal
 import sys
-from modules import db, model
-from dotenv import load_dotenv
-import os
+from modules import db, model, logger, config
 import geopandas as gpd
 from geojson import Feature, FeatureCollection, Polygon
 from shapely import wkt
@@ -15,12 +13,11 @@ try:
     from StringIO import StringIO ## for Python 2
 except ImportError:
     from io import StringIO ## for Python 3
-load_dotenv()
-
-APP_SECRET_KEY = os.environ.get('APP_SECRET_KEY')
-APP_HOST = os.environ.get('APP_HOST')
-APP_PORT = os.environ.get('APP_PORT')
-APP_THREADS = int(os.environ.get('APP_THREADS', 4))
+    
+APP_SECRET_KEY = config.App().SECRET_KEY
+APP_HOST = config.App().HOST
+APP_PORT = config.App().PORT
+APP_THREADS = int(config.App().THREADS)
 
 # create flask app
 app = Flask(__name__)
@@ -28,7 +25,7 @@ app.debug = True
 app.secret_key = APP_SECRET_KEY
 
 # logger
-logger = db.init_logger()
+logger = logger.init()
 
 # route for main page
 @app.route('/')
