@@ -2,9 +2,13 @@
 
 To populate the database with the necessary data for PASS to run, you will need to execute the `InitSchema` Python class before starting the PASS web app. **It is highly recommended to read the [PASS report that details the methodology to measure spatial accessibility](./pass_report_20200422.html), specifically the 'Floating Catchment Area (FCA) Methods: 2SFCA and Enhanced 3SFCA Models' and 'Data' sections, to better understand why the following data is necessary for PASS to operate. Moreover, the [README](../README.md) explains the architecture of PASS to better explain the `InitSchema` class**. 
 
-The `InitSchema.py` file runs several different modules to read, process and store the necessary data for PASS. **For this Python script to successfully run, the following steps must be completed prior**:
+The `InitSchema.py` file runs several different modules to read, process and store the necessary data for PASS. The image below demonstrates this. 
 
-1. Set up a `config.json` in the root directory. A quick way to accomplish this is by renaming the `config_template.json` to `config.json` and then changing the values within the JSON. Please refer to the section below, 'config.json Specifications', to learn more on how to prepare this file for successful read. 
+![PASS Architecture](./pass_architecture.png)
+
+**For this Python script to successfully run, the following steps must be completed prior**:
+
+1. Set up a `config.json` in the root directory. A quick way to accomplish this is by copying and then renaming the `config_template.json` to `config.json` and then changing the values that start with "ENTER" within the JSON. There is also a `config_example.json` to better demonstrate the values that should be presented in `config.json`. Please refer to the section below, 'config.json Specifications', to learn more on how to prepare this file for successful read. 
 
 2. Connect to either a local or web version of the [OpenRouteService (ORS)](https://github.com/GIScience/openrouteservice) API for calculating a drive time/distance matrix.
   - `InitSchema.py` runs the `DistanceMatrix` class that connects to this API to calculate drive time/distance isochrones (i.e., buffer areas of equal travel time/distance) and then a distance matrix file to be stored in the database. 
@@ -14,200 +18,83 @@ The `InitSchema.py` file runs several different modules to read, process and sto
 
 ## config.json Specifications
 
-The `config.json` file is meant to describe your data sources for `InitSchema.py` to read, prepare and store into the PostgreSQL database (`files` key); moreover, it provides the following: (1) connection information for the database (`DB` key), (2) connection information for the `DistanceMatrix` local/web API (`ORS` key), (3) app configuration variables (`APP` key), and (4) variables for logging (`LOGGER` key). The `config_template.json` file can be used to build a version of `config.json`. This section explains the necessary and optional objects that need to be present in this JSON.
+The `config.json` file is meant to describe your data sources for `InitSchema.py` to read, prepare and store into the PostgreSQL database (`files` key); moreover, it provides the following: (1) connection information for the database (`DB` key), (2) connection information for the `DistanceMatrix` local/web API (`ORS` key), (3) app configuration variables (`APP` key), and (4) variables for logging (`LOGGER` key). The `config_template.json` file can be used to build a version of `config.json` by simply copying and renaming `config_template.json` to `config.json` and storing it in the same root folder. There is also a `config_example.json` to better demonstrate the values that should be presented in `config.json`. This section explains the necessary and optional objects that need to be present in this JSON.
 
-The `files` object and their key/values that **need** to be in `config.json` are the following:
+### FILES
 
-- `demand_geo`: the `*.shapefile` of the desired geographic unit to measure and visualize spatial accessibility.
-  - `file`
-  - `type`
-  - `crs`
-  - `columns`
+The `FILES` object specifies the files necessary to read, process and store data into the database for PASS to operate. The `FILES` object and their key/values that **need** to be in `config.json` are the following:
+
+- `DEMAND_GEO`: the polygon vector `*.shp` (i.e., shapefile) of the desired geographic unit to represent where the population demand is geographically situated. The `Centroid` creates centroid point locations from this polygon shapefile. The calculated centroids can be weighted by smaller geographic units using the `DEMAND_GEO_WEIGHT` configuration object, specified below. The polygon vectors are used to visualize the spatial accessibility scores as a choropleth map. 
+  - `FILE`: The file path to the specific shapefile (`*.shp`).
+  - `TYPE`: The value for this should stay as `demand`, it is for scripting purposes.
+  - `CRS`: Provide the coordinate reference system of your shapefile (3347 represents the EPSG for Statistics Canada's Lambert Conformal Conic projection).
+  - `COLUMNS`
+    - `ID`: The attribute/column within the shapefile that represents the polygon IDs.
+    - `GEOMETRY`: The value for this should stay as `geometry`
   
-- `demand_pop`: the `*.csv` of `demand_geo` geographic unit's population.
-  - `file`
-  - `type`
-  - `encoding`
-  - `crs`
-  - `columns` 
+- `DEMAND_POP`: the `*.csv` of `demand_geo` geographic unit's population.
+  - `FILE`
+  - `TYPE`
+  - `ENCODING`
+  - `CRS`
+  - `COLUMNS` 
+    - `ID`
+    - `DEMAND_TOTAL`
 
-- `supply`: the `*.csv` of the desired Points of Interest (POI) (i.e., service) location (latitude and longitude)
-  - `file`
-  - `type`
-  - `encoding`
-  - `crs`
-  - `columns`
+- `POI`: the `*.csv` of the desired Points of Interest (POI) (i.e., service) location (latitude and longitude)
+  - `FILE`
+  - `TYPE`
+  - `ENCODING`
+  - `CRS`
+  - `COLUMNS`
 
-There is an *optional* object `demand_geo_weight` that you can also include to create population weighted centroid, that is the centriod is weighted based on populations at a more granular geographic unit.
+There is an *optional* object `demand_geo_weight` that you can also include to create population weighted centroid, that is the centroid is weighted based on populations at a more granular geographic unit. For this optional object, the following keys need to be present:
+  - `FILE`
+  - `TYPE`
+  - `CRS`
+  - `COLUMNS`
+    - `ID`
+    - `LATITUDE`
+    - `LONGITUDE`
 
-- `ORS_params`
+For all of these files, the following `COLUMNS` key/values **need** to be present in `config.json`:
+  - 'NAME': the column name that exists within the data file
+  - 'TYPE': either the name that will appear on the UI or used for programming (further specified in `config_template.json`)
+  - 'UNIT': the data type, either `int`, `float`, or `str`.
+
+### ORS
+- `CONNECTION`
+  - `CLIENT_URL`
+  - `TIMEOUT`
+- `ISOCHRONES`
+  - `CATCHMENT_RANGE`: 3600
+  - `CATCHMENT_RANGE_TYPE`: time
+  - `PROFILE`: driving-car
+  - `SLEEP_TIME`: 0
+- `DISTANCE_MATRIX`: {
+  - `METRIC`: distance
+  - `UNIT`: m
+  - `SLEEP_TIME`: 0
 
 
-```
-{
-	"files": {
-		"demand_geo": {
-			"file":"C:/Users/Name/Documents/Code/pass/data/demand_geo.shp",
-			"type":"shape",
-			"crs": "3347",
-			"columns": {
-				"ID" : {
-					"name": "DAUID",
-					"type": "geouid",
-					"unit": "int",
-					"desc": "ID"
-						},
-				"LRG_ID" : {
-					"name": "CMAUID",
-					"type": "lrg_id",
-					"unit": "int",
-					"desc": "ID"
-						},
-				"geometry": {
-					"name": "geometry",
-					"type": "geometry",
-					"unit": "geometry", 
-					"desc": "geometry"
-						}
-				}
-			},
-		"demand_pop": {
-			"file":"C:/Users/Name/Documents/Code/pass/data/demand_pop.csv",
-			"type":"demand",
-			"encoding":"latin-1",
-			"columns": {
-				"ID": {
-					"name":"geouid",
-					"type":"geouid",
-					"unit": "int",
-					"desc": "ID"
-					},
-				"demand_total": {
-					"name":"total_pop",
-					"type": "pop_Total",
-					"unit": "int", 
-					"desc": "demand"
-					},
-				"demand_variable": {
-					"name": "total_variable",
-					"type": "Variable Population",
-					"unit": "int", 
-					"desc": "demand"
-				  },
-			}
-		},
-    "demand_geo_weight": {
-      "file": "C:/Users/Name/Documents/Code/pass/data/demand_geo_weight.shp",
-      "type": "shape",
-      "crs":"epsg:3347",
-      "columns": {
-        "ID" : {
-          "name": "DBUID",
-          "type": "geouid",
-          "unit": "int"},
-        "LRG_ID" : {
-          "name": "DAUID",
-          "type": "lrg_id",
-          "unit": "int"},
-        "geometry": {
-          "name": "geometry",
-          "type": "geometry",
-          "unit": "geometry"
-            }
-          }
-    },
-		"supply": {
-			"file":"C:/Users/Name/Documents/Code/pass/data/poi.csv",
-			"type":"supply",
-			"encoding":"latin-1",
-			"crs":"4326",
-			"columns": {
-				"ID": {
-					"name":"OBJECTID",
-					"type":"geouid",
-					"unit": "int", 
-					"desc": "ID"
-					},
-				"latitude" : {
-					"name":"Latitude",
-					"type":"latitude",
-					"unit": "float", 
-					"desc": "geometry"
-				},
-				"longitude" : {
-					"name":"Longitude",
-					"type":"longitude",
-					"unit": "float", 
-					"desc": "geometry"
-				},
-				"LRG_ID" : {
-					"name":"CSDUID",
-					"type":"lrg_id",
-					"unit": "str", 
-					"desc": "ID"
-				}
-				"name": {
-					"name":"Site_Name",
-					"type": "Name",
-					"unit": "text", 
-					"desc": "info"
-				},
-				"type": {
-					"name":"Site_Type",
-					"type": "Type",
-					"unit": "text", 
-					"desc": "info"
-				},
-				"supply_services": {
-					"name": "services",
-					"type": "Number of Services Offered",
-					"unit": "int", 
-					"desc": "supply"
-				},
-				"capcity_size": {
-					"name":"size",
-					"type": "Size (squared meters) of POI service",
-					"unit": "int", 
-					"desc": "capacity"
-				}
-			}
-		}
-	},
-	"ORS_params": {
-		"connection": {
-			"client_url": "http://HOST:PORT/ors",
-			"timeout": 500
-		},
-		"isochrones": {
-			"catchment_range": 3600,
-			"catchment_range_type": "time",
-			"profile": "driving-car",
-			"sleep_time": 0
-		},
-		"distance_matrix": {
-			"metric": "distance",
-			"unit": "m" ,
-			"sleep_time": 0
-		}
-	},
-	"DB": {
-		"HOST": "DB HOST",
-		"PORT": "DB PORT",
-		"NAME": "DB NAME",
-		"PASSWORD": "DB PASSWORD",
-		"USER": "DB USER"
-	},
-	"APP": {
-		"SECRET_KEY": "pass",
-		"HOST": "HOST",
-		"PORT": "PORT",
-		"THREADS": 4
-	},
-	"LOGGER": {
-		"DEFAULT_LEVEL": "debug",
-    "FILE": "False"
-		"FILE_PATH": "C:/Users/Name/Documents/Code/pass/pass.log"
-	}
-}
+### APP
+- `SECRET_KEY`:
+- `HOST`: the app server host 
+- `PORT`: the app server port
+- `THREADS`: 
 
-```
+### DB
+- `HOST`: the database server host
+- `PORT`: the database server port
+- `NAME`: the database name
+- `PASSWORD`: the database password
+- `USER`: the database user
+
+### LOGGER
+- `DEFAULT_LEVEL`
+- `FILE`
+- `FILE_PATH`
+
+### HTML
+
+This object stores the text that appears on the web app's user interface. Refer to `config_template.json` for details on what each key/value should be.

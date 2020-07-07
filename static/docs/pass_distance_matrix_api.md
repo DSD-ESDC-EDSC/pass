@@ -35,8 +35,8 @@ General steps though are the following:
   - Change the `OSM_FILE` variable to the desired OSM data file. 
   - Update the data file path `./data/*.osm.pbf:/ors-core/data/osm_file.pbf`
   - Change the `BUILD_GRAPHS` environment variable to `TRUE`
-  - If you are working with a large OSM data file (greater then 1GB), it is recommended to increase the `-Xms1g` and `-Xmx2g` options within the `JAVA_OPTS` environment variable. You will likely need to update the Docker specs as well.
-3. Make sure Docker is running, and then enter into, for example, Git Bash the following: `docker-compose build --no-cache` to build the container with your specific data files.
+  - If you are working with a large OSM data file (greater then 1GB), it is recommended to increase the `-Xms1g` and `-Xmx2g` options within the `JAVA_OPTS` environment variable. You will likely need to update the Docker resources (e.g., CPUs, Memory) as well.
+3. Make sure Docker is running, and then enter into in your terminal the following: `docker-compose build --no-cache` to build the container with your specific data files.
 
 If you prefer to change certain components of the API, refer to the [ORS documentation](https://github.com/GIScience/openrouteservice-docs).
 

@@ -1,0 +1,261 @@
+{
+	"FILES": {
+		"DEMAND_GEO": {
+			"FILE":"C:/Users/Name/Documents/Code/pass/data/lda_000b16a_bc.shp",
+			"TYPE":"shape",
+			"CRS": "3347",
+			"COLUMNS": {
+				"ID" : {
+					"NAME": "DAUID",
+					"TYPE": "geouid",
+					"UNIT": "int",
+					"DESC": "ID"
+						},
+				"LRG_ID" : {
+					"NAME": "CSDUID",
+					"TYPE": "lrg_id",
+					"UNIT": "int",
+					"DESC": "ID"
+						},
+				"GEOMETRY": {
+					"NAME": "geometry",
+					"TYPE": "geometry",
+					"UNIT": "geometry", 
+					"DESC": "geometry"
+						}
+				}
+			},
+		"DEMAND_POP": {
+			"FILE":"C:/Users/Name/Documents/Code/pass/data/demand_bc.csv",
+			"TYPE":"demand",
+			"ENCODING":"latin-1",
+			"COLUMNS": {
+				"ID": {
+					"NAME":"geouid",
+					"TYPE":"geouid",
+					"UNIT": "int",
+					"DESC": "ID"
+					},
+				"DEMAND_TOTAL": {
+					"NAME":"total_pop",
+					"TYPE": "pop_Total",
+					"UNIT": "int", 
+					"DESC": "demand"
+					},
+				"DEMAND_MALE": {
+					"NAME": "total_male",
+					"TYPE": "Male Population",
+					"UNIT": "int", 
+					"DESC": "demand"
+					},
+				"DEMAND_FEMALE": {
+					"NAME": "total_female",
+					"TYPE": "Female Population",
+					"UNIT": "int", 
+					"DESC": "demand"
+					}
+			}
+		},
+		"POI": {
+			"FILE":"C:/Users/Name/Documents/Code/pass/data/childcare_locations.csv",
+			"TYPE":"poi",
+			"ENCODING":"latin-1",
+			"CRS":"4326",
+			"COLUMNS": {
+				"ID": {
+					"NAME":"FAC_PARTY_ID",
+					"TYPE":"geouid",
+					"UNIT": "int", 
+					"DESC": "ID"
+					},
+				"LATITUDE" : {
+					"NAME": "LONGITUDE",
+					"TYPE": "longitude",
+					"UNIT": "float", 
+					"DESC": "geometry"
+				},
+				"LONGITUDE" : {
+					"NAME": "LATITUDE",
+					"TYPE": "latitude",
+					"UNIT": "float", 
+					"DESC": "geometry"
+				},
+				"INFO_TYPE": {
+					"NAME":"SERVICE_TYPE_CD",
+					"TYPE": "Type",
+					"UNIT": "text", 
+					"DESC": "info"
+				},
+				"INFO_NAME": {
+					"NAME": "NAME",
+					"TYPE": "Name",
+					"UNIT": "text", 
+					"DESC": "info"
+				},
+				"SUPPLY_AVAILABILITY": {
+					"NAME": "AVAILABLE_SEATS",
+					"TYPE": "Available Seats",
+					"UNIT": "int", 
+					"DESC": "supply"
+				},
+				"CAPACITY_SEATS": {
+					"NAME":"CAPACITY",
+					"TYPE": "Total Seats",
+					"UNIT": "int", 
+					"DESC": "capacity"
+				}
+			}
+		}
+	},
+	"ORS": {
+		"CONNECTION": {
+			"CLIENT_URL": "http://127.0.0.1:8080/ors",
+			"TIMEOUT": 500
+		},
+		"ISOCHRONES": {
+			"CATCHMENT_RANGE": 3600,
+			"CATCHMENT_RANGE_TYPE": "time",
+			"PROFILE": "driving-car",
+			"SLEEP_TIME": 0
+		},
+		"DISTANCE_MATRIX": {
+			"METRIC": "distance",
+			"UNIT": "m",
+			"SLEEP_TIME": 0
+		}
+	},
+	"DB": {
+		"HOST": "127.0.0.1",
+		"PORT": "5432",
+		"NAME": "pass",
+		"PASSWORD": "password",
+		"USER": "postgres"
+	},
+	"APP": {
+		"SECRET_KEY": "pass",
+		"HOST": "127.0.0.1",
+		"PORT": "5000",
+		"THREADS": 4
+	},
+	"LOGGER": {
+		"DEFAULT_LEVEL": "debug",
+		"FILE": "False",
+		"FILE_PATH": "C:/Users/Name/Documents/Code/pass/pass.log"
+	},
+	"BASEMAP": {
+		"TOKEN": "ENTER YOUR BASEMAP API TOKEN"
+	},
+	"HTML": {
+		"META": {
+			"TITLE": "PASS",
+			"DESCRIPTION": "Potential Accessibility Software Service (PASS), a geographic information system that offers a quantitative approach to measure how spatially accessible population demand is to a given in-person service."
+		},
+		"NAVBAR": {
+			"LOGO": "PASS",
+			"BTNS": [
+				{
+					"NAME": "Help",
+					"TITLE": "Help",
+					"SECTIONS": [
+						{
+							"HEADER": "Why when I zoom in/out the accessibility scores have a different geographic area?",
+							"CONTENT": [
+								{
+									"P": "The methodology used to measure spatial accessibility considers the network of both the services and the surrounding population demand, thus when you zoom in/out of a location, PASS takes all data points within the window of your screen and measures scores based on that network. When you zoom in/out the number of service locations and demand locations change!"
+								}
+							]
+						}
+					]
+				},
+				{
+					"NAME": "About",
+					"TITLE": "About PASS",
+					"SECTIONS": [
+						{
+							"HEADER": "Methodology",
+							"CONTENT": [
+							{
+								"P": "The CDO Data Science team developed a geographic information system, Potential Accessibility Software Service (PASS). PASS offers an advanced quantitative approach to measure how spatially accessible population demand is to a given service."
+							},
+							{
+								"P": "Spatial accessibility is the consideration of how physical and social space and place affect how a population can traverse through it to access a given service. Though abstract in nature, it can be measured through considerations like where potential population demand is located, the geographic distance to get from the population location to the service locations offered, the supply at the service locations, as well as the probability of a population going to one service location over another based on the capacity. PASS uses the enhanced 3-step floating catchment methodology to accomplish this, which is further explained <a href='static/docs/pass_report_20200422.html' target='_blank'>here</a>."
+							},
+							{
+								"P": "PASS lets you select a geographic area of interest by panning and zooming on the interactive map, and lets you define the parameters to model spatial accessibility to better reflect Canada's diverse society. For example, individuals living in urban areas versus rural areas, have different assumptions and considerations for how to access a service."
+							}
+							]
+						},
+						{
+							"HEADER": "Developers",
+							"CONTENT": [
+								{
+									"P": "- Name Conzon"
+								},
+								{	
+									"P": "- Chelsea Ernhofer"
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		"MENU": {
+			"NAME": "Menu",
+			"DESC": "Welcome to the <strong>P</strong>otential <strong>A</strong>ccessibility <strong>S</strong>oftware <strong>S</strong>ervice, <strong>PASS</strong>, a tool that measures spatial accessibility. Pan and zoom to your area of interest, change the parameters below, and submit to calculate accessibility scores. To learn more about the methodology, checkout <a class='wb-lbx' href='#popup-modal-about' aria-controls='popup-modal' role='button'>About</a>.",
+			"PARAMS": [
+				{
+					"ID": "transportation",
+					"LABEL": "Mode of transportation",
+					"TOOLTIP": "Select the commute method.",
+					"SELECT": [
+						{
+							"OPTION": "Car",
+							"VALUE": "car"
+						}
+					]
+				},
+				{
+					"ID": "beta",
+					"LABEL": "Willingness to Commute",
+					"TOOLTIP": "Select how willing clients are to travel further distance.",
+					"SELECT": [
+						{
+							"OPTION": "Less",
+							"VALUE": "1.5"
+						},
+						{
+							"OPTION": "Medium",
+							"VALUE": "1.0"
+						},
+						{
+							"OPTION": "More",
+							"VALUE": "0.5"
+						}
+					]
+				},
+				{
+					"ID": "demand",
+					"LABEL": "Population Group",
+					"TOOLTIP": "Select the variable to represent the population demand."
+				},
+				{
+					"ID": "supply",
+					"LABEL": "POI Supply",
+					"TOOLTIP": "Select the variable to represent the supply of the service locations (POIs) that meets the demand."
+				},
+				{
+					"ID": "capacity",
+					"LABEL": "POI Capacity",
+					"TOOLTIP": "Select the variable to represent the capacity of the service locations (POIs) that would influences the likelihood of demand going to the POI."
+				},
+				{
+					"ID": "threshold",
+					"LABEL": "Distance Travel Threshold: ",
+					"TOOLTIP": "Select the max distance clients are willing to travel to the service. Consider mode of transportation."
+				}
+			],
+			"SUBMIT": "Measure Spatial Accessibility"
+		}
+	}
+}

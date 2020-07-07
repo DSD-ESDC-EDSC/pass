@@ -1,141 +1,141 @@
 {
-	"files": {
-		"demand_geo": {
-			"file":"ENTER FILE PATH TO DEMAND GEOGRAPHIC BOUNDARY SHAPEFILE",
-			"type":"shape",
-			"crs": "3347",
-			"columns": {
+	"FILES": {
+		"DEMAND_GEO": {
+			"FILE":"ENTER FILE PATH TO DEMAND GEOGRAPHIC BOUNDARY SHAPEFILE",
+			"TYPE":"shape",
+			"CRS": "3347",
+			"COLUMNS": {
 				"ID" : {
-					"name": "ENTER DEMAND GEOGRAPHIC BOUNDARY ID VARIABLE NAME",
-					"type": "geouid",
-					"unit": "ENTER DATA TYPE (E.G., int)",
-					"desc": "ID"
+					"NAME": "ENTER DEMAND GEOGRAPHIC BOUNDARY ID VARIABLE NAME",
+					"TYPE": "geouid",
+					"UNIT": "ENTER DATA TYPE (E.G., int)",
+					"DESC": "ID"
 						},
 				"LRG_ID" : {
-					"name": "TO FOLLOW UP WITH CHELSEA ON THIS REQUIREMENT",
-					"type": "lrg_id",
-					"unit": "ENTER DATA TYPE (E.G., int)",
-					"desc": "ID"
+					"NAME": "TO FOLLOW UP WITH CHELSEA ON THIS REQUIREMENT",
+					"TYPE": "lrg_id",
+					"UNIT": "ENTER DATA TYPE (E.G., int)",
+					"DESC": "ID"
 						},
-				"geometry": {
-					"name": "geometry",
-					"type": "geometry",
-					"unit": "geometry", 
-					"desc": "geometry"
+				"GEOMETRY": {
+					"NAME": "geometry",
+					"TYPE": "geometry",
+					"UNIT": "geometry", 
+					"DESC": "geometry"
 						}
 				}
 			},
-		"demand_pop": {
-			"file":"ENTER FILE PATH TO THE DEMAND GEOGRAPHIC BOUNDARY SHAPEFILES' POPULATION CSV",
-			"type":"demand",
-			"encoding":"latin-1",
-			"columns": {
+		"DEMAND_POP": {
+			"FILE":"ENTER FILE PATH TO THE DEMAND GEOGRAPHIC BOUNDARY SHAPEFILES' POPULATION CSV",
+			"TYPE":"demand",
+			"ENCODING":"latin-1",
+			"COLUMNS": {
 				"ID": {
-					"name":"ENTER DEMAND GEOGRAPHIC BOUNDARY ID VARIABLE NAME",
-					"type":"geouid",
-					"unit": "ENTER DATA TYPE (E.G., int)",
-					"desc": "ID"
+					"NAME":"ENTER DEMAND GEOGRAPHIC BOUNDARY ID VARIABLE NAME",
+					"TYPE":"geouid",
+					"UNIT": "ENTER DATA TYPE (E.G., int)",
+					"DESC": "ID"
 					},
-				"demand_total": {
-					"name":"TO FOLLOW UP WITH CHELSEA ON THIS REQUIREMENT",
-					"type": "pop_Total",
-					"unit": "int", 
-					"desc": "demand"
+				"DEMAND_TOTAL": {
+					"NAME":"TO FOLLOW UP WITH CHELSEA ON THIS REQUIREMENT",
+					"TYPE": "pop_Total",
+					"UNIT": "int", 
+					"DESC": "demand"
 					},
-				"demand_ENTER WORD THAT DESCRIBES POPULATION DEMAND VARIABLE OF INTEREST": {
-					"name": "ENTER THE VARIABLE NAME",
-					"type": "ENTER HOW YOU WANT THE VARIABLE NAME TO APPEAR ON THE UI",
-					"unit": "ENTER DATA TYPE", 
-					"desc": "demand"
+				"DEMAND_ENTER WORD THAT DESCRIBES POPULATION DEMAND VARIABLE OF INTEREST": {
+					"NAME": "ENTER THE VARIABLE NAME",
+					"TYPE": "ENTER HOW YOU WANT THE VARIABLE NAME TO APPEAR ON THE UI",
+					"UNIT": "ENTER DATA TYPE", 
+					"DESC": "demand"
 				  }
 			}
 		},
-    "demand_geo_weight": {
-      "file": "ENTER FILE PATH TO A SMALLER DEMAND GEOGRAPHIC BOUNDARY SHAPEFILES",
-      "type": "shape",
-      "crs":"3347",
-      "columns": {
+    "DEMAND_GEO_WEIGHT": {
+      "FILE": "ENTER FILE PATH TO A MORE GRANULAR DEMAND GEOGRAPHIC BOUNDARY SHAPEFILES. THIIS FILE IS OPTIONAL. REMOVE THIS ENTIRE OBJECT IF NOT NEEDED",
+      "TYPE": "shape",
+      "CRS": "3347",
+      "COLUMNS": {
         "ID" : {
-          "name": "ENTER SMALLER DEMAND GEOGRAPHIC BOUNDARY ID VARIABLE NAME",
-          "type": "geouid",
-          "unit": "int"},
+          "NAME": "ENTER SMALLER DEMAND GEOGRAPHIC BOUNDARY ID VARIABLE NAME",
+          "TYPE": "geouid",
+          "UNIT": "int"},
         "LRG_ID" : {
-          "name": "ENTER DEMAND GEOGRAPHIC BOUNDARY ID VARIABLE NAME",
-          "type": "lrg_id",
-          "unit": "int"},
-        "geometry": {
-          "name": "geometry",
-          "type": "geometry",
-          "unit": "geometry"
+          "NAME": "ENTER DEMAND GEOGRAPHIC BOUNDARY ID VARIABLE NAME",
+          "TYPE": "lrg_id",
+          "UNIT": "int"},
+        "GEOMETRY": {
+          "NAME": "geometry",
+          "TYPE": "geometry",
+          "UNIT": "geometry"
             }
           }
     },
-		"supply": {
-			"file":"ENTER FILE PATH TO THE SUPPLY CSV",
-			"type":"supply",
-			"encoding":"latin-1",
-			"crs":"4326",
-			"columns": {
+		"POI": {
+			"FILE":"ENTER FILE PATH TO THE SUPPLY CSV",
+			"TYPE":"supply",
+			"ENCODING":"latin-1",
+			"CRS":"4326",
+			"COLUMNS": {
 				"ID": {
-					"name":"ENTER SUPPLY ID VARIABLE NAME",
-					"type":"geouid",
-					"unit": "ENTER DATA TYPE", 
-					"desc": "ID"
+					"NAME":"ENTER SUPPLY ID VARIABLE NAME",
+					"TYPE":"geouid",
+					"UNIT": "ENTER DATA TYPE", 
+					"DESC": "ID"
 					},
-				"latitude" : {
-					"name":"ENTER LATITUDE VARIABLE NAME",
-					"type":"latitude",
-					"unit": "ENTER DATA TYPE OF LATITUDE (E.G., float)", 
-					"desc": "geometry"
+				"LATITUDE" : {
+					"NAME":"ENTER LATITUDE VARIABLE NAME",
+					"TYPE":"latitude",
+					"UNIT": "ENTER DATA TYPE OF LATITUDE (E.G., float)", 
+					"DESC": "geometry"
 				},
-				"longitude" : {
-					"name":"ENTER LONGITUDE VARIABLE NAME",
-					"type":"longitude",
-					"unit": "ENTER DATA TYPE OF LONGITUDE (E.G., float)", 
-					"desc": "geometry"
+				"LONGITUDE" : {
+					"NAME":"ENTER LONGITUDE VARIABLE NAME",
+					"TYPE":"longitude",
+					"UNIT": "ENTER DATA TYPE OF LONGITUDE (E.G., float)", 
+					"DESC": "geometry"
 				},
 				"LRG_ID" : {
-					"name":"DISCUSS WITH CHELSEA",
-					"type":"lrg_id",
-					"unit": "str", 
-					"desc": "ID"
+					"NAME":"DISCUSS WITH CHELSEA",
+					"TYPE":"lrg_id",
+					"UNIT": "str", 
+					"DESC": "ID"
 				},
 				"ENTER DESCRIPTIVE WORD OF VARIALBLE TO INCLUDE IN DATABASE TABLE": {
-					"name":"ENTER VARIABLE NAME",
-					"type": "ENTER HOW YOU WANT THE VARIABLE NAME TO APPEAR ON THE UI",
-					"unit": "ENTER DATA TYPE OF VARIABLE", 
-					"desc": "info"
+					"NAME":"ENTER VARIABLE NAME",
+					"TYPE": "ENTER HOW YOU WANT THE VARIABLE NAME TO APPEAR ON THE UI",
+					"UNIT": "ENTER DATA TYPE OF VARIABLE", 
+					"DESC": "info"
 				},
-				"supply_ENTER DESCRIPTIVE WORD OF VARIABLE TO INCLUDE IN DATABASE TO REPRESENT SUPPLY": {
-					"name": "ENTER VARIABLE NAME",
-					"type": "ENTER HOW YOU WANT THE VARIABLE NAME TO APPEAR ON THE UI",
-					"unit": "ENTER DATA TYPE OF VARIABLE", 
-					"desc": "supply"
+				"SUPPLY_ENTER DESCRIPTIVE WORD OF VARIABLE TO INCLUDE IN DATABASE TO REPRESENT SUPPLY": {
+					"NAME": "ENTER VARIABLE NAME",
+					"TYPE": "ENTER HOW YOU WANT THE VARIABLE NAME TO APPEAR ON THE UI",
+					"UNIT": "ENTER DATA TYPE OF VARIABLE", 
+					"DESC": "supply"
 				},
-				"capcity_ENTER DESCRIPTIVE WORD OF VARIABLE TO INCLUDES IN DATABASE TO RERESENT CAPACITY": {
-					"name":"ENTER VARIABLE NAME",
-					"type": "ENTER HOW YOU WANT THE VARIABLE NAME TO APPEAR ON THE UI",
-					"unit": "ENTER DATA TYPE OF VARIABLE", 
-					"desc": "capacity"
+				"CAPACITY_ENTER DESCRIPTIVE WORD OF VARIABLE TO INCLUDES IN DATABASE TO RERESENT CAPACITY": {
+					"NAME": "ENTER VARIABLE NAME",
+					"TYPE": "ENTER HOW YOU WANT THE VARIABLE NAME TO APPEAR ON THE UI",
+					"UNIT": "ENTER DATA TYPE OF VARIABLE", 
+					"DESC": "capacity"
 				}
 			}
 		}
 	},
 	"ORS": {
-		"connection": {
-			"client_url": "http://[ENTER HOST]:[ENTER PORT]/ors",
-			"timeout": 500
+		"CONNECTION": {
+			"CLIENT_URL": "http://[ENTER HOST]:[ENTER PORT]/ors",
+			"TIMEOUT": 500
 		},
-		"isochrones": {
-			"catchment_range": 3600,
-			"catchment_range_type": "time",
-			"profile": "driving-car",
-			"sleep_time": 0
+		"ISOCHRONES": {
+			"CATCHMENT_RANGE": 3600,
+			"CATCHMENT_RANGE_TYPE": "time",
+			"PROFILE": "driving-car",
+			"SLEEP_TIME": 0
 		},
-		"distance_matrix": {
-			"metric": "distance",
-			"unit": "m" ,
-			"sleep_time": 0
+		"DISTANCE_MATRIX": {
+			"METRIC": "distance",
+			"UNIT": "m" ,
+			"SLEEP_TIME": 0
 		}
 	},
 	"DB": {
@@ -155,6 +155,103 @@
 		"DEFAULT_LEVEL": "debug",
 		"FILE": "ENTER true OR false TO SAVE LOG AS FILE",
 		"FILE_PATH": "ENTER A PATH AND FILE NAME (E.G., pass.log) TO SAVE FILE IN (IF FILE IS true)"
+	},
+	"BASEMAP": {
+		"TOKEN": "ENTER API KEY TO BASEMAP. CURRENT URL IN map.js DEPENDS ON MAPBOX API KEY. CHANGE tiles VAR IF WANTING DIFFERENT PROVIDOR"
+	},
+	"HTML": {
+		"META": {
+			"TITLE": "PASS",
+			"DESCRIPTION": "Potential Accessibility Software Service (PASS), a geographic information system that offers a quantitative approach to measure how spatially accessible population demand is to a given in-person service."
+		},
+		"NAVBAR": {
+			"LOGO": "ENTER LOGO TO APPEAR ON TOP-LEFT NAVBAR",
+			"BTNS": [
+				{
+					"NAME": "ENTER NAME A NAVBAR BTN NAME (E.G., Help)",
+					"TITLE": "ENTER A HEADER THAT WILL APPEAR AT THE TOP OF THIS NAVBAR MODAL VIEW",
+					"SECTIONS": [
+						{
+							"HEADER": "ENTER A HEADER THAT WILL APPEAR WITHIN THE BODY OF THE NAVBAR MODAL",
+							"CONTENT": [
+								{
+									"P": "ENTER TEXT THAT WILL APPEAR IN A PARAGRAPH",
+									"P": "..."
+								}
+							]
+						},
+						{
+							"HEADER": "...",
+							"CONTENT": [
+								{
+									"P": "..."
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		"MENU": {
+			"NAME": "ENTER ANOTHER TERM FOR MENU FOR BTN WHEN TOGGLING MENU",
+			"DESC": "ENTER DESCRIPTION OF TOOL THAT WILL APPEAR IN THE MENU",
+			"PARAMS": [
+				{
+					"ID": "transportation",
+					"LABEL": "Mode of transportation",
+					"TOOLTIP": "Select the commute method.",
+					"SELECT": [
+						{
+							"OPTION": "Car",
+							"VALUE": "car"
+						},
+						{
+							"OPTION": "Public Transit",
+							"VALUE": "transit"
+						}
+					]
+				},
+				{
+					"ID": "beta",
+					"LABEL": "Willingness to Commute",
+					"TOOLTIP": "Select how willing clients are to travel further distance.",
+					"SELECT": [
+						{
+							"OPTION": "Less",
+							"VALUE": "1.5"
+						},
+						{
+							"OPTION": "Medium",
+							"VALUE": "1.0"
+						},
+						{
+							"OPTION": "More",
+							"VALUE": "0.5"
+						}
+					]
+				},
+				{
+					"ID": "demand",
+					"LABEL": "Population Group",
+					"TOOLTIP": "Select the variable to represent the population demand."
+				},
+				{
+					"ID": "supply",
+					"LABEL": "POI Supply",
+					"TOOLTIP": "Select the variable to represent the supply of the service locations (POIs) that meets the demand."
+				},
+				{
+					"ID": "capacity",
+					"LABEL": "POI Capacity",
+					"TOOLTIP": "Select the variable to represent the capacity of the service locations (POIs) that would influences the likelihood of demand going to the POI."
+				},
+				{
+					"ID": "threshold",
+					"LABEL": "Distance Travel Threshold: ",
+					"TOOLTIP": "Select the max distance clients are willing to travel to the service. Consider mode of transportation."
+				}
+			],
+			"SUBMIT": "ENTER TEXT TO APPEAR IN THE BUTTON THAT RUNS THE MODEL"
+		}
 	}
-	
 }
