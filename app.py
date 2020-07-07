@@ -34,8 +34,11 @@ def index():
     demand_cols = db.get_demand_columns()
     supply_cols = db.get_supply_columns()
     capacity_cols = db.get_capacity_columns()
-
-    return render_template('index.html', poi=poi, supply_cols=supply_cols, demand_cols=demand_cols, capacity_cols=capacity_cols)
+    
+    # basemap token
+    basemap_token = config.Basemap().TOKEN
+    
+    return render_template('index.html', poi=poi, supply_cols=supply_cols, demand_cols=demand_cols, capacity_cols=capacity_cols, basemap_token=basemap_token)
 
 # route for running enhanced 3SFCA model
 @app.route('/model',methods=['POST'])

@@ -1,5 +1,5 @@
 $(document).ready(function (){
-  var map = initMap();
+  var map = initMap(mapToken);
   var layerGroup = new L.LayerGroup();
   var choropleth;
 

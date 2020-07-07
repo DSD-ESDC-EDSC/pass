@@ -1,4 +1,4 @@
-function initMap(){
+function initMap(mapToken){
   var map = L.map('map').setView([49.2573,-123.1241], 10);
   var tiles = 'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}';
 
@@ -22,7 +22,7 @@ function initMap(){
       zoom: 10,
       maxBounds: [-142.0, 41.0, -52.0, 83.0],
       id: 'mapbox/streets-v11',
-      accessToken: 'pk.eyJ1IjoianVsY29ueiIsImEiOiJjamhzYzdiMGUwMWcwM3FteW16cmNhYmFxIn0.Epbp18qkWUT8g-Cg7ifkuA'
+      accessToken: mapToken
   }).addTo(map);
 
   return map;
