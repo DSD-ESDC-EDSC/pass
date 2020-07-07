@@ -33,7 +33,7 @@ class InitSchema():
             config = Data()
             self.config = config # configuration file
 
-            self.poi = utils.read_file(self.config.supply_file, self.config.supply_type, self.config.supply_columns, self.config.required_cols['supply'], self.config.supply_encode)
+            self.poi = utils.read_file(self.config.poi_file, self.config.poi_type, self.config.poi_columns, self.config.required_cols['poi'], self.config.poi_encode)
             self.demand_geo = utils.read_file(self.config.demand_geo_file, self.config.demand_geo_type, self.config.demand_geo_columns, self.config.required_cols[self.config.demand_geo_type], self.config.demand_geo_crs)
             try:
                 self.centroid = 'weighted'
@@ -155,8 +155,6 @@ class InitSchema():
             point geometry(POINT,3347)
         """
 
-        # TO DO: is (POINT, 3347) converting point to 3347 crs or assuming that it's already 3347 crs?
-
         sql_columns = ['id', 'geouid', 'supply_Uniform', 'capacity_Uniform', 'point']
 
         req_columns = ['id', 'geouid', 'supply_Uniform', 'capacity_Uniform']
@@ -200,10 +198,10 @@ class InitSchema():
             if len(info_columns) > 0:
                 vals_info = "'" + "', '".join(values[info_columns].astype(str).values.flatten().tolist()) + "'"
                 query_insert = """ INSERT into poi(%s) VALUES (%s, ST_Transform(ST_SetSRID(ST_MakePoint(%s, %s),%s),3347),%s);
-            """ % (sql_col_string, vals_default, lng, lat, self.config.supply_crs, vals_info)
+            """ % (sql_col_string, vals_default, lng, lat, self.config.poi_crs, vals_info)
             else:
                 query_insert = """ INSERT into poi(%s) VALUES (%s, ST_Transform(ST_SetSRID(ST_MakePoint(%s, %s),%s),3347));
-                """ % (sql_col_string, vals_default, lng, lat, self.config.supply_crs)
+                """ % (sql_col_string, vals_default, lng, lat, self.config.poi_crs)
             
             self.execute_query(query_insert, "updated poi")
 

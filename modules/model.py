@@ -91,7 +91,7 @@ def accessibility(bounds, beta, transportation, threshold, demand_col, supply_co
             pouid = str(e).split('"')[1]
             abort(500, f'Access could not be measured because {pouid} is not accessible via the selected mode of transporation (likely a remote community or no data). Please pan to a different view to remove {pouid} from view')
         distance_matrix = pd.DataFrame(db_conn.cur.fetchall(), columns=[desc[0] for desc in db_conn.cur.description])
-        # filtering in pandas because db call is giving strange error - FOR CHELSEA 
+        # filtering in pandas because db call is giving strange error
         distance_matrix = distance_matrix[distance_matrix.geouid.isin(geouid_array)]
         geouid_filtered_array = np.array(distance_matrix['geouid'])
         distance_matrix = distance_matrix.drop('geouid', axis=1)
@@ -123,7 +123,7 @@ def accessibility(bounds, beta, transportation, threshold, demand_col, supply_co
     demand_filtered = demand[demand.geouid.isin(geouid_filtered_array)]
     demand_filtered_array = np.array(demand_filtered[demand_col])
 
-    # filtering with pandas because db call is giving strange error- FOR CHELSEA 
+    # filtering with pandas because db call is giving strange error
     
     # geouid_array_len = str(len(geouid_array))
     # demand_array_len = str(len(demand_filtered_array))

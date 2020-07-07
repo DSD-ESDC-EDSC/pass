@@ -2,7 +2,7 @@ import json
 
 # when running app
 try:
-	with open('../config.json') as json_data_file:
+	with open('../config.json', 'r', encoding='utf-8') as json_data_file:
 		config = json.load(json_data_file)
 
 # when running InitSchema
@@ -171,3 +171,6 @@ class Basemap():
 	def __init__(self):
 
 		self.TOKEN = config['BASEMAP']['TOKEN']
+		
+def html():
+	return config["HTML"]

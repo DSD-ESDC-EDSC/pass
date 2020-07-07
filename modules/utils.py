@@ -34,20 +34,20 @@ def init_columns(df, df_type, columns, req_columns):
 		for col in columns:
 			if col in req_columns:
 				# creating new column object 
-				columns_torename[columns[col]['name']] = columns[col]['type']
+				columns_torename[columns[col]['NAME']] = columns[col]['TYPE']
 			else:
 				if df_type == 'demand':
 					preffix = 'pop_'
-				if df_type == 'supply':
-					if columns[col]['desc'] == 'info':
+				if df_type == 'poi':
+					if columns[col]['DESC'] == 'info':
 						preffix = 'info_'
-					if columns[col]['desc'] == 'capacity':
+					if columns[col]['DESC'] == 'capacity':
 						preffix = 'capacity_'
-					if columns[col]['desc'] == 'supply':
+					if columns[col]['DESC'] == 'supply':
 						preffix = 'supply_'
-				opt_columns_torename[columns[col]['name']] = preffix + columns[col]['type']
+				opt_columns_torename[columns[col]['NAME']] = preffix + columns[col]['TYPE']
 			
-			df[columns[col]['name']] = conform_col_units(df[columns[col]['name']], columns[col])
+			df[columns[col]['NAME']] = conform_col_units(df[columns[col]['NAME']], columns[col])
 			
 	else:
 		print('Please ensure you have all required columns in config file.')
@@ -63,7 +63,7 @@ def conform_col_units(df_series, column):
 	""" Used for all required columns, checks that column variable types match user defined variable types. 
 		Converts column to user defined type if not already conformed """
 		# get user defined unit and actual column unit
-	defined_unit = column['unit']
+	defined_unit = column['UNIT']
 	current_unit = df_series.dtype
 
 	# ensuring defined and actual column units are the same, changing them if not 

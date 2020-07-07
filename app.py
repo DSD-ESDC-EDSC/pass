@@ -37,8 +37,10 @@ def index():
     
     # basemap token
     basemap_token = config.Basemap().TOKEN
+    html = config.html()
     
-    return render_template('index.html', poi=poi, supply_cols=supply_cols, demand_cols=demand_cols, capacity_cols=capacity_cols, basemap_token=basemap_token)
+    return render_template('index.html', poi=poi, supply_cols=supply_cols, demand_cols=demand_cols, capacity_cols=capacity_cols, basemap_token=basemap_token,
+    html=html)
 
 # route for running enhanced 3SFCA model
 @app.route('/model',methods=['POST'])
