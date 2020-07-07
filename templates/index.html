@@ -54,97 +54,72 @@
   </head>
   <body>
     <div id="navbar">
-     <a id="logo" class="col-lg-5">PASS</a>
-     <a id="help" class="wb-lbx" href="#popup-modal-help" aria-controls="popup-modal" role="button">Help</a>
-     <a id="about" class="wb-lbx" href="#popup-modal-about" aria-controls="popup-modal" role="button">About</a>
-     <a id="menu-toggle-navbar" class="wb-lbx" aria-controls="popup-modal" role="button">Menu</a>
+     <a id="logo" class="col-lg-5">{{ html.NAVBAR.LOGO }}</a>
+     {% for btn in html.NAVBAR.BTNS %}
+       <a id="{{ btn.NAME | lower }}" class="wb-lbx" href="#popup-modal-{{ btn.NAME | lower }}" aria-controls="popup-modal" role="button">{{btn.NAME}}</a>
+     {% endfor %}
+     <a id="menu-toggle-navbar" class="wb-lbx" aria-controls="popup-modal" role="button">{{ html.MENU.NAME }}</a>
     </div>
     <div id="map"></div>
     <div id="legend"></div>
     <div id="map-tools" class="col-lg-12"></div>
     <div id="menu">
      <div id="menu-toggle"><i class="fa fa-times"></i></div>
-     <p>Welcome to the <strong>P</strong>otential <strong>A</strong>ccessibility <strong>S</strong>oftware <strong>S</strong>ervice, <strong>PASS</strong>, a tool that measures spatial accessibility. Pan and zoom to your area of interest, change the parameters below, and submit to calculate accessibility scores. To learn more about the methodology, checkout <a class="wb-lbx" href="#popup-modal-about" aria-controls="popup-modal" role="button">About</a></p>
-     <p>
-        <label><i class="fa fa-info-circle" title="Select the commute method."></i> Mode of transportation</label>
-        <select id="transportation" class="single-selects selectize-input items full has-options has-items">
-          <option value="car">Car</option>
-          <option value="public transit" disabled>Public Transit</option>
-        </select>
-     </p>
-     <p>
-       <label><i class="fa fa-info-circle" title="Select the max distance clients are willing to travel to the service. Consider mode of transportation."></i> Distance Travel Threshold: <label id="threshold-value">10</label> km</label>
-       <div class="slidecontainer">
-          <label>0</label>
-          <label>70</label>
-          <input type="range" min="0" max="70" value="10" class="slider" id="threshold">
-       </div>
-    </p>
-    <p>
-       <label><i class="fa fa-info-circle" title="Select how willing clients are to travel further distance."></i> Willingness to Commute</label>
-       <select id="beta" class="single-selects selectize-input items full has-options has-items">
-         <option value="1.5">Less</option>
-         <option value="1.0">Medium</option>
-         <option value="0.5">More</option>
-       </select>
-    </p>
-    <p>
-      <label><i class="fa fa-info-circle" title="Select the variable to represent the population demand."></i> Population Group</label>
-      <select id="demand" class="single-selects selectize-input items full has-options has-items">
-        {% for key, val in demand_cols.items() %}
-        <option value="{{key}}">{{val}}</option>
-        {% endfor %}
-      </select>
-    </p>
-    <p>
-      <label><i class="fa fa-info-circle" title="Select the variable to represent the supply of the service locations (POIs) that meets the demand."></i> POI Supply</label>
-      <select id="supply" class="single-selects selectize-input items full has-options has-items">
-        {% for key, val in supply_cols.items() %}
-        <option value="{{key}}">{{val}}</option>
-        {% endfor %}
-      </select>
-    </p>
-    <p>
-      <label><i class="fa fa-info-circle" title="Select the variable to represent the capacity of the service locations (POIs) that would influences the likelihood of demand going to the POI."></i> POI Capacity</label>
-      <select id="capacity" class="single-selects selectize-input items full has-options has-items">
-        {% for key, val in capacity_cols.items() %}
-        <option value="{{key}}">{{val}}</option>
-        {% endfor %}
-      </select>
-    </p>
-
-  <button id="model" class="btn popup col-lg-12">Measure Spatial Accessibility</button>
-  </div>
-  <div id="toolbar"></div>
-  <section class="mfp-hide modal-content modal-dialog overlay-def modal-width" id="popup-modal-about">
-      <header class="modal-header">
-        <h2 class="modal-title">About PASS</h2>
-      </header>
-      <div class="modal-body">
-        <h3>Methodology</h3>
-        <p> The CDO Data Science team developed a geographic information system, Potential Accessibility Software Service (PASS). PASS offers an advanced quantitative approach to measure how spatially accessible population demand is to a given service. </p>
-        <p> Spatial accessibility is the consideration of how physical and social space and place affect how a population can traverse through it to access a given service. Though abstract in nature, it can be measured through considerations like where potential population demand is located, the geographic distance to get from the population location to the service locations offered, the supply at the service locations, as well as the probability of a population going to one service location over another based on the capacity. PASS uses the enhanced 3-step floating catchment methodology to accomplish this, which is further explained <a href="static/docs/pass_report_20200422.html" target="_blank">here</a>.</p>
-        <p>PASS lets you select a geographic area of interest by panning and zooming on the interactive map, and lets you define the parameters to model spatial accessibility to better reflect Canada's diverse society. For example, individuals living in urban areas versus rural areas, have different assumptions and considerations for how to access a service.</p>
-        <h3>Developers</h3>
-        <ul>
-          <li>Julia Conzon</li>
-          <li>Chelsea Ernhofers</li>
-        </ul>
-      </div>
-    </section>
-
-    <section class="mfp-hide modal-content modal-dialog overlay-def modal-width" id="popup-modal-help">
-      <header class="modal-header">
-        <h2 class="modal-title">Help</h2>
-      </header>
-      <div class="modal-body">
-        <h3>Why when I zoom in/out the accessibility scores have a different geographic area?</h3>
-        <p> 
-          The methodology used to measure spatial accessibility considers the network of both the services and the surrounding population demand, thus when you zoom in/out of a location, PASS takes all data points within the window of your screen and measures scores based on that network. When you zoom in/out the number of service locations and demand locations change!
+     <p>{{ html.MENU.DESC | safe }}</p>
+     {% for param in html.MENU.PARAMS %}
+      {% if param.ID != "threshold" %}
+        <p>
+           <label><i class="fa fa-info-circle" title="{{ param.TOOLTIP }}"></i> {{ param.LABEL }}</label>
+           <select id="{{ param.ID }}" class="single-selects selectize-input items full has-options has-items"> 
+            {% if param.ID == "supply" %}
+              {% for key, val in supply_cols.items() %}
+              <option value="{{key}}">{{val}}</option>
+              {% endfor %}
+            {% endif %}
+            {% if param.ID == "capacity" %}
+              {% for key, val in capacity_cols.items() %}
+              <option value="{{key}}">{{val}}</option>
+              {% endfor %}
+            {% endif %}
+            {% if param.ID == "demand" %}
+              {% for key, val in demand_cols.items() %}
+              <option value="{{key}}">{{val}}</option>
+              {% endfor %}
+            {% endif %}
+            {% for select in param.SELECT %}
+             <option value="{{ select.VALUE | lower }}">{{ select.OPTION }}</option>
+             {% endfor %} 
+           </select>
         </p>
-        <h3></h3>
-      </div>
-    </section>
+      {% else %}
+      <p>
+        <label><i class="fa fa-info-circle" title="{{ param.TOOLTIP }}"></i> {{ param.LABEL }}<label id="threshold-value">10</label> km</label>
+        <div class="slidecontainer">
+           <label>0</label>
+           <label>70</label>
+           <input type="range" min="0" max="70" value="10" class="slider" id="threshold">
+        </div>
+     </p>
+      {% endif %}
+     {% endfor %}
+    <button id="model" class="btn popup col-lg-12">{{ html.MENU.SUBMIT }}</button>
+    </div>
+    <div id="toolbar"></div>
+    {% for btn in html.NAVBAR.BTNS %}
+      <section class="mfp-hide modal-content modal-dialog overlay-def modal-width" id="popup-modal-{{ btn.NAME | lower }}">
+        <header class="modal-header">
+          <h2 class="modal-title">{{ btn.TITLE }}</h2>
+        </header>
+        <div class="modal-body">
+          {% for section in btn.SECTIONS %}
+            <h3>{{ section.HEADER }}</h3>
+            {% for p in section.CONTENT %}
+              <p>{{ p.P | safe }}</p>
+            {% endfor %}
+          {% endfor %}
+        </div>
+      </section>
+    {% endfor %}
     <!-- WET JS part -->
     <script src="static/javascripts/WET/wet-boew.js"></script>
     <script src="static/javascripts/WET/theme.js"></script>
