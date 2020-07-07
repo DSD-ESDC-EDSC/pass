@@ -24,29 +24,38 @@ The `config.json` file is meant to describe your data sources for `InitSchema.py
 
 The `FILES` object specifies the files necessary to read, process and store data into the database for PASS to operate. The `FILES` object and their key/values that **need** to be in `config.json` are the following:
 
-- `DEMAND_GEO`: the polygon vector `*.shp` (i.e., shapefile) of the desired geographic unit to represent where the population demand is geographically situated. The `Centroid` creates centroid point locations from this polygon shapefile. The calculated centroids can be weighted by smaller geographic units using the `DEMAND_GEO_WEIGHT` configuration object, specified below. The polygon vectors are used to visualize the spatial accessibility scores as a choropleth map. 
-  - `FILE`: The file path to the specific shapefile (`*.shp`).
+- `DEMAND_GEO`: The polygon vector `*.shp` (i.e., shapefile) of the desired geographic unit to represent where the population demand is geographically situated. The `Centroid` creates centroid point locations from this polygon shapefile. The calculated centroids can be weighted by smaller geographic units using the `DEMAND_GEO_WEIGHT` configuration object, specified below. The polygon vectors are used to visualize the spatial accessibility scores as a choropleth map. 
+  - `FILE`: The file path to the specific `*.shp` (shapefile).
   - `TYPE`: The value for this should stay as `demand`, it is for scripting purposes.
   - `CRS`: Provide the coordinate reference system of your shapefile (3347 represents the EPSG for Statistics Canada's Lambert Conformal Conic projection).
   - `COLUMNS`
     - `ID`: The attribute/column within the shapefile that represents the polygon IDs.
-    - `GEOMETRY`: The value for this should stay as `geometry`
+    - `GEOMETRY`: Given the current design of PASS, when modifying `config.json` for `InitSchema` to run, use the same text that is present in `config_template.json` or `config_example.json`
   
-- `DEMAND_POP`: the `*.csv` of `demand_geo` geographic unit's population.
-  - `FILE`
-  - `TYPE`
-  - `ENCODING`
-  - `CRS`
+- `DEMAND_POP`: The `*.csv` of `DEMAND_GEO` geographic unit's population. This file should have one column that can link the population value columns to the `DEMAND_GEO` geographic polygon file (`ID`).
+  - `FILE`: The file path to the `*.csv`.
+  - `TYPE`: The value should be "demand".
+  - `ENCODING`: The encoding to interpret text characters for the web app's user interface.
   - `COLUMNS` 
-    - `ID`
-    - `DEMAND_TOTAL`
+    - `ID`: The column that can link the population value columns to the `DEMAND_GEO` geographic.
+    - `DEMAND_TOTAL`: The column in the file that represents the total population per each geographic unit.
+    
+    `InitSchema` will create a uniform demand population count (i.e., all demand population locations have a population of 1), but you can also add further population counts to represent different types of demand:
+    
+    - `DEMAND_*`: You can add as many different population counts as you like. Create a new key name, and then make sure to specify the `NAME`, `TYPE`, `UNIT`, and `DESC`. **`DESC` needs to stay as "demand"** so that `InitSchema` can interpret the column as a demand population count, which can then allow the user to select different population demand counts to model. 
 
 - `POI`: the `*.csv` of the desired Points of Interest (POI) (i.e., service) location (latitude and longitude)
-  - `FILE`
-  - `TYPE`
-  - `ENCODING`
-  - `CRS`
+  - `FILE`: The file path to the `*.csv`.
+  - `TYPE`: The value should be "poi".
+  - `ENCODING`: The encoding to interpret text characters for the web app's user interface.
+  - `CRS`: Provide the coordinate reference system of your shapefile (3347 represents the EPSG for Statistics Canada's Lambert Conformal Conic projection).
   - `COLUMNS`
+    - `ID`: The column that has an unique identifier per each point of interest.
+    - `LATITIUDE`: The column that represents the latitude of the POI location.
+    - `LONGITUDE`: The column that represents the longitude of the POI location.
+    - `INFO_*`: You can add as many different POI location information values are you like. Create a new key name, and then make sure to specify the `NAME`, `TYPE`, `UNIT`, and `DESC`. **`DESC` needs to stay as "info"** so that `InitSchema` can interpret the column as POI information, which can then appear on the map as a popup when a user clicks the POI point locations.
+    - `SUPPLY_*`: You can add as many different POI location supply counts as you like. Create a new key name, and then make sure to specify the `NAME`, `TYPE`, `UNIT`, and `DESC`. **`DESC` needs to stay as "supply"** so that `InitSchema` can interpret the column as a POI supply count, which can then allow the user to select different POI supply counts to model. Refer to the [PASS report](./pass_report_20200422.html) to better understand how and why supply counts are used to model spatial accessibility.
+    - `CAPACITY_*`: You can add as many different POI capacity values as you like. Create a new key name, and then make sure to specify the `NAME`, `TYPE`, `UNIT`, and `DESC`. **`DESC` needs to stay as "capacity"** so that `InitSchema` can interpret the column as a POI capacity value, which can then allow the user to select different POI capacity values to model. Refer to the [PASS report](./pass_report_20200422.html) to better understand how and why POI capacity values are used to model spatial accessibility.
 
 There is an *optional* object `demand_geo_weight` that you can also include to create population weighted centroid, that is the centroid is weighted based on populations at a more granular geographic unit. For this optional object, the following keys need to be present:
   - `FILE`
@@ -58,13 +67,13 @@ There is an *optional* object `demand_geo_weight` that you can also include to c
     - `LONGITUDE`
 
 For all of these files, the following `COLUMNS` key/values **need** to be present in `config.json`:
-  - 'NAME': the column name that exists within the data file
-  - 'TYPE': either the name that will appear on the UI or used for programming (further specified in `config_template.json`)
-  - 'UNIT': the data type, either `int`, `float`, or `str`.
+  - 'NAME': The column name that exists within the data file.
+  - 'TYPE': Either the name that will appear on the UI or used for programming (further specified in `config_template.json`).
+  - 'UNIT': The data type, either `int`, `float`, or `str`.
 
 ### ORS
 - `CONNECTION`
-  - `CLIENT_URL`
+  - `CLIENT_URL`: The URL for the web or local [ORS API](../pass_distance_matrix_api.md#car-distance-matrix-with-openrouteservice-ors).
   - `TIMEOUT`
 - `ISOCHRONES`
   - `CATCHMENT_RANGE`: 3600
@@ -78,22 +87,22 @@ For all of these files, the following `COLUMNS` key/values **need** to be presen
 
 
 ### APP
-- `SECRET_KEY`:
-- `HOST`: the app server host 
-- `PORT`: the app server port
+- `SECRET_KEY`: The app secret key.
+- `HOST`: The app server host.
+- `PORT`: The app server port.
 - `THREADS`: 
 
 ### DB
-- `HOST`: the database server host
-- `PORT`: the database server port
-- `NAME`: the database name
-- `PASSWORD`: the database password
-- `USER`: the database user
+- `HOST`: The database server host.
+- `PORT`: The database server port.
+- `NAME`: The database name.
+- `PASSWORD`: The database password.
+- `USER`: The database user.
 
 ### LOGGER
-- `DEFAULT_LEVEL`
-- `FILE`
-- `FILE_PATH`
+- `DEFAULT_LEVEL`: Set the default logger level. Refer to the [logging python package's levels](https://docs.python.org/3/library/logging.html#logging.Logger.setLevel)
+- `FILE`: "true" or "false" depending on whether a log file should be created or not
+- `FILE_PATH`: The file path and name to create a log file
 
 ### HTML
 
