@@ -1,16 +1,18 @@
-# Database Initialization
+# Database Initialization and Population
 
-To set up the database for PASS, you will need to run `InitSchema` Python class. The `InitSchema.py` file runs several different modules to read, process and store the necessary data for PASS. **For this Python script to successfully run, the following steps must be completed prior**:
+To populate the database with the necessary data for PASS to run, you will need to execute the `InitSchema` Python class before starting the PASS web app. **It is highly recommended to read the [PASS report that details the methodology to measure spatial accessibility](./pass_report_20200422.html), specifically the 'Floating Catchment Area (FCA) Methods: 2SFCA and Enhanced 3SFCA Models' and 'Data' sections, to better understand why the following data is necessary for PASS to operate. Moreover, the [README](../README.md) explains the architecture of PASS to better explain the `InitSchema` class**. 
 
-1. Set up a `config.json`. Refer to the section below on how to prepare this file for successful read.
+The `InitSchema.py` file runs several different modules to read, process and store the necessary data for PASS. **For this Python script to successfully run, the following steps must be completed prior**:
+
+1. Set up a `config.json` in the root directory. A quick way to accomplish this is by renaming the `config_template.json` to `config.json` and then changing the values within the JSON. Please refer to the section below, 'config.json Specifications', to learn more on how to prepare this file for successful read. 
 
 2. Connect to either a local or web version of the [OpenRouteService (ORS)](https://github.com/GIScience/openrouteservice) API for calculating a drive time/distance matrix.
-  - `InitSchema.py` runs the `DistanceMatrix` class that connects to this API to calculate drive time/distance isochrones and then a distance matrix file to be stored in the database. 
-  - `DistanceMatrix` depends on the `client_url` parameter, which can be provided in `config.json`. Either provide a web client URL (in which case you will need to [sign up for ORS web API](https://openrouteservice.org/plans/)) or set up a local version of the API through a virtual machine / container. If you are working with larger geographic extents (e.g., all of Canada), it is recommended to host locally to avoid dealing with API limits. **For information on how to install ORS locally, refer to the [Distance Matrix Calculation Set Up Instructions](/pass_distance_matrix_api.md)**.
+  - `InitSchema.py` runs the `DistanceMatrix` class that connects to this API to calculate drive time/distance isochrones (i.e., buffer areas of equal travel time/distance) and then a distance matrix file to be stored in the database. 
+  - `DistanceMatrix` depends on the `client_url` parameter, which is in `config.json`. Either provide a web client URL (in which case you will need to [sign up for ORS web API](https://openrouteservice.org/plans/)) or set up a local version of the API through a virtual machine / container. If you are working with larger geographic extents (e.g., all of Canada) or want to include other sources of data, it is recommended to host locally to avoid dealing with API call limits. **For information on how to install ORS locally, refer to the [Distance Matrix Calculation Set Up Instructions](/pass_distance_matrix_api.md)**.
 
 3. Assuming [PostgreSQL](https://www.postgresql.org/) is already installed, initialize a new database and add the [PostGIS](https://postgis.net/) database extension to store the geographic data. Make sure to add the PostgreSQL database connection information to `config.json`.
 
-## config.json
+## config.json Specifications
 
 The `config.json` file is meant to describe your data sources for `InitSchema.py` to read, prepare and store into the PostgreSQL database (`files` key); moreover, it provides the following: (1) connection information for the database (`DB` key), (2) connection information for the `DistanceMatrix` local/web API (`ORS` key), (3) app configuration variables (`APP` key), and (4) variables for logging (`LOGGER` key). The `config_template.json` file can be used to build a version of `config.json`. This section explains the necessary and optional objects that need to be present in this JSON.
 
