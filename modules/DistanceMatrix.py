@@ -15,7 +15,7 @@ class DistanceMatrix:
 					catchment_sleep, dm_metric_type, dm_unit, dm_sleep, ORS_timeout):
 
 		self.web_projection = 'epsg:4326'
-		self.SC_projection = 'epsg:3347'
+		# self.gov_projection = 'epsg:3347'
 
 		# ORS variables
 		self.client = ors.Client(key="", base_url = ORS_client_url, timeout = ORS_timeout, retry_over_query_limit = True)
@@ -54,7 +54,7 @@ class DistanceMatrix:
 		self.ISO = self.get_supply_catchment()
 
 		# write isochrones to file 
-		self.ISO[['id', 'geometry']].to_file("isochrones.shp")
+		# self.ISO[['id', 'geometry']].to_file("isochrones.shp")
 
 		self.in_iso = self.weighted_centroid
 
@@ -93,7 +93,7 @@ class DistanceMatrix:
 				locations_list.append(loc)
 
 			except:
-				print('unable to build isochrone for loc ', loc, '. It will not be included in results.')
+				print('Unable to build isochrone for loc ', loc, '. It will not be included in results.')
 
 		polygon = gpd.GeoDataFrame(index = ids, crs = self.web_projection, geometry = polygons)
 		polygon['id'] = ids

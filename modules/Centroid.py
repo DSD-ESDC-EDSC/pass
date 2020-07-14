@@ -27,7 +27,7 @@ class Centroid():
 		# calculating geographic centroids for smallest geography
 		self.demand_geo_weight['centroid'] = self.demand_geo_weight['geometry'].centroid
 		
-		print(list(self.demand_geo_weight))
+		print(self.demand_geo_weight['centroid'])
 
 		# creating lambda function to calculate weighted centroid average
 		wm = lambda x: np.ma.average(x, weights = self.demand_geo_weight.loc[x.index, 'pop_Total'])
@@ -37,8 +37,10 @@ class Centroid():
 		# calculating weighted latitude and longitude
 		for l in ['lng', 'ltd']:
 			colname = 'wtd_' + l
+
 			if l == 'lng':
 				self.demand_geo_weight[colname] = self.demand_geo_weight.centroid.apply(lambda p:p.x)
+				print(self.demand_geo_weight[colname])
 			else:
 				self.demand_geo_weight[colname] = self.demand_geo_weight.centroid.apply(lambda p:p.y)
 
@@ -50,7 +52,8 @@ class Centroid():
 				weighted_cent = temp
 			else:
 				weighted_cent = pd.merge(weighted_cent.drop('pop_Total', axis = 1), temp, left_index = True, right_index = True)
-
+		
+		print(weighted_cent)
 		# zipping weighted lat / lon
 		weighted_cent['centroid'] = utils.create_point(weighted_cent.wtd_lng, weighted_cent.wtd_ltd)
 

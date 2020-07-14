@@ -77,9 +77,9 @@ class InitSchema():
 
     def create_schema(self):
         "Create each PostgreSQL database table"
-        #self.init_demand()
+        self.init_demand()
         #self.init_poi()
-        self.init_distance_matrix()
+        #self.init_distance_matrix()
 
     def init_distance_matrix(self, profiles=["car"]):
         "Create distance_matrix database table"
@@ -223,7 +223,7 @@ class InitSchema():
             centroid = Centroid(self.demand_geo)
             self.centroid_df = centroid.calculate_geographic_centroid()
 
-        self.centroid_df.pop = self.centroid_df['pop_Total'].astype(float)
+        #self.centroid_df.pop = self.centroid_df['pop_Total'].astype(float)
         self.centroid_df.geouid = self.centroid_df['geouid'].astype(int)
 
         self.centroid_df.reset_index(inplace = True)

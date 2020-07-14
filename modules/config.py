@@ -132,10 +132,9 @@ class Data():
 		except(KeyError):
 			print(JSON_ERROR)
 
-
 		self.required_cols = {}
-		self.required_cols['shape'] = ['ID', 'LRG_ID', 'GEOMETRY']
-		self.required_cols['demand'] = ['ID', 'DEMAND_TOTAL']
+		self.required_cols['shape'] = ['ID', 'GEOMETRY']
+		self.required_cols['demand'] = ['ID']
 		self.required_cols['poi'] = ['ID', 'LATITUDE', 'LONGITUDE']
 
 		self.types_dict = {'str': [str, 'O'], 'int': [float, int]}
@@ -171,6 +170,7 @@ class Basemap():
 	def __init__(self):
 
 		self.TOKEN = config['BASEMAP']['TOKEN']
-		
+
+# configuration function for retrieving text for client-sides
 def html():
 	return config["HTML"]

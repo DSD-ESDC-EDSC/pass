@@ -18,7 +18,6 @@ class DataFrame:
 			self._shave_df()
 		self.df = self.prepare_DataFrame()
 
-
 	def _init_req_columns(self, columns):
 		""" Creates column objects for each column required by dataframe type. Throws error if a required column is not found in data. """
 
@@ -52,10 +51,10 @@ class DataFrame:
 		# looping through all user defined columns
 		for col in columns:
 			if col not in self.req_columns:
-				unit = self.df[columns[col]['name']].dtype
+				unit = self.df[columns[col]['NAME']].dtype
 				if unit == 'O':
-					self.preprocess_opt_columns(columns[col]['name'])
-				new_col = Column(columns[col]['name'], columns[col]['type'], unit)
+					self.preprocess_opt_columns(columns[col]['NAME'])
+				new_col = Column(columns[col]['NAME'], columns[col]['TYPE'], unit)
 				new_columns.append(new_col)
 
 		return new_columns
@@ -192,12 +191,12 @@ class DataFrame:
 		for col_type in self.req_columns:
 			final_column_order.append(self.get_column_by_type(col_type).get_colname())
 
-		if self.type == 'supply':
+		if self.type == 'poi':
 			# check that there's a supply column, if not, add one
-			if not self.get_column_by_type('supply'):
+			if not self.get_column_by_type('poi'):
 				self.add_uniform_col('supply')
 
-			final_column_order.append(self.get_column_by_type('supply').get_colname())
+			final_column_order.append(self.get_column_by_type('poi').get_colname())
 		elif self.type == 'demand':
 			if not self.get_column_by_type('demand'):
 				self.add_uniform_col('demand')
@@ -209,4 +208,3 @@ class DataFrame:
 		final_column_order += additional_columns
 
 		return self.df[final_column_order]
-

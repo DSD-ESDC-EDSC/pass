@@ -10,13 +10,7 @@
 					"TYPE": "geouid",
 					"UNIT": "int",
 					"DESC": "ID"
-						},
-				"LRG_ID" : {
-					"NAME": "CSDUID",
-					"TYPE": "lrg_id",
-					"UNIT": "int",
-					"DESC": "ID"
-						},
+				},
 				"GEOMETRY": {
 					"NAME": "geometry",
 					"TYPE": "geometry",

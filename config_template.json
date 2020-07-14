@@ -11,12 +11,6 @@
 					"UNIT": "ENTER DATA TYPE (E.G., int)",
 					"DESC": "ID"
 						},
-				"LRG_ID" : {
-					"NAME": "TO FOLLOW UP WITH CHELSEA ON THIS REQUIREMENT",
-					"TYPE": "lrg_id",
-					"UNIT": "ENTER DATA TYPE (E.G., int)",
-					"DESC": "ID"
-						},
 				"GEOMETRY": {
 					"NAME": "geometry",
 					"TYPE": "geometry",
@@ -35,12 +29,6 @@
 					"TYPE":"geouid",
 					"UNIT": "ENTER DATA TYPE (E.G., int)",
 					"DESC": "ID"
-					},
-				"DEMAND_TOTAL": {
-					"NAME":"TO FOLLOW UP WITH CHELSEA ON THIS REQUIREMENT",
-					"TYPE": "pop_Total",
-					"UNIT": "int", 
-					"DESC": "demand"
 					},
 				"DEMAND_ENTER WORD THAT DESCRIBES POPULATION DEMAND VARIABLE OF INTEREST": {
 					"NAME": "ENTER THE VARIABLE NAME",
@@ -63,12 +51,18 @@
           "NAME": "ENTER DEMAND GEOGRAPHIC BOUNDARY ID VARIABLE NAME",
           "TYPE": "lrg_id",
           "UNIT": "int"},
+				"DEMAND_TOTAL": {
+					"NAME":"ENTER VARIABLE NAME TO THAT REPRESENT THE DESIRED POPULATION TO CALCULATE WEIGHTED CENTROIDS",
+					"TYPE": "pop_Total",
+					"UNIT": "int", 
+					"DESC": "demand"
+				},
         "GEOMETRY": {
           "NAME": "geometry",
           "TYPE": "geometry",
           "UNIT": "geometry"
-            }
           }
+        }
     },
 		"POI": {
 			"FILE":"ENTER FILE PATH TO THE SUPPLY CSV",

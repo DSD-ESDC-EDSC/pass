@@ -7,10 +7,11 @@ from shapely.geometry import MultiLineString, Point
 
 def read_file(filename, filetype, columns, req_columns, encoding):
 	if filetype == 'shape':
-		# read in shape file 
+		# read in shapefile 
 		crs = encoding 
 		df = gp.read_file(filename)
 		df.crs = {'init': 'epsg:' + str(crs)}
+
 	else:
 		# read in csv file 
 		df = pd.read_csv(filename, encoding = encoding)
