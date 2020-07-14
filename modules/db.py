@@ -6,8 +6,6 @@ import json
 import osgeo.ogr
 import shutil
 import geopandas as gp
-from dotenv import load_dotenv
-import re
 import time
 
 # when running app

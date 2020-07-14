@@ -21,6 +21,7 @@ The following software and code artifacts are made available under the MIT Licen
 
 - [aceso 0.1.0](https://github.com/tetraptych/aceso) - Copyright (c) 2018 Brian Lewis
 - [GDAL/OGR](https://gdal.org/license.html) - Copyright (c) 1998-2020 Frank Warmerdam, Even Rouault, and [others](https://github.com/OSGeo/gdal/graphs/contributors)
+- [six](https://github.com/benjaminp/six) - Copyright (c) 2010-2020 Benjamin Peterson
 
 **JavaScript/CSS**
 
@@ -84,9 +85,10 @@ The following software and code artifacts are made available under the BSD 3-Cla
 **Python**
 
 - [Flask](https://flask.palletsprojects.com/en/1.1.x/license/#source-license) - Copyright 2010 Pallets
-- [python-dotenv](https://pypi.org/project/python-dotenv/)
 - [geoJson](https://github.com/jazzband/geojson) - Copyright (c) 2007-2019, contributors of geojson
 - [GeoPandas](https://github.com/geopandas/geopandas) - Copyright (c) 2013-2016, GeoPandas developers
+- [NumPy](https://pypi.org/project/numpy/) - Copyright (c) 2005-2020, NumPy Developers
+- [pandas](https://pypi.org/project/pandas/) - Copyright (c) 2008-2011, AQR Capital Management, LLC, Lambda Foundry, Inc. and PyData Development Team
 - [Shapely](https://github.com/Toblerity/Shapely) - Copyright (c) 2007, Sean C. Gillies
 
 **JavaScript**
@@ -154,6 +156,7 @@ The following software and code artifacts are made available under the Apache 2.
 **Python**
 
 - [openrouteservice](https://pypi.org/project/openrouteservice/) - Copyright (c) 2018-2020 Nils Nolde
+- [rtree](https://github.com/davidmoten/rtree) 
 
 **JavaScript/CSS**
 

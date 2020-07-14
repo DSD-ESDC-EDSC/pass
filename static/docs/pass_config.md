@@ -138,3 +138,19 @@ The ORS configuration variables are mainly used as parameters for `DistanceMatri
 ### HTML
 
 This object stores the text that appears on the web app's user interface. Refer to `config_template.json` for details on what each key/value should be.
+
+## Updating Database
+
+To update the entire database, repeat steps 5-8 under 'Steps to Install' in the [README](../README.md) to update the data in the database.
+
+To update a specific database table, in `InitSchema.py` you can comment out the functions that are called under `create_schema(self)` Python function. For example, if you only want to update the `demand` database table:
+
+```
+def create_schema(self):
+    "Create each PostgreSQL database table"
+    self.init_demand()
+    #self.init_poi()
+    #self.init_distance_matrix()
+``` 
+
+Then in your terminal, assuming you are in the `modules` directory run the following command: `python InitSchema.py`.

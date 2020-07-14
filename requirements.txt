@@ -1,0 +1,11 @@
+Flask==1.1.1
+geojson==2.5.0
+geopandas==0.6.2
+numpy==1.17.3
+openrouteservice==2.2.2
+pandas==0.25.3
+psycopg2==2.8.4
+Rtree==0.9.3
+Shapely==1.6.4.post2
+six==1.13.0
+waitress==1.4.1
