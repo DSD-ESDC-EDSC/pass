@@ -69,9 +69,9 @@ For this optional object, the following keys need to be present:
     - `DEMAND_TOTAL`
     - `GEOMETRY`
 
-(Note: If you are using multiple `DEMAND_POP` population counts (`DEMAND_*`) for your main geographic unit (`LRG_ID`), please note that the `InitSchema` only calculates a single set of weighed centroids based on *one* population count. Thus, while interacting with the PASS user interface, if you select a different population group to represent the demand (e.g., total single parents), the centroid location is not necessarily representative of where that selected demand population resides.)
+(**Note**: If you are using multiple `DEMAND_POP` population counts (`DEMAND_*`) for your main geographic unit (`LRG_ID`), please note that the `InitSchema` only calculates a single set of weighed centroids based on *one* population count. Thus, while interacting with the PASS user interface, if you select a different population group to represent the demand (e.g., total single parents), the centroid location is not necessarily representative of where that selected demand population resides.)
 
-#### FILES' COLUMNS' Keys/Values
+#### FILES COLUMNS' Keys/Values
 
 For all of these required and optional files, the column names within the `COLUMNS` object **need** to have the following keys and values within `config.json`:
   - `NAME`: The column name that exists within the data file.
