@@ -32,10 +32,11 @@ PASS lets you select a geographic area of interest by panning and zooming on the
 
   Requirements for these data files are further detailed in the [Database Initialization and Population document](static/docs/pass_config.md).
 
-5. Copy and rename `config_template.json` to `config.json`. Enter the necessary values in where it specifies "ENTER ...". There is also a `config_example.json` to better demonstrate the values that should be presented in `config.json`. Please refer to the [Database Initialization and Population document](static/docs/pass_config.md) for more information on how to properly prepare `config.json`.
-6. Now you have to initialize and build the database based on your data, which can be accomplished by running `modules/db_init.py`; however, before running this Python script, you will need to initialize a local API for calculating a distance matrix for car commute time or distance. To learn more about how to set up the API for calculating a distance matrix, refer to the [Distance Matrix Calculation Set Up Instructions document](static/docs/pass_distance_matrix_api.md).
-7. Run `python modules/InitSchema.py` to initialize your database, this could take a while depending on your computer specs and the total data size (e.g., all of Canada could take over 5 hours).
-8. Confirm your database has three populated data tables: `demand`, `poi`, and `distance_matrix_car`.
+5. Copy and rename `config_template.json` to `config.json`. Enter the necessary values in where it specifies "ENTER ...". There is also a `config_example.json` to better demonstrate the values that should be presented in `config.json`. **Please refer to the [Database Initialization and Population document](static/docs/pass_config.md) for more information on how to properly prepare `config.json`.**
+6. Initialize a new database and add the [PostGIS](https://postgis.net/) database extension to store the geographic data. Make sure to add the PostgreSQL database connection information to `config.json`.
+7. Now you have to populate the database based on your data, which can be accomplished by running the following command in the terminal: `python modules/InitSchema.py`. **However, before running this Python script, you will need to initialize a local API for calculating a distance matrix for car commute time or distance. To learn more about how to set up the API for calculating a distance matrix, refer to the [Distance Matrix Calculation Set Up Instructions document](static/docs/pass_distance_matrix_api.md).**
+8. Run `python modules/InitSchema.py` to initialize your database, this could take a while depending on your computer specs and the total data size (e.g., all of Canada could take over 5 hours).
+9. Confirm your database has three populated data tables: `demand`, `poi`, and `distance_matrix_car`.
 
 # Run
 

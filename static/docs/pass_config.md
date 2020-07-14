@@ -1,24 +1,26 @@
 # Database Initialization and Population
 
-To populate the database with the necessary data for PASS to run, you will need to execute the `InitSchema` Python class before starting the PASS web app. **It is highly recommended to read the [PASS report that details the methodology to measure spatial accessibility](./pass_report_20200422.html), specifically the 'Floating Catchment Area (FCA) Methods: 2SFCA and Enhanced 3SFCA Models' and 'Data' sections, to better understand why the following data is necessary for PASS to operate. Moreover, the [README](../README.md) explains the architecture of PASS to better explain the `InitSchema` class**. 
+To populate the database with the necessary data for PASS to run, you will need to execute the `InitSchema` Python class before starting the PASS web app. **It is highly recommended to read the [PASS report that details the methodology to measure spatial accessibility](./pass_report_20200422.html), specifically the 'Floating Catchment Area (FCA) Methods: 2SFCA and Enhanced 3SFCA Models' and 'Data' sections, to better understand why the following data is necessary for PASS to operate. 
 
 The `InitSchema.py` file runs several different modules to read, process and store the necessary data for PASS. The image below demonstrates this. 
 
 ![PASS Architecture](./pass_architecture.png)
 
+## Required Steps
+
 **For this Python script to successfully run, the following steps must be completed prior**:
 
 1. Set up a `config.json` in the root directory. A quick way to accomplish this is by copying and then renaming the `config_template.json` to `config.json` and then changing the values that start with "ENTER" within the JSON. There is also a `config_example.json` to better demonstrate the values that should be presented in `config.json`. Please refer to the section below, 'Specifications for config.json', to learn more on how to prepare this file for successful read. 
 
-2. Connect to either a local or web version of the [OpenRouteService (ORS)](https://github.com/GIScience/openrouteservice) API for calculating a drive time/distance matrix.
+2. Connect to either a local containerized version of the [OpenRouteService (ORS)](https://github.com/GIScience/openrouteservice) API for calculating a drive time/distance matrix. **For information on how to install the ORS API locally, refer to the [Distance Matrix Calculation Set Up Instructions](/pass_distance_matrix_api.md)**.
   - `InitSchema.py` runs the `DistanceMatrix` class that connects to this API to calculate drive time/distance isochrones (i.e., buffer areas of equal travel time/distance) and then a distance matrix file to be stored in the database. 
-  - `DistanceMatrix` depends on the `client_url` parameter, which is in `config.json`. **For information on how to install the ORS API locally, refer to the [Distance Matrix Calculation Set Up Instructions](/pass_distance_matrix_api.md)**.
+  - `DistanceMatrix` depends on the `client_url` parameter, which is in `config.json`.
 
 3. Assuming [PostgreSQL](https://www.postgresql.org/) is already installed, initialize a new database and add the [PostGIS](https://postgis.net/) database extension to store the geographic data. Make sure to add the PostgreSQL database connection information to `config.json`.
 
 ## Specifications for `config.json`
 
-The `config.json` file is meant to describe your data sources for `InitSchema.py` to read, prepare and store into the PostgreSQL database (`files` key); moreover, it provides the following: (1) connection information for the database (`DB` key), (2) connection information for the `DistanceMatrix` local API (`ORS` key), (3) app configuration variables (`APP` key), and (4) variables for logging (`LOGGER` key). The `config_template.json` file can be used to build a version of `config.json` by simply copying and renaming `config_template.json` to `config.json` and storing it in the same root folder. There is also a `config_example.json` to better demonstrate the values that should be presented in `config.json`. This section explains the necessary and optional objects that need to be present in this JSON.
+The `config.json` file is meant to describe your data sources for `InitSchema.py` to read, prepare and store into the PostgreSQL database (`FILES` key); moreover, it provides the following: (1) connection information for the database (`DB` key), (2) connection information for the `DistanceMatrix` local API (`ORS` key), (3) app configuration variables (`APP` key), and (4) variables for logging (`LOGGER` key). The `config_template.json` file can be used to build a version of `config.json` by simply copying and renaming `config_template.json` to `config.json` and storing it in the same root folder. There is also a `config_example.json` to better demonstrate the values that should be presented in `config.json`. This section explains the necessary and optional objects that need to be present in this JSON.
 
 ### FILES
 
@@ -55,7 +57,7 @@ The `FILES` object specifies the files necessary to read, process and store data
     - `SUPPLY_*`: You can add as many different POI location supply counts as you like. Create a new key name, and then make sure to specify the `NAME`, `TYPE`, `UNIT`, and `DESC`. **`DESC` needs to stay as "supply"** so that `InitSchema` can interpret the column as a POI supply count, which can then allow the user to select different POI supply counts to model. Refer to the [PASS report](./pass_report_20200422.html) to better understand how and why supply counts are used to model spatial accessibility.
     - `CAPACITY_*`: You can add as many different POI capacity values as you like. Create a new key name, and then make sure to specify the `NAME`, `TYPE`, `UNIT`, and `DESC`. **`DESC` needs to stay as "capacity"** so that `InitSchema` can interpret the column as a POI capacity value, which can then allow the user to select different POI capacity values to model. Refer to the [PASS report](./pass_report_20200422.html) to better understand how and why POI capacity values are used to model spatial accessibility.
 
-There is an *optional* object `DEMAND_GEO_WEIGHT` that you can also include to create population weighted centroid, that is the centroid is weighted based on populations at a more granular geographic unit. This is particularly useful if you are using Census geographic boundaries, so for example, to have Dissemination Area centroids weighed based on Dissemination Boundary populations.
+There is an *optional* object `DEMAND_GEO_WEIGHT` that you can also include to create population weighted centroid, that is the centroid is weighted based on populations at a more granular geographic unit (AKA mean-center). This is particularly useful if you are using Census geographic boundaries, so for example, to have Dissemination Area centroids weighed by Dissemination Block boundaries' populations.
 
 For this optional object, the following keys need to be present:
   - `FILE`
@@ -67,7 +69,7 @@ For this optional object, the following keys need to be present:
     - `DEMAND_TOTAL`
     - `GEOMETRY`
 
-If you are using multiple `DEMAND_POP` population counts (`DEMAND_*`) for your main geographic unit (`LRG_ID`), please note that the `InitSchema` only calculates a single set of weighed centroids based on *one* population count. Thus, while interacting with the PASS user interface, if you select a different population group to represent the demand (e.g., total single parents), the centroid location is not necessarily representative of where that selected demand population resides.
+(Note: If you are using multiple `DEMAND_POP` population counts (`DEMAND_*`) for your main geographic unit (`LRG_ID`), please note that the `InitSchema` only calculates a single set of weighed centroids based on *one* population count. Thus, while interacting with the PASS user interface, if you select a different population group to represent the demand (e.g., total single parents), the centroid location is not necessarily representative of where that selected demand population resides.)
 
 #### FILES' COLUMNS' Keys/Values
 
@@ -141,7 +143,7 @@ This object stores the text that appears on the web app's user interface. Refer 
 
 ## Updating Database
 
-To update the entire database, repeat steps 5-8 under 'Steps to Install' in the [README](../README.md) to update the data in the database.
+To update the entire database, repeat steps 5-9 under 'Steps to Install' in the [README](../README.md) to update the data in the database.
 
 To update a specific database table, in `InitSchema.py` you can comment out the functions that are called under `create_schema(self)` Python function. For example, if you only want to update the `demand` database table:
 
