@@ -16,7 +16,6 @@ PASS lets you select a geographic area of interest by panning and zooming on the
 - PostgreSQL > 11
 - PostGIS (PostgreSQL extension) > 2.5
 - Docker
-- Anaconda > 4.0 (optional, but required if following 'Steps to Install' sections)
 
 ### Steps to Install
 
