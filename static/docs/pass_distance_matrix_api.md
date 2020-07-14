@@ -4,7 +4,7 @@ The following document provides detailed instructions for how to set up an appli
 
 Currently PASS only depends and can use a distance matrix calculated by cars as a mode of transportation. Thus, in order for `InitSchema.py` to create the `distance_matrix_car` database table, through the use of the `DistanceMatrix` class, the following [OpenRouteService (ORS)](https://github.com/GIScience/openrouteservice) API connection needs to be established and then provided within `config.json`. (There is also documentation below on how we are trying to incorporate public transit as a mode of transportation for PASS through the use of the [OpenTripPlanner (OTP)](https://docs.opentripplanner.org/en/latest/) API.)
 
-The ORS API can be initialized using Docker for the car travel time calculations or [you can create an account on the ORS website](https://openrouteservice.org/plans/) to use their web API. If you want PASS to run for a large geographic extent and/or on a large dataset of POIs, then you will need to setup a containerized version of ORS, which is further explained under the 'Car Distance Matrix' section below.
+The ORS API can be initialized using Docker for the car travel time calculations or [you can create an account on the ORS website](https://openrouteservice.org/plans/) to use their web API. However, PASS was aimed to handle a large geographic extent and/or on a large dataset of POIs, thus the current `DistanceMatrix` Python class depends on a containerized version of ORS, which is further explained under the 'Car Distance Matrix' section below.
 
 Both ORS and the OTP APIs depend on [OpenStreetMap (OSM)](https://www.openstreetmap.org) road network data, a reliable data source for road data in Canada ([Zhang 2017](https://ir.lib.uwo.ca/cgi/viewcontent.cgi?article=1364&context=geographypub); [Jacobs 2017](https://kentjacobs.net/assets/thesis.pdf)). You can download the OSM data for Canada from [Geofabrik's server](https://www.geofabrik.de/data/download.html): [canada-latest.osm.pbf](https://download.geofabrik.de/north-america/canada-latest.osm.pbf). There are instructions under 'Data Source' on how to reduce the size of this file. 
 
@@ -12,7 +12,7 @@ Both ORS and the OTP APIs depend on [OpenStreetMap (OSM)](https://www.openstreet
 
 # Car Distance Matrix with OpenRouteService (ORS)
 
-This section details on how to set up a local ORS API instance with Docker. If you are working within a small geographic extent (e.g., a single city) and/or small dataset of POIs (i.e., service locations), then the ORS web API can be used. Details on using their web API can be accessed on the [ORS website](https://openrouteservice.org/plans/), just make sure to include the `client_url` under `ORS` within configuration file, `config.json`.
+This section details on how to set up a local ORS API instance with Docker. (If you are working within a small geographic extent (e.g., a single city) and/or small dataset of POIs (i.e., service locations).
 
 ## Dependencies
 - [Docker](https://docs.docker.com/)
@@ -41,7 +41,15 @@ General steps though are the following:
 If you prefer to change certain components of the API, refer to the [ORS documentation](https://github.com/GIScience/openrouteservice-docs).
 
 ## Run
-Once you follow the ORS's steps to install, the API must be turned on in order for the `DistanceMatrix` class to run successfully. If using Docker, simply run the following commands: `docker-compose up`. If you are working with a large OSM file (greater then 1GB) the container might take some time to boot up. To check the status, enter `[HOST]:[PORT]/ors/health` in your browser. When the `status` value is `ready` then your local API is good to go. Make sure in the `config.json` your preferred settings are set up (e.g., units) under `ORS`. For further information on `config.json` preferences for the API, refer to [pass_config.md](./pass_config.md); though main thing to change in `config.json` is the `client_url` under `ORS`.
+Once you follow the ORS's steps to install, the API must be turned on in order for the `DistanceMatrix` class to run successfully. 
+
+If using Docker, simply run the following commands: `docker-compose up`. 
+
+If you are working with a large OSM file (greater then 1GB) the container might take some time to boot up. To check the status, enter `[HOST]:[PORT]/ors/health` in your browser. 
+
+When the `status` value is `ready` then your local API is good to go. 
+
+Make sure in the `config.json` your preferred settings are set up (e.g., units) under `ORS`. For further information on `config.json` preferences for the API, refer to [Database Initialization and Population documentation](./pass_config.md); though main thing to change in `config.json` is the `client_url` under `ORS`.
 
 # Public Transit Distance Matrix with OpenTripPlanner (OTP)
 

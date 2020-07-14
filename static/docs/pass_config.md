@@ -12,13 +12,13 @@ The `InitSchema.py` file runs several different modules to read, process and sto
 
 2. Connect to either a local or web version of the [OpenRouteService (ORS)](https://github.com/GIScience/openrouteservice) API for calculating a drive time/distance matrix.
   - `InitSchema.py` runs the `DistanceMatrix` class that connects to this API to calculate drive time/distance isochrones (i.e., buffer areas of equal travel time/distance) and then a distance matrix file to be stored in the database. 
-  - `DistanceMatrix` depends on the `client_url` parameter, which is in `config.json`. Either provide a web client URL (in which case you will need to [sign up for ORS web API](https://openrouteservice.org/plans/)) or set up a local version of the API through a virtual machine / container. If you are working with larger geographic extents (e.g., all of Canada) or want to include other sources of data, it is recommended to host locally to avoid dealing with API call limits. **For information on how to install ORS locally, refer to the [Distance Matrix Calculation Set Up Instructions](/pass_distance_matrix_api.md)**.
+  - `DistanceMatrix` depends on the `client_url` parameter, which is in `config.json`. **For information on how to install the ORS API locally, refer to the [Distance Matrix Calculation Set Up Instructions](/pass_distance_matrix_api.md)**.
 
 3. Assuming [PostgreSQL](https://www.postgresql.org/) is already installed, initialize a new database and add the [PostGIS](https://postgis.net/) database extension to store the geographic data. Make sure to add the PostgreSQL database connection information to `config.json`.
 
 ## config.json Specifications
 
-The `config.json` file is meant to describe your data sources for `InitSchema.py` to read, prepare and store into the PostgreSQL database (`files` key); moreover, it provides the following: (1) connection information for the database (`DB` key), (2) connection information for the `DistanceMatrix` local/web API (`ORS` key), (3) app configuration variables (`APP` key), and (4) variables for logging (`LOGGER` key). The `config_template.json` file can be used to build a version of `config.json` by simply copying and renaming `config_template.json` to `config.json` and storing it in the same root folder. There is also a `config_example.json` to better demonstrate the values that should be presented in `config.json`. This section explains the necessary and optional objects that need to be present in this JSON.
+The `config.json` file is meant to describe your data sources for `InitSchema.py` to read, prepare and store into the PostgreSQL database (`files` key); moreover, it provides the following: (1) connection information for the database (`DB` key), (2) connection information for the `DistanceMatrix` local API (`ORS` key), (3) app configuration variables (`APP` key), and (4) variables for logging (`LOGGER` key). The `config_template.json` file can be used to build a version of `config.json` by simply copying and renaming `config_template.json` to `config.json` and storing it in the same root folder. There is also a `config_example.json` to better demonstrate the values that should be presented in `config.json`. This section explains the necessary and optional objects that need to be present in this JSON.
 
 ### FILES
 
@@ -40,11 +40,11 @@ The `FILES` object specifies the files necessary to read, process and store data
     - `ID`: The column that can link the population value columns to the `DEMAND_GEO` geographic.
     - `DEMAND_TOTAL`: The column in the file that represents the total population per each geographic unit.
     
-    `InitSchema` will create a uniform demand population count (i.e., all demand population locations have a population of 1), but you can also add further population counts to represent different types of demand:
+    The `InitSchema` class will create a uniform demand population count (i.e., all demand population locations have a population of 1), but you can also add further population counts to represent different types of demand:
     
     - `DEMAND_*`: You can add as many different population counts as you like. Create a new key name, and then make sure to specify the `NAME`, `TYPE`, `UNIT`, and `DESC`. **`DESC` needs to stay as "demand"** so that `InitSchema` can interpret the column as a demand population count, which can then allow the user to select different population demand counts to model. 
 
-- `POI`: the `*.csv` of the desired Points of Interest (POI) (i.e., service) location (latitude and longitude)
+- `POI`: The `*.csv` of the desired Points of Interest (POI) (i.e., service) location (latitude and longitude)
   - `FILE`: The file path to the `*.csv`.
   - `TYPE`: The value should be "poi".
   - `ENCODING`: The encoding to interpret text characters for the web app's user interface.
@@ -57,7 +57,7 @@ The `FILES` object specifies the files necessary to read, process and store data
     - `SUPPLY_*`: You can add as many different POI location supply counts as you like. Create a new key name, and then make sure to specify the `NAME`, `TYPE`, `UNIT`, and `DESC`. **`DESC` needs to stay as "supply"** so that `InitSchema` can interpret the column as a POI supply count, which can then allow the user to select different POI supply counts to model. Refer to the [PASS report](./pass_report_20200422.html) to better understand how and why supply counts are used to model spatial accessibility.
     - `CAPACITY_*`: You can add as many different POI capacity values as you like. Create a new key name, and then make sure to specify the `NAME`, `TYPE`, `UNIT`, and `DESC`. **`DESC` needs to stay as "capacity"** so that `InitSchema` can interpret the column as a POI capacity value, which can then allow the user to select different POI capacity values to model. Refer to the [PASS report](./pass_report_20200422.html) to better understand how and why POI capacity values are used to model spatial accessibility.
 
-There is an *optional* object `demand_geo_weight` that you can also include to create population weighted centroid, that is the centroid is weighted based on populations at a more granular geographic unit. For this optional object, the following keys need to be present:
+There is an *optional* object `DEMAND_GEO_WEIGHT` that you can also include to create population weighted centroid, that is the centroid is weighted based on populations at a more granular geographic unit. For this optional object, the following keys need to be present:
   - `FILE`
   - `TYPE`
   - `CRS`
@@ -66,25 +66,59 @@ There is an *optional* object `demand_geo_weight` that you can also include to c
     - `LATITUDE`
     - `LONGITUDE`
 
-For all of these files, the following `COLUMNS` key/values **need** to be present in `config.json`:
+#### FILES' COLUMNS' Keys/Values
+
+For all of these files, the column names within the `COLUMNS` object **need** to have the following keys and values within `config.json`:
   - 'NAME': The column name that exists within the data file.
   - 'TYPE': Either the name that will appear on the UI or used for programming (further specified in `config_template.json`).
   - 'UNIT': The data type, either `int`, `float`, or `str`.
+  
+The following is an example of what a completed file would like in `config.json`:
+
+```
+  "DEMAND_GEO": {
+    "FILE":"C:/Users/Name/Documents/Code/pass/data/lda_000b16a_bc.shp",
+    "TYPE":"shape",
+    "CRS": "3347",
+    "COLUMNS": {
+      "ID" : {
+        "NAME": "DAUID",
+        "TYPE": "geouid",
+        "UNIT": "int",
+        "DESC": "ID"
+      },
+      "LRG_ID" : {
+        "NAME": "CSDUID",
+        "TYPE": "lrg_id",
+        "UNIT": "int",
+        "DESC": "ID"
+      },
+      "GEOMETRY": {
+        "NAME": "geometry",
+        "TYPE": "geometry",
+        "UNIT": "geometry", 
+        "DESC": "geometry"
+        }
+    }
+  }
+```
 
 ### ORS
+
+The ORS configuration variables are mainly used as parameters for `DistanceMatrix.py`. The following details what each variable represents:
+
 - `CONNECTION`
   - `CLIENT_URL`: The URL for the web or local [ORS API](../pass_distance_matrix_api.md#car-distance-matrix-with-openrouteservice-ors).
-  - `TIMEOUT`
+  - `TIMEOUT`: A parameter passed to the ORS client, this was increased from the default to allow for slower internet connection.
 - `ISOCHRONES`
-  - `CATCHMENT_RANGE`: 3600
-  - `CATCHMENT_RANGE_TYPE`: time
-  - `PROFILE`: driving-car
-  - `SLEEP_TIME`: 0
+  - `CATCHMENT_RANGE`: The catchment range, if `CATCHMENT_RANGE_TYPE` is "time", then the unit is seconds (e.g., 3600 is 60 minutes); if the `CATCHMENT_RANGE_TYPE` is "distance" then the unit is meters.
+  - `CATCHMENT_RANGE_TYPE`: For 
+  - `PROFILE`: The mode of transportation, thus what types of road features and tags will be accounted for to calculate the isochrones. In the case for PASS, this should remain as "driving-car". You can test other profiles, however, the OSM data quality for other types of transportation is much lower compared to OSM road networks.
+  - `SLEEP_TIME`: The parameter used in `DistanceMatrix` to handle multiple requests called to calculate isochrones and distance matrix. This is only useful when calling the ORS web API. 
 - `DISTANCE_MATRIX`: {
-  - `METRIC`: distance
-  - `UNIT`: m
-  - `SLEEP_TIME`: 0
-
+  - `METRIC`: Either measure "distance" or "time".
+  - `UNIT`: If `METRIC` is "distance", then one of the following units can be entered: "m", "km", or "mi". If the `METRIC` is "time", then the unit is "seconds".
+  - `SLEEP_TIME`: The parameter used in `DistanceMatrix` to handle multiple requests called to calculate isochrones and distance matrix. This is only useful when calling the ORS web API.
 
 ### APP
 - `SECRET_KEY`: The app secret key.

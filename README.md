@@ -33,7 +33,7 @@ PASS lets you select a geographic area of interest by panning and zooming on the
   Requirements for these data files are further detailed in the [Database Initialization and Population document](static/docs/pass_config.md), and there are demonstrations of the data within the data folder.
 
 5. Copy and rename `config_template.json` to `config.json`. Enter the necessary values in where it specifies "ENTER ...". There is also a `config_example.json` to better demonstrate the values that should be presented in `config.json`. Please refer to the [Database Initialization and Population document](static/docs/pass_config.md) for more information on how to properly prepare `config.json`.
-6. Now you have to initialize and build the database based on your data, which can be accomplished by running `modules/db_init.py`; however, before running this Python script, you will need to initialize a local or web-based API for calculating distance matrix. To learn more about how to set up the API for calculating a distance matrix, refer to the [Distance Matrix Calculation Set Up Instructions document](static/docs/pass_distance_matrix_api.md).
+6. Now you have to initialize and build the database based on your data, which can be accomplished by running `modules/db_init.py`; however, before running this Python script, you will need to initialize a local API for calculating a distance matrix for car commute time or distance. To learn more about how to set up the API for calculating a distance matrix, refer to the [Distance Matrix Calculation Set Up Instructions document](static/docs/pass_distance_matrix_api.md).
 7. Run `modules/InitSchema.py` to initialize your database, this could take a while depending on the data size.
 8. Confirm your database has three populated data tables: `demand`, `poi`, and `distance_matrix_car`.
 
@@ -57,6 +57,7 @@ To learn more about the data configuration and database initialization and stora
 
 The following are areas that could be further developed:
 
+- Allowing for either web or local containerized version of the ORS API.
 - Incorporating a `distance_matrix_transit` database table that stores a distance matrix calculated by General Transit Feed Specification (GTFS) data to account for public transportation. Some work has been started for this. The `modules/gtfs.py` script collects all GTFS feeds and data in Canada and then can be used with the Open Transit Planner API that handles calculating distance matrix with GTFS and OpenStreeetMap (`*.osm.pbf`) road network data.
 
 # Contribute
