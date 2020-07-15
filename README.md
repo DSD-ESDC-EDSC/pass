@@ -51,9 +51,9 @@ Below is an image of PASS's architecture.
 
 ![PASS Architecture](docs/pass_architecture.png)
 
-To learn about how to calculate the distance matrix, refer to the [pass_distance_matrix_api markdown](docs/pass_distance_matrix_api.md).
+To learn about how to calculate the distance matrix, refer to the [Distance Matrix Calculation Set Up Instructions document](docs/pass_distance_matrix_api.md).
 
-To learn more about the data configuration and database initialization and storage, refer to the [pass_config markdown](docs/pass_config.md).
+To learn more about the data configuration and database population, refer to the [Database Initialization and Population document](docs/pass_config.md).
 
 The following are areas that could be further developed:
 
