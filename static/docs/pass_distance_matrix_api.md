@@ -1,6 +1,6 @@
 # Distance Matrix Calculation Set Up Instructions
 
-The following document provides detailed instructions for how to set up an application programming interface (API) to calculate distance matrixes for car. **It is highly recommended to read the [PASS report that details the methodology to measure spatial accessibility](./pass_report_20200422.html), specifically the 'Floating Catchment Area (FCA) Methods: 2SFCA and Enhanced 3SFCA Models' and 'Data' sections, to better understand why a distance matrix is necessary for PASS to operate**.
+The following document provides detailed instructions for how to set up an application programming interface (API) to calculate distance matrixes for car. **It is highly recommended to read the [PASS report that details the methodology to measure spatial accessibility](./pass_method.html), specifically the 'Floating Catchment Area (FCA) Methods: 2SFCA and Enhanced 3SFCA Models' and 'Data' sections, to better understand why a distance matrix is necessary for PASS to operate**.
 
 Currently PASS only depends and can use a distance matrix calculated by cars as a mode of transportation. Thus, in order for `InitSchema.py` to create the required `distance_matrix_car` database table, through the use of the `DistanceMatrix` class, a local [OpenRouteService (ORS)](https://github.com/GIScience/openrouteservice) API connection needs to be established and then provided within `config.json`. 
 
