@@ -2,11 +2,11 @@
 
 The CDO Data Science team developed a geographic information system, Potential Accessibility Software Service (PASS). PASS offers an advanced quantitative approach to measure how spatially accessible population demand is to a given service.
 
-Spatial accessibility is the consideration of how physical and social space and place affect how a population can traverse through it to access given service locations (i.e., points of interest, POIs). Though abstract in nature, it can be measured through considerations like where potential population demand is located, the geographic distance to get from the population location to the service locations offered, the supply at the service locations, as well as the probability of a population going to one service location over another based on the capacity. PASS uses the enhanced 3-Step Floating Catchment Area (3SFCA) methodology to accomplish this, which is further explained [in a report, which should be downloaded and viewed in your web browser](static/docs/pass_method.html).
+Spatial accessibility is the consideration of how physical and social space and place affect how a population can traverse through it to access given service locations (i.e., points of interest, POIs). Though abstract in nature, it can be measured through considerations like where potential population demand is located, the geographic distance to get from the population location to the service locations offered, the supply at the service locations, as well as the probability of a population going to one service location over another based on the capacity. PASS uses the enhanced 3-Step Floating Catchment Area (3SFCA) methodology to accomplish this, which is further explained [in a report, which should be downloaded and viewed in your web browser](docs/pass_method.html).
 
 PASS lets you select a geographic area of interest by panning and zooming on the interactive map, and lets you define the parameters to model spatial accessibility to better reflect Canada's diverse society. For example, individuals living in urban areas versus rural areas, have different assumptions (e.g., willingness to commute further distances) and considerations (e.g., transportation) for how to access a service.
 
-![PASS Demo (uses dummy data)](/static/docs/pass_v0.1.gif)
+![PASS Demo (uses dummy data)](/docs/pass_v0.1.gif)
 
 # Installation
 
@@ -29,11 +29,11 @@ PASS lets you select a geographic area of interest by panning and zooming on the
 - `SUPPLY`: `*.csv` file that stores your POIs, this file should at least have a variable to represent the POI IDs and two variables for longitude and latitude.
 - `DEMAND_GEO_WEIGHT` (optional): a more granular geographic data file (`*.shp`) + a population attribute/variable for calculating mean-weighted centroids to represent the demand locations more precisely.
 
-  Requirements for these data files are further detailed in the [Database Initialization and Population document](static/docs/pass_config.md).
+  Requirements for these data files are further detailed in the [Database Initialization and Population document](docs/pass_config.md).
 
-5. Copy and rename `config_template.json` to `config.json`. Enter the necessary values in where it specifies "ENTER ...". There is also a `config_example.json` to better demonstrate the values that should be presented in `config.json`. **Please refer to the [Database Initialization and Population document](static/docs/pass_config.md) for more information on how to properly prepare `config.json`.**
+5. Copy and rename `config_template.json` to `config.json`. Enter the necessary values in where it specifies "ENTER ...". There is also a `config_example.json` to better demonstrate the values that should be presented in `config.json`. **Please refer to the [Database Initialization and Population document](docs/pass_config.md) for more information on how to properly prepare `config.json`.**
 6. Initialize a new database and add the [PostGIS](https://postgis.net/) database extension to store the geographic data. Make sure to add the PostgreSQL database connection information to `config.json`.
-7. Now you have to populate the database based on your data, which can be accomplished by running the following command in the terminal: `python modules/InitSchema.py`. **However, before running this Python script, you will need to initialize a local API for calculating a distance matrix for car commute time or distance. To learn more about how to set up the API for calculating a distance matrix, refer to the [Distance Matrix Calculation Set Up Instructions document](static/docs/pass_distance_matrix_api.md).**
+7. Now you have to populate the database based on your data, which can be accomplished by running the following command in the terminal: `python modules/InitSchema.py`. **However, before running this Python script, you will need to initialize a local API for calculating a distance matrix for car commute time or distance. To learn more about how to set up the API for calculating a distance matrix, refer to the [Distance Matrix Calculation Set Up Instructions document](docs/pass_distance_matrix_api.md).**
 8. Run `python modules/InitSchema.py` to initialize your database, this could take a while depending on your computer specs and the total data size (e.g., all of Canada could take over 5 hours).
 9. Confirm your database has three populated data tables: `demand`, `poi`, and `distance_matrix_car`.
 
@@ -49,11 +49,11 @@ Once you completed the 'Steps to Install', which you only need to complete once,
 
 Below is an image of PASS's architecture.
 
-![PASS Architecture](static/docs/pass_architecture.png)
+![PASS Architecture](docs/pass_architecture.png)
 
-To learn about how to calculate the distance matrix, refer to the [pass_distance_matrix_api markdown](static/docs/pass_distance_matrix_api.md).
+To learn about how to calculate the distance matrix, refer to the [pass_distance_matrix_api markdown](docs/pass_distance_matrix_api.md).
 
-To learn more about the data configuration and database initialization and storage, refer to the [pass_config markdown](static/docs/pass_config.md).
+To learn more about the data configuration and database initialization and storage, refer to the [pass_config markdown](docs/pass_config.md).
 
 The following are areas that could be further developed:
 
