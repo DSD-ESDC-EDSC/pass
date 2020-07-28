@@ -78,8 +78,8 @@ class InitSchema():
     def create_schema(self):
         "Create each PostgreSQL database table"
         self.init_demand()
-        #self.init_poi()
-        #self.init_distance_matrix()
+        self.init_poi()
+        self.init_distance_matrix()
 
     def init_distance_matrix(self, profiles=["car"]):
         "Create distance_matrix database table"
