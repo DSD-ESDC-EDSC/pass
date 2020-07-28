@@ -139,6 +139,9 @@ The ORS configuration variables are mainly used as parameters for `DistanceMatri
 - `FILE`: "true" or "false" depending on whether a log file should be created or not (text).
 - `FILE_PATH`: The file path and name to create a log file (text).
 
+### BASEMAP
+- `TOKEN`: Currently the UI depends on providing a basemap token from Mapbox. You can add a token by creating a [Mapbox Studio](https://www.mapbox.com/) account.
+
 ### HTML
 
 This object stores the text that appears on the web app's user interface. Refer to `config_template.json` for details on what each key/value should be.
