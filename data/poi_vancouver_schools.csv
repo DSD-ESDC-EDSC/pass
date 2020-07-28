@@ -1,0 +1,195 @@
+﻿ID,ADDRESS,SCHOOL_CATEGORY,SCHOOL_NAME,LONGITUDE,LATITUDE,DUMMY_SUPPLY,DUMMY_CAPACITY
+1,5025 Willow St,Public School,BC Childrens Hosp School Program,-123.125791,49.23963096,4,477
+2,2251 Collingwood St,Public School,Bayview Community Elementary,-123.1823338,49.26648701,8,503
+3,3400 Balaclava St,Public School,Carnarvon Community Elementary,-123.1735572,49.25658742,6,805
+4,6955 Frontenac St,Public School,Champlain Heights Community Elementary,-123.0277484,49.2206403,3,288
+5,1010 E 17th Av,Public School,Charles Dickens Elementary,-123.0823906,49.2548545,5,140
+6,3417 Euclid Av,StrongStart BC,Collingwood StrongStart Centre,-123.032313,49.2363486,9,453
+7,438 Terminal Av,Independent School,Columbia College,-123.0950777,49.27155962,8,517
+8,5025 Willow St,Public School,Eric Hamber Secondary,-123.125791,49.23963096,9,929
+9,2740 Guelph St,StrongStart BC,Florence Nightingale StrongStart Centre,-123.0937176,49.26005932,9,254
+10,2896 W 6th Av,Public School,General Gordon Elementary,-123.1706742,49.2659799,1,230
+11,3745 W 28th Av,Independent School,Immaculate Conception School,-123.1877075,49.24759061,6,997
+12,801 E 54th Av,StrongStart BC,John Henderson StrongStart Centre,-123.0880432,49.22104214,1,977
+13,3250 W 43rd Av,Public School,Kerrisdale Annex,-123.177405,49.232868,5,826
+14,1166 W 14th Av,Public School,L'Ecole Bilingue Elementary,-123.1303864,49.25808403,9,536
+15,3939 W 16th Av,Public School,Lord Byng Secondary,-123.192531,49.25956655,6,633
+16,2235 Kitchener St,Public School,Lord Nelson Elementary,-123.0597121,49.27250774,1,489
+17,1750 E 22nd Av,StrongStart BC,Lord Selkirk StrongStart Centre,-123.0690071,49.24969195,9,367
+18,6360 Maple St,Public School,Magee Secondary,-123.151538,49.22855387,4,861
+19,3375 Nootka St,Public School,Nootka Community Elementary,-123.0429492,49.25359297,7,133
+20,575 Slocan St,Independent School,Our Lady of Sorrows,-123.0501537,49.27957122,3,422
+21,2409 E Pender St,Independent School,PALS Autism School,-123.0559543,49.28051481,7,607
+22,4196 W 4th Av,Independent School,Pacific Spirit School,-123.198246,49.26766798,9,497
+23,449 E 62nd Av,Public School,Pierre Elliott Trudeau Elementary,-123.096959,49.214454,9,269
+24,1300 E Broadway,StrongStart BC,Queen Alexandra StrongStart Centre,-123.0759206,49.26197055,10,508
+25,250S Skeena St,Public School,Sir John Franklin Community,-123.0275857,49.2824962,7,108
+26,590 W 65th Av,Public School,Sir Wilfrid Laurier Annex,-123.1194453,49.210718,4,879
+27,450 E 47th Av,Independent School,St Andrew's,-123.0958559,49.22721361,9,465
+28,5400 Cartier St,Independent School,Vancouver College DL,-123.1361713,49.23495942,7,445
+29,2600 E Broadway,Public School,Vancouver Technical Secondary,-123.0512998,49.26075548,1,392
+30,6111 Elliott St,Public School,Waverley Elementary,-123.0557859,49.22783723,9,115
+31,1130 Keefer St,StrongStart BC,Admiral Seymour StrongStart Centre,-123.0803143,49.27859427,2,670
+32,1690 Matthews Av,Public School,Canuck Place School Program,-123.1430624,49.25166953,6,274
+33,2684 E 2nd Av,Public School,Chief Maquinna Elementary,-123.0505898,49.26788631,8,781
+34,1580 W Broadway,Public School,Continuing Ed SD 39,-123.1402605,49.26329988,2,356
+35,6344 Nanaimo St,Independent School,Corpus Christi School,-123.0575835,49.2264061,6,971
+36,8370 Cartier St,Public School,David Lloyd George Elementary,-123.1363489,49.20996241,10,728
+37,8370 Cartier St,StrongStart BC,David Lloyd George StrongStart Centre,-123.1363489,49.20996241,1,581
+38,2421 Scarboro Av,Public School,David Oppenheimer Elementary,-123.0582933,49.21331811,4,630
+39,7455 Maple St,Public School,Dr R E McKechnie Elementary,-123.1540113,49.21770659,4,802
+40,900 School Green,Public School,False Creek Elementary,-123.1268592,49.26710311,8,662
+41,1025 Slocan St,Public School,Garibaldi Annex,-123.0502688,49.27541639,8,274
+42,4105 Gladstone St,Public School,Gladstone Secondary,-123.0616331,49.24761204,9,846
+43,7455 Ontario St,Public School,J.W. Sexsmith Community Elementary,-123.1087944,49.21726779,1,490
+44,530 E 41st Av,Public School,John Oliver Secondary,-123.0927978,49.23195715,9,480
+45,2550 W 10th Av,Public School,Kitsilano Secondary,-123.1635894,49.26265477,9,718
+46,2235 Kitchener St,StrongStart BC,Lord Nelson StrongStart Centre,-123.0597121,49.27250774,9,208
+47,2880 Venables St,Independent School,Notre Dame Regional Secondary,-123.0455666,49.27580284,6,756
+48,5750 Oak St,Independent School,Pacific Torah Institute International,-123.1276123,49.23342157,1,835
+49,3417 Euclid Av,Public School,Prov. Early Intervention Resource Prg,-123.032313,49.2363486,2,722
+50,4275 Crown St,Public School,Queen Elizabeth Annex,-123.1946911,49.24893678,3,145
+51,2000 Trimble St,Public School,Queen Mary Elementary,-123.204797,49.26785642,1,234
+52,1025 Slocan St,Public School,SD 39 DL Elementary,-123.0502688,49.27541639,1,317
+53,2150 Brigadoon Av,Public School,Sir James Douglas Elementary,-123.0646532,49.21604933,10,745
+54,1430 Lillooet St,Public School,Sir Matthew Begbie Elementary,-123.03801,49.2718308,9,609
+55,5970 Selkirk St,Public School,Sir William Osler Elementary,-123.1326622,49.23076242,5,274
+56,5351 Camosun St,Public School,Southlands Elementary,-123.1978152,49.23813759,7,134
+57,2145 W 8th Av,Independent School,St Augustine's,-123.1535522,49.26517255,7,139
+58,870 Victoria Drive,Independent School,St Francis of Assisi,-123.0650486,49.27688163,5,951
+59,4175 W 29th Av,Independent School,St George's School,-123.198465,49.24758227,8,707
+60,3261 Fleming St,Independent School,St Joseph's,-123.0716471,49.25591441,5,699
+61,2953 E 15th Av,Independent School,St Jude's,-123.0426267,49.25654579,1,870
+62,727 Templeton Drive,Public School,Templeton Secondary,-123.0606911,49.27843909,4,825
+63,5621 Killarney St,Independent School,Vancouver Formosa Academy,-123.0463674,49.23374742,4,177
+64,1000 E 59th Av,StrongStart BC,Walter Moberly StrongStart Centre,-123.0843454,49.21610923,9,405
+65,6111 Elliott St,StrongStart BC,Waverley StrongStart Centre,-123.0557859,49.22783723,1,962
+66,4157 Oak St,Independent School,Westside Montessori,-123.1280001,49.24857413,5,523
+67,3155 E 27th Av,Public School,Windermere Community Secondary,-123.0371743,49.24651246,10,679
+68,3274 East Boulevard,Independent School,York House Little School,-123.152101,49.25671,4,391
+69,1130 Keefer St,Public School,Admiral Seymour Elementary,-123.0803143,49.27859427,8,873
+70,1351 Hornby St,Independent School,Anchor Point Montessori,-123.1309189,49.27706185,8,131
+71,5025 Willow St,Public School,BCCH Eating Disorders School Program,-123.125791,49.23963096,5,772
+72,3020 Heather St,Independent School,Blessed Sacrament School,-123.1193909,49.25833791,8,679
+73,1110 Cotton Drive,Public School,Britannia Community Elementary,-123.0713788,49.27451201,3,614
+74,1788 W Broadway,Independent School,Century High School,-123.1453144,49.26338476,9,765
+75,7835 Champlain Crescent,Public School,Champlain Heights Annex,-123.0305497,49.21407843,1,174
+76,7835 Champlain Crescent,StrongStart BC,Champlain Heights Annex StrongStart Cntr,-123.0305497,49.21407843,4,612
+77,3877 Glen Drive,Public School,Charles Dickens Annex,-123.0827103,49.25021306,4,859
+78,2882 E 4th Av,Public School,Chief Maquinna Annex,-123.0451181,49.26642154,5,746
+79,3200 W 41st Av,Independent School,Crofton House,-123.1772182,49.23367783,3,198
+80,55 Expo Blvd,Public School,Crosstown Elementary,-123.106594,49.278631,2,182
+81,315 E 23rd Av,Public School,David Livingstone Elementary,-123.0979814,49.25075334,9,874
+82,2900 E 44th Av,Public School,Dr George M Weir Elementary,-123.0444025,49.22957876,6,805
+83,6100 Battison St,Public School,Dr H N MacCorkindale Elementary,-123.029355,49.22799019,2,824
+84,500 W 20th Av,Public School,Edith Cavell Elementary,-123.1172288,49.25290711,10,746
+85,2740 Guelph St,Public School,Florence Nightingale Elementary,-123.0937176,49.26005932,7,113
+86,5025 Willow St,Public School,G F Strong School Program,-123.125791,49.23963096,5,762
+87,4860 Main St,Public School,General Brock Elementary,-123.1006314,49.24121522,3,302
+88,4251 Ontario St,Public School,General Wolfe Elementary,-123.1059649,49.24722871,4,911
+89,2055 Woodland Dr,Public School,Grandview Elementary,-123.0743697,49.26619317,2,825
+90,2625 Franklin St,Public School,Hastings Community Elementary,-123.0505774,49.28261096,5,423
+91,2490 W 37th Av,Independent School,Ivy Montessori School,-123.1620983,49.2381148,6,716
+92,801 E 54th Av,Public School,John Henderson Annex,-123.0880432,49.22104214,5,770
+93,5555 Carnarvon St,Public School,Kerrisdale Elementary,-123.1734592,49.23616825,10,714
+94,6454 Killarney St,Public School,Killarney Secondary,-123.0441572,49.2253001,8,693
+95,2500 Lakewood Drive,Public School,Laura Secord Elementary,-123.0602234,49.2617357,8,950
+96,1100 Bidwell St,Public School,Lord Roberts Elementary,-123.1378448,49.28678528,9,348
+97,1750 E 22nd Av,Public School,Lord Selkirk Elementary,-123.0690071,49.24969195,5,229
+98,592 E Pender St,Public School,Lord Strathcona Community Elementary,-123.0914768,49.27981151,8,904
+99,1936 W 10th Av,Public School,Lord Tennyson Elementary,-123.1493771,49.26251893,9,344
+100,1950 E Hastings St,StrongStart BC,MacDonald StrongStart Centre,-123.0646791,49.28072391,1,931
+101,6199 Cypress St,Public School,Maple Grove Elementary,-123.1515149,49.2294087,2,845
+102,2300 Guelph St,Public School,Mount Pleasant Elementary,-123.0939995,49.26396573,7,311
+103,4102 W 16th Av,Public School,Norma Rose Point School,-123.2011278,49.25779177,6,978
+104,5750 Oak St,Independent School,Pacific Torah Institute,-123.1276123,49.23342157,3,477
+105,981 Nelson St,Independent School,Pattison High School,-123.1251133,49.28108362,1,702
+106,981 Nelson St,Independent School,Pattison School,-123.1251133,49.28108362,7,418
+107,5350 East Boulevard,Public School,Point Grey Secondary,-123.1534306,49.23728904,3,518
+108,2250 Eddington Drive,Public School,Prince of Wales Secondary,-123.1595357,49.24498305,10,978
+109,1300 E Broadway,Public School,Queen Alexandra Elementary,-123.0759206,49.26197055,6,361
+110,5300 Maple St,Public School,Quilchena Elementary,-123.1515708,49.23724621,3,516
+111,8610 Ash St,Independent School,Royal Canadian College,-123.1186077,49.20724202,9,793
+112,100 W 15th Av,Public School,Simon Fraser Elementary,-123.1081969,49.25717136,3,726
+113,960 E 39th Av,StrongStart BC,Sir Alexander Mackenzie StrongStart,-123.0867143,49.23453644,1,738
+114,6901 Elliott St,Public School,Sir Charles Kingsford-Smith,-123.0557042,49.22159667,3,592
+115,7668 Borden St,Public School,Sir James Douglas Annex,-123.0732935,49.21483046,3,792
+116,4750 St. Catherines St,Public School,Sir Richard McBride Annex,-123.0849502,49.24194423,10,489
+117,1401 E 49th Av,Public School,Sir Sandford Fleming Elementary,-123.0765741,49.22574769,4,172
+118,3323 Wellington Av,Public School,Sir Wilfred Grenfell Community,-123.0348074,49.24289162,6,282
+119,3323 Wellington Av,StrongStart BC,Sir Wilfred Grenfell StrongStart Centre,-123.0348074,49.24289162,5,998
+120,7350 Laurel St,Public School,Sir Wilfrid Laurier Elementary,-123.1250472,49.21776253,3,718
+121,428 Great Northern Way,Independent School,St Francis Xavier,-123.0945206,49.26646231,1,559
+122,1885 W Broadway,Independent School,St John's International,-123.1478988,49.26404098,10,195
+123,3000 Commercial Drive,Independent School,Stratford Hall,-123.0694633,49.25746922,9,113
+124,1551 E 37th Av,Public School,Tecumseh Annex,-123.0730988,49.23711627,1,407
+125,1850 E 41st Av,Public School,Tecumseh Elementary,-123.0680039,49.23205574,7,526
+126,788 Beatty St,Independent School,The Westside School,-123.1134435,49.27757064,3,456
+127,2325 Cassiar St,StrongStart BC,Thunderbird StrongStart Centre,-123.0318706,49.26364889,1,760
+128,2450 Cambridge St,StrongStart BC,Tillicum Annex StrongStart Centre,-123.0555985,49.28626346,1,680
+129,2450 Cambridge St,Public School,Tillicum Community Annex,-123.0555985,49.28626346,9,523
+130,4170 Trafalgar St,Public School,Trafalgar Elementary,-123.1646061,49.25017876,9,952
+131,1580 W Broadway,Public School,Vancouver Alternate,-123.1402605,49.26329988,6,221
+132,530 E 41st Av,Public School,Vancouver Learning Network,-123.0927978,49.23195715,4,727
+133,998 W 26th Av,Independent School,Vancouver Talmud Torah Elementary,-123.126822,49.24757967,7,253
+134,15 N Renfrew St,Independent School,West Coast Christian School,-123.0445361,49.28498447,6,196
+135,4125 W 8th Av,Independent School,West Point Grey Academy,-123.2015074,49.26706635,3,433
+136,688 W Hastings St,Independent School,Alexander Academy,-123.1140099,49.2850006,9,635
+137,5025 Willow St,Public School,BC Children's Adol. Psych. Unit,-123.125791,49.23963096,10,524
+138,1001 Cotton Drive,Public School,Britannia Community Secondary,-123.0719231,49.27523599,1,507
+139,3340 E 54th Av,Public School,Captain James Cook Elementary,-123.0358291,49.2193808,8,749
+140,3340 E 54th Av,StrongStart BC,Captain James Cook StrongStart Centre,-123.0358291,49.2193808,10,367
+141,2684 E 2nd Av,StrongStart BC,Chief Maquinna StrongStart Centre,-123.0505898,49.26788631,6,359
+142,3575 Kaslo St,Independent School,Children's Hearing and Speech Centre BC,-123.0483494,49.25235797,9,593
+143,3417 Euclid Av,Public School,Collingwood Neighbourhood School,-123.032313,49.2363486,10,856
+144,1755 E 55th Av,Public School,David Thompson Secondary,-123.0706316,49.22043926,8,370
+145,555 Lillooet St,Public School,Dr A R Lord Elementary,-123.0395172,49.27964048,8,244
+146,6350 Tisdall St,Public School,Dr Annie B Jamieson Elementary,-123.1210043,49.22690694,6,684
+147,3050 Crown St,Public School,Ecole Jules Quesnel Elementary,-123.1925381,49.25956781,7,558
+148,150 Drake St,Public School,Elsie Roy Elementary,-123.122482,49.272238,3,339
+149,4070 Oak St,Public School,Emily Carr Elementary,-123.1260964,49.25004165,4,629
+150,4196 W 4th Av,Independent School,Family Montessori School,-123.198246,49.26766798,5,817
+151,2294 W 10th Av,Independent School,Fraser Academy,-123.157276,49.2626607,3,702
+152,2330 E 37th Av,Public School,G T Cunningham Elementary,-123.057456,49.23673223,8,972
+153,3633 Tanner St,Public School,Graham Bruce Community Elementary,-123.0256727,49.24206909,9,880
+154,1551 Cypress St,Public School,Henry Hudson Elementary,-123.1493563,49.27224588,2,939
+155,451 E 53rd Av,Public School,John Henderson Elementary,-123.0952717,49.22256959,4,595
+156,4710 Slocan St,Public School,John Norquay Elementary,-123.0516408,49.2414247,7,654
+157,5718 Willow St,Independent School,King David High School,-123.1227909,49.23344818,5,789
+158,1755 Barclay St,Public School,King George Secondary,-123.1364452,49.28982415,10,385
+159,4195 Alexandra St,Independent School,Little Flower Academy,-123.1422615,49.24843134,4,568
+160,3663 Penticton St,Public School,Lord Beaconsfield Elementary,-123.0526963,49.25213838,5,477
+161,3455 W King Edward Av,Public School,Lord Kitchener Elementary,-123.1802456,49.25058181,5,715
+162,1150 Nelson St,Public School,Lord Roberts Annex,-123.129806,49.28309171,5,343
+163,4444 Dumfries St,Public School,Lord Selkirk Annex,-123.0724601,49.24532077,7,985
+164,2678 W Broadway,Independent School,Madrona School,-123.1660106,49.26352826,4,519
+165,2300 Guelph St,StrongStart BC,Mount Pleasant StrongStart Centre,-123.0939995,49.26396573,9,395
+166,2550 Camosun St,Independent School,Our Lady of Perpetual Help,-123.1961794,49.26413507,9,895
+167,1819 Larch St,Independent School,Pacific Rim Montessori Academy,-123.1624436,49.2697858,4,800
+168,1580 W Broadway,Public School,Peak House,-123.1402605,49.26329988,7,694
+169,4102 W 16th Av,Public School,Queen Elizabeth Elementary,-123.2011278,49.25779177,7,384
+170,1850 E 3rd Av,Public School,Queen Victoria Annex,-123.0663487,49.26718785,4,917
+171,3315 E 22nd Av,Public School,Renfrew Community Elementary,-123.0320581,49.25145777,2,893
+172,4250 Marguerite St,Public School,Shaughnessy Elementary,-123.14381,49.24867608,6,787
+173,960 E 39th Av,Public School,Sir Alexander Mackenzie Elementary,-123.0867143,49.23453644,5,715
+174,419 E 24th Av,Public School,Sir Charles Tupper Secondary,-123.0948095,49.2497535,5,324
+175,3250 Kingsway,Public School,Sir Guy Carleton Community Elementary,-123.037608,49.23434775,4,609
+176,1300 E 29th Av,Public School,Sir Richard McBride Elementary,-123.0781755,49.24415661,9,327
+177,1950 E Hastings St,Public School,Sir William Macdonald Community,-123.0646791,49.28072391,7,526
+178,7055 Heather St,Public School,Sir Winston Churchill Secondary,-123.1256155,49.22105957,6,639
+179,5855 Ontario St,Public School,Sir Wm Van Horne Elementary,-123.1065692,49.23156649,1,919
+180,1370 W 73rd Av,Independent School,St Anthony of Padua,-123.1370079,49.20446494,8,587
+181,2215 W 10th Av,Independent School,St John's School,-123.1561791,49.26317767,7,560
+182,5239 Joyce St,Independent School,St Mary's,-123.0337059,49.23750163,3,699
+183,115 E 11th Av,Independent School,St Patrick Regional Secondary,-123.1026044,49.26140454,9,550
+184,2850 Quebec St,Independent School,St Patrick's Elementary,-123.1024367,49.2597623,2,238
+185,3155 E 27th Av,Public School,Sunny Hill Hospital Program,-123.0371743,49.24651246,1,325
+186,2325 Cassiar St,Public School,Thunderbird Elementary,-123.0318706,49.26364889,2,341
+187,3525 Dumphries St,Public School,Tyee Elementary,-123.0738216,49.25356935,9,801
+188,3496 Mons Drive,Independent School,Vancouver Christian,-123.0285669,49.25471222,10,237
+189,5400 Cartier St,Independent School,Vancouver College,-123.1361713,49.23495942,6,446
+190,1545 W 62nd Av,Independent School,Vancouver Hebrew Academy,-123.1413693,49.21547173,3,667
+191,8650 Barnard St,Independent School,Vancouver Montessori School,-123.1446336,49.2077904,8,927
+192,1000 E 59th Av,Public School,Walter Moberly Elementary,-123.0843454,49.21610923,5,117
+193,3075 Slocan St,Independent School,Westside Montessori Academy,-123.0503919,49.25693785,8,540
+194,4176 Alexandra St,Independent School,York House School,-123.1403401,49.24884822,7,119

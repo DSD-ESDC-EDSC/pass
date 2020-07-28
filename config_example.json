@@ -1,7 +1,7 @@
 {
 	"FILES": {
 		"DEMAND_GEO": {
-			"FILE":"C:/Users/Name/Documents/Code/pass/data/lda_000b16a_bc.shp",
+			"FILE":"C:/Users/Name/Documents/Code/pass/data/demand_geo_vancouver.shp",
 			"TYPE":"shape",
 			"CRS": "3347",
 			"COLUMNS": {
@@ -20,38 +20,65 @@
 				}
 			},
 		"DEMAND_POP": {
-			"FILE":"C:/Users/Name/Documents/Code/pass/data/demand_bc.csv",
+			"FILE":"C:/Users/Name/Documents/Code/pass/data/demand_pop_vancouver.csv",
 			"TYPE":"demand",
 			"ENCODING":"latin-1",
 			"COLUMNS": {
 				"ID": {
-					"NAME":"geouid",
+					"NAME":"GEOUID",
 					"TYPE":"geouid",
 					"UNIT": "int",
 					"DESC": "ID"
 					},
 				"DEMAND_TOTAL": {
-					"NAME":"total_pop",
+					"NAME":"DUMMY_TOTAL",
 					"TYPE": "pop_Total",
 					"UNIT": "int", 
 					"DESC": "demand"
 					},
 				"DEMAND_MALE": {
-					"NAME": "total_male",
-					"TYPE": "Male Population",
+					"NAME": "DUMMY_ACTIVE_STUDENTS",
+					"TYPE": "Enrolled Students",
 					"UNIT": "int", 
 					"DESC": "demand"
 					},
 				"DEMAND_FEMALE": {
-					"NAME": "total_female",
-					"TYPE": "Female Population",
+					"NAME": "DUMMY_POTENTIAL_STUDENTS",
+					"TYPE": "Potential Students",
 					"UNIT": "int", 
 					"DESC": "demand"
 					}
 			}
 		},
+    "DEMAND_GEO_WEIGHT": {
+      "FILE": "C:/Users/Name/Documents/Code/pass/data/demand_geo_weight_vancouver.shp",
+      "TYPE": "shape",
+      "CRS": "3347",
+      "COLUMNS": {
+        "ID" : {
+          "NAME": "DBUID",
+          "TYPE": "geouid",
+          "UNIT": "int"},
+        "LRG_ID" : {
+          "NAME": "DAUID",
+          "TYPE": "lrg_id",
+          "UNIT": "int"},
+				"DEMAND_TOTAL": {
+					"NAME":"pop_Total",
+					"TYPE": "pop_Total",
+					"UNIT": "int", 
+					"DESC": "demand"
+				},
+        "GEOMETRY": {
+          "NAME": "geometry",
+          "TYPE": "geometry",
+          "UNIT": "geometry", 
+					"DESC": "geometry"
+          }
+        }
+    },
 		"POI": {
-			"FILE":"C:/Users/Name/Documents/Code/pass/data/childcare_locations.csv",
+			"FILE":"C:/Users/Name/Documents/Code/pass/data/poi_vancouver_schools.csv",
 			"TYPE":"poi",
 			"ENCODING":"latin-1",
 			"CRS":"4326",
@@ -74,26 +101,26 @@
 					"UNIT": "float", 
 					"DESC": "geometry"
 				},
-				"INFO_TYPE": {
-					"NAME":"SERVICE_TYPE_CD",
-					"TYPE": "Type",
+				"INFO_SCHOOL_CATEGORY": {
+					"NAME":"SCHOOL_CATEGORY",
+					"TYPE": "Category",
 					"UNIT": "text", 
 					"DESC": "info"
 				},
-				"INFO_NAME": {
-					"NAME": "NAME",
+				"INFO_SCHOOL_NAME": {
+					"NAME": "SCHOOL_NAME",
 					"TYPE": "Name",
 					"UNIT": "text", 
 					"DESC": "info"
 				},
 				"SUPPLY_AVAILABILITY": {
-					"NAME": "AVAILABLE_SEATS",
+					"NAME": "DUMMY_SUPPLY",
 					"TYPE": "Available Seats",
 					"UNIT": "int", 
 					"DESC": "supply"
 				},
 				"CAPACITY_SEATS": {
-					"NAME":"CAPACITY",
+					"NAME": "DUMMY_CAPACITY",
 					"TYPE": "Total Seats",
 					"UNIT": "int", 
 					"DESC": "capacity"
