@@ -35,9 +35,9 @@ General steps though are the following:
 1. Clone the `openrouteservice` GitHub repo.
 2. Copy/paste the `*.osm.pbf` into the `openrouteservice/docker/data` folder.
 3. The following changes need to be complete in `openrouteservice/docker/docker-compose.yml`:
-  - Change the `OSM_FILE` variable to the desired OSM data file. 
-  - Update the data file path `./data/*.osm.pbf:/ors-core/data/osm_file.pbf`
-  - Change the `BUILD_GRAPHS` environment variable to `TRUE`
+  - Change the `OSM_FILE` variable to the desired OSM data file. This file can be `*.pbf` or `*.osm.gz`.
+  - Update the data file path `./data/*.osm.pbf:/ors-core/data/osm_file.pbf`.
+  - Change the `BUILD_GRAPHS` environment variable to `TRUE`.
   - If you are working with a large OSM data file (greater then 1GB), it is recommended to increase the `-Xms1g` and `-Xmx2g` options within the `JAVA_OPTS` environment variable. You will likely need to update the Docker resources (e.g., CPUs, Memory) as well.
 4. Make sure Docker is running, and then enter into in your terminal the following: `docker-compose build --no-cache` to build the container with your specific data files.
 
