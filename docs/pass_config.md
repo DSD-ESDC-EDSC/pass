@@ -10,13 +10,15 @@ The `InitSchema.py` file runs several different modules to read, process and sto
 
 **For this Python script to successfully run, the following steps must be completed prior**:
 
-1. Set up a `config.json` in the root directory. A quick way to accomplish this is by copying and then renaming the `config_template.json` to `config.json` and then changing the values that start with "ENTER" within the JSON. There is also a `config_example.json` to better demonstrate the values that should be presented in `config.json`. Please refer to the section below, 'Specifications for config.json', to learn more on how to prepare this file for successful read. 
+1. Make sure you have the correct data stored in `/data` folder. This is detailed in the [README](../README.md). The file type and structure is demonstrated with the existing files in the `/data` folder, such as `demand_geo_vancouver.*` to represent the geographic areas of demand.
 
-2. Connect to either a local containerized version of the [OpenRouteService (ORS)](https://github.com/GIScience/openrouteservice) API for calculating a drive time/distance matrix. **For information on how to install the ORS API locally, refer to the [Distance Matrix Calculation Set Up Instructions](/pass_distance_matrix_api.md)**.
+2. Set up a `config.json` in the root directory. A quick way to accomplish this is by copying and then renaming the `config_template.json` to `config.json` and then changing the values that start with "ENTER" within the JSON. There is also a `config_example.json` to better demonstrate the values that should be presented in `config.json`. Please refer to the section below, 'Specifications for config.json', to learn more on how to prepare this file for successful read. 
+
+3. Connect to either a local containerized version of the [OpenRouteService (ORS)](https://github.com/GIScience/openrouteservice) API for calculating a drive time/distance matrix. **For information on how to install the ORS API locally, refer to the [Distance Matrix Calculation Set Up Instructions](/pass_distance_matrix_api.md)**.
   - `InitSchema.py` runs the `DistanceMatrix` class that connects to this API to calculate drive time/distance isochrones (i.e., buffer areas of equal travel time/distance) and then a distance matrix file to be stored in the database. 
   - `DistanceMatrix` depends on the `client_url` parameter, which is in `config.json`.
 
-3. Assuming [PostgreSQL](https://www.postgresql.org/) is already installed, initialize a new database and add the [PostGIS](https://postgis.net/) database extension to store the geographic data. Make sure to add the PostgreSQL database connection information to `config.json`.
+4. Assuming [PostgreSQL](https://www.postgresql.org/) is already installed, initialize a new database and add the [PostGIS](https://postgis.net/) database extension to store the geographic data. PostGIS is a separate application that needs to be installed. PostGIS offers additional functionalities to store and process geographic data in PostgreSQL. Make sure to add the PostgreSQL database connection information to `config.json`.
 
 ## Specifications for `config.json`
 

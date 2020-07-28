@@ -14,7 +14,7 @@ PASS lets you select a geographic area of interest by panning and zooming on the
 
 - Python > 3.6
 - PostgreSQL > 11
-- PostGIS (PostgreSQL extension) > 2.5
+- PostGIS (PostgreSQL extension) > 2.5 (NOTE: This will need to be installed separtely from PostgreSQL.)
 - Docker
 
 ### Steps to Install
@@ -22,17 +22,17 @@ PASS lets you select a geographic area of interest by panning and zooming on the
 1. Make sure you have the above dependencies installed.
 2. Clone repo.
 3. Set up a Python environment in the terminal, you can use the `requirements.txt` file to clone the environment, but there might be some issues installing some of the Python packages, especially if you have a Windows OS. In this case, it is recommended to create a new environment and then `pip install` the individual dependencies listed in `requirements.txt`. If you have a Windows OS, it is suggested to review [this Stack Overflow conversation](https://stackoverflow.com/questions/29222269/is-there-a-way-to-have-a-conditional-requirements-txt-file-for-my-python-applica) to assure the dependencies are installed correctly.
-4. Create a `data` folder within the local repo's root directory. In that folder you should have the following types of data:
+4. Within the `/data` folder, you should have the following types of data:
 
 - `DEMAND_GEO`: Geographic data file (`*.shp`) representing your demand locations (e.g., shapefile of postal code polygons).
 - `DEMAND_POP`: `*.csv` file that at least has the demand geographic data file IDs and a variable to represent the population counts for the demand geographic data file.
 - `SUPPLY`: `*.csv` file that stores your POIs, this file should at least have a variable to represent the POI IDs and two variables for longitude and latitude.
 - `DEMAND_GEO_WEIGHT` (optional): a more granular geographic data file (`*.shp`) + a population attribute/variable for calculating mean-weighted centroids to represent the demand locations more precisely.
 
-  Requirements for these data files are further detailed in the [Database Initialization and Population document](docs/pass_config.md).
+  There currently is dummy test data in the `/data` folder as a guide. Requirements for these data files are further detailed in the [Database Initialization and Population document](docs/pass_config.md).
 
-5. Copy and rename `config_template.json` to `config.json`. Enter the necessary values in where it specifies "ENTER ...". There is also a `config_example.json` to better demonstrate the values that should be presented in `config.json`. **Please refer to the [Database Initialization and Population document](docs/pass_config.md) for more information on how to properly prepare `config.json`.**
-6. Initialize a new database and add the [PostGIS](https://postgis.net/) database extension to store the geographic data. Make sure to add the PostgreSQL database connection information to `config.json`.
+5. Copy and rename `config_template.json` to `config.json`. Enter the necessary values in where it specifies "ENTER ...". There is also a `config_example.json` to better demonstrate the values that should be presented in `config.json`, these values are aligned with the dummy data stored within the `/data` folder. **Please refer to the [Database Initialization and Population document](docs/pass_config.md) for more information on how to properly prepare `config.json`.**
+6. Initialize a new database and add the [PostGIS](https://postgis.net/) database extension to store the geographic data and leverage the geospatial functions that can be called within a PostgreSQL query. Make sure to add the PostgreSQL database connection information to `config.json`. (NOTE: To initialize PostGIS, you need to first install it.)
 7. Now you have to populate the database based on your data, which can be accomplished by running the following command in the terminal: `python modules/InitSchema.py`. **However, before running this Python script, you will need to initialize a local API for calculating a distance matrix for car commute time or distance. To learn more about how to set up the API for calculating a distance matrix, refer to the [Distance Matrix Calculation Set Up Instructions document](docs/pass_distance_matrix_api.md).**
 8. Run `python modules/InitSchema.py` to initialize your database, this could take a while depending on your computer specs and the total data size (e.g., all of Canada could take over 5 hours).
 9. Confirm your database has three populated data tables: `demand`, `poi`, and `distance_matrix_car`.
